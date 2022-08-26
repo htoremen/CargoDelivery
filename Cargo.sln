@@ -13,9 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Delivery", "Delivery", "{3B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{20536872-46F0-4B29-9D33-50C675978FEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Domain", "src\Core\Core.Domain\Core.Domain.csproj", "{467B69B0-9482-469D-A7FA-64697792FD91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Domain", "src\Core\Core.Domain\Core.Domain.csproj", "{467B69B0-9482-469D-A7FA-64697792FD91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Application", "src\Core\Core.Application\Core.Application.csproj", "{C4FDF3DF-E587-4C0C-8D11-C82DC7AFE3E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Application", "src\Core\Core.Application\Core.Application.csproj", "{C4FDF3DF-E587-4C0C-8D11-C82DC7AFE3E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payment", "Payment", "{6579A165-739E-4D66-9BC4-70947D56C333}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain.Enums;
 
-public enum Queue
+public enum QueueState
 {
     None = 0,
 
