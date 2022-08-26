@@ -1,13 +1,11 @@
 ﻿
+
 using Core.Application;
 using Core.Domain;
 using Core.Domain.Bus;
-using Core.Domain.Enums;
 using MassTransit;
-using MassTransit.MultiBus;
 using MediatR;
 using Order.API.Services;
-using Order.Application.Common.Interfaces;
 
 namespace Order.API;
 
@@ -48,43 +46,34 @@ public static class ConfigureServices
                 cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
                 cfg.ConfigureEndpoints(context);
 
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateOrder], e =>
-                {
-                    e.PrefetchCount = 1;
-                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                    e.UseCircuitBreaker(cb =>
-                    {
-                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                        cb.TripThreshold = config.TripThreshold;
-                        cb.ActiveThreshold = config.ActiveThreshold;
-                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                    });
+                //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateOrder], e =>
+                //{
+                //    e.PrefetchCount = 1;
+                //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                //    e.UseCircuitBreaker(cb =>
+                //    {
+                //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                //        cb.TripThreshold = config.TripThreshold;
+                //        cb.ActiveThreshold = config.ActiveThreshold;
+                //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                //    });
 
-                    e.Consumer(() => new StockReleasedConsumer(mediator));
-                });
-
-
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateSelfie], e =>
-                {
-                    e.PrefetchCount = 1;
-                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                    e.UseCircuitBreaker(cb =>
-                    {
-                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                        cb.TripThreshold = config.TripThreshold;
-                        cb.ActiveThreshold = config.ActiveThreshold;
-                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                    });
-
-                    e.Consumer(() => new PaymentApprovedConsumer(mediator));
-                });
+                //    e.Consumer(() => new StockReleasedConsumer(mediator));
+                //});
             });
         });
 
         services.AddSingleton(rabbitMQConfig);
         services.AddTransient(typeof(IEventBusService<>), typeof(EventBusService<>));
         services.AddTransient(typeof(IEventBusManager<>), typeof(EventBusManager<>));
-        services.AddMassTransitHostedService();
+
+        services.Configure<MassTransitHostOptions>(options =>
+        {
+            options.WaitUntilStarted = true;
+            options.StartTimeout = TimeSpan.FromSeconds(30);
+            options.StopTimeout = TimeSpan.FromMinutes(1);
+        });
+
         services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
 

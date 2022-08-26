@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Order.Application.Common.Behaviours;
 using FluentValidation;
-using MediatR;
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ConfigureServices

@@ -1,4 +1,6 @@
 ﻿
+using System.Security.Claims;
+
 namespace Order.API.Services;
 
 public class CurrentUserService : ICurrentUserService

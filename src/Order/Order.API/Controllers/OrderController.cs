@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Order.Application.Orders.CreateOrders;
 
 namespace Order.API.Controllers
 {
@@ -8,9 +9,10 @@ namespace Order.API.Controllers
     {
         [Route("Get")]
         [HttpGet]
-        public async Task<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return await Mediator.Send(new CreateOrderCommand());
+            var response = await Mediator.Send(new CreateOrderCommand());
+            return Ok(response);
         }
     }
 }
