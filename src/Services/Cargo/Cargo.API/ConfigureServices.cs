@@ -4,6 +4,7 @@ using MassTransit;
 using MediatR;
 using Cargo.API.Services;
 using Core.Application;
+using Core.Domain.Enums;
 
 namespace Cargo.API;
 
@@ -29,8 +30,12 @@ public static class ConfigureServices
         var config = rabbitMqConfigurations.FirstOrDefault(y => y.Name == "MainHost");
         if (config == null) throw new ArgumentNullException("MainHost section hasn't been found in the appsettings.");
 
+
         services.AddMassTransit<IEventBus>(x =>
         {
+            x.AddConsumer<CreateOrderConsumer>();
+            x.SetKebabCaseEndpointNameFormatter();
+
             x.UsingRabbitMq((context, cfg) =>
             {
                 var mediator = context.GetRequiredService<IMediator>();
@@ -44,20 +49,20 @@ public static class ConfigureServices
                 cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
                 cfg.ConfigureEndpoints(context);
 
-                //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateOrder], e =>
-                //{
-                //    e.PrefetchCount = 1;
-                //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                //    e.UseCircuitBreaker(cb =>
-                //    {
-                //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                //        cb.TripThreshold = config.TripThreshold;
-                //        cb.ActiveThreshold = config.ActiveThreshold;
-                //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                //    });
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateOrder], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<CreateOrderConsumer>(context);
+                });
 
-                //    e.Consumer(() => new StockReleasedConsumer(mediator));
-                //});
             });
         });
 
@@ -71,10 +76,6 @@ public static class ConfigureServices
             options.StartTimeout = TimeSpan.FromSeconds(30);
             options.StopTimeout = TimeSpan.FromMinutes(1);
         });
-
-        services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
-
-
         return services;
 
     }

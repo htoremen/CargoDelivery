@@ -22,5 +22,10 @@ public class CreateOrderConsumer : IConsumer<ICreateOrder>
             OrderId = command.OrderId,
             ProductId= command.ProductId,
         });
+
+        //await context.Publish<OrderSubmitted>(new
+        //{
+        //    context.Message.OrderId
+        //});
     }
 }

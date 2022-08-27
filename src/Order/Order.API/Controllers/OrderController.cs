@@ -11,7 +11,13 @@ namespace Order.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var response = await Mediator.Send(new CreateOrderCommand());
+            var response = await Mediator.Send(new CreateOrderCommand
+            {
+                OrderId = Guid.NewGuid(),   
+                Id = Guid.NewGuid(),
+                CustomerId = Guid.NewGuid(),
+                ProductId= Guid.NewGuid(),
+            });
             return Ok(response);
         }
     }

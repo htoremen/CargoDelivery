@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddWebUIServices();
+builder.Services.AddEventBus(builder.Configuration);
 
 var app = builder.Build();
 
