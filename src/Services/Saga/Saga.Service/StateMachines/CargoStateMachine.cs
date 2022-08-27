@@ -10,36 +10,36 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     {
         InstanceState(instance => instance.CurrentState);
 
-        Event(() => CreateCargoEvent, instance => instance
+        Event(() => CreateCargo, instance => instance
                 .CorrelateBy<Guid>(state => state.CargoId, context => context.Message.CargoId)
                 .SelectId(s => Guid.NewGuid()));
 
-        Event(() => CreateSelfieEvent, instance => instance
+        Event(() => CreateSelfie, instance => instance
               .CorrelateById(selector => selector.Message.CorrelationId));
 
-        Event(() => CargoSendApprovedEvent, instance => instance
+        Event(() => CargoSendApproved, instance => instance
               .CorrelateById(selector => selector.Message.CorrelationId));
 
-        Event(() => CargoApprovedEvent, instance => instance
+        Event(() => CargoApproved, instance => instance
               .CorrelateById(selector => selector.Message.CorrelationId));
 
-        Event(() => CargoRejectedEvent, instance => instance
+        Event(() => CargoRejected, instance => instance
               .CorrelateById(selector => selector.Message.CorrelationId));
 
 
     }
 
-    public State CreateCargo { get; set; }
-    public State CreateSelfie { get; set; }
-    public State CargoSendApproved { get; set; }
-    public State CargoApproved { get; set; }
-    public State CargoRejected { get; set; }
+    public State CreateCargoState { get; set; }
+    public State CreateSelfieState { get; set; }
+    public State CargoSendApprovedState { get; set; }
+    public State CargoApprovedState { get; set; }
+    public State CargoRejectedState { get; set; }
 
 
-    public Event<ICreateCargo> CreateCargoEvent { get; set; }
-    public Event<ICreateSelfie> CreateSelfieEvent { get; set; }
-    public Event<ICargoSendApproved> CargoSendApprovedEvent { get; set; }
-    public Event<ICargoApproved> CargoApprovedEvent { get; set; }
-    public Event<ICargoRejected> CargoRejectedEvent { get; set; }
+    public Event<ICreateCargo> CreateCargo { get; set; }
+    public Event<ICreateSelfie> CreateSelfie { get; set; }
+    public Event<ICargoSendApproved> CargoSendApproved { get; set; }
+    public Event<ICargoApproved> CargoApproved { get; set; }
+    public Event<ICargoRejected> CargoRejected { get; set; }
 }
 
