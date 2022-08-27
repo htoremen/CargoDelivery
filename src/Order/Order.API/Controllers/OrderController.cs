@@ -32,5 +32,16 @@ namespace Order.API.Controllers
             });
             return Ok(response);
         }
+
+        [Route("order-approved")]
+        [HttpPost]
+        public async Task<IActionResult> OrderApproved()
+        {
+            var response = await Mediator.Send(new CreateSelfieCommand
+            {
+                Id = Guid.NewGuid(),
+            });
+            return Ok(response);
+        }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using Cargo.Application.Cargos.CreateCargos;
-using MassTransit;
 
 namespace Cargo.Application.Consumer;
-public class CreateOrderConsumer : IConsumer<ICreateOrder>
+public class CargoOrderConsumer : IConsumer<ICreateOrder>
 {
     private readonly IMediator _mediator;
 
-    public CreateOrderConsumer(IMediator mediator)
+    public CargoOrderConsumer(IMediator mediator)
     {
         _mediator = mediator;
     }

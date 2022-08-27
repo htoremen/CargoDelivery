@@ -5,10 +5,10 @@ public enum QueueState
     None = 0,
 
     // Zimmetine Geçir
-    CreateOrder = 101,
+    CreateCargo = 101,
     CreateSelfie = 102,
-    OrderApproved = 103,
-    OrderRejected = 104,
+    CargoApproved = 103,
+    CargoRejected = 104,
 
     // Güzergah Oluştur
     RouteConfirmed = 201,

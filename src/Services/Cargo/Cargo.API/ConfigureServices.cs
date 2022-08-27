@@ -33,8 +33,9 @@ public static class ConfigureServices
 
         services.AddMassTransit<IEventBus>(x =>
         {
-            x.AddConsumer<CreateOrderConsumer>();
+            x.AddConsumer<CargoOrderConsumer>();
             x.AddConsumer<CreateSelfieConsumer>();
+            x.AddConsumer<CargoApprovedConsumer>();
             x.SetKebabCaseEndpointNameFormatter();
 
             x.UsingRabbitMq((context, cfg) =>
@@ -50,7 +51,7 @@ public static class ConfigureServices
                 cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
                 cfg.ConfigureEndpoints(context);
 
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateOrder], e =>
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateCargo], e =>
                 {
                     e.PrefetchCount = 1;
                     e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
@@ -61,7 +62,7 @@ public static class ConfigureServices
                         cb.ActiveThreshold = config.ActiveThreshold;
                         cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                     });
-                    e.ConfigureConsumer<CreateOrderConsumer>(context);
+                    e.ConfigureConsumer<CargoOrderConsumer>(context);
                 });
 
                 cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateSelfie], e =>
@@ -77,6 +78,21 @@ public static class ConfigureServices
                     });
                     e.ConfigureConsumer<CreateSelfieConsumer>(context);
                 });
+
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CargoApproved], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<CargoApprovedConsumer>(context);
+                });
+
             });
         });
 

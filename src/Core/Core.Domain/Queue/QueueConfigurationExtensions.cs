@@ -10,10 +10,10 @@ public static class QueueConfigurationExtensions
             Names = new Dictionary<QueueState, string>()
         };
 
-        queueConfiguration.Names.Add(QueueState.CreateOrder, QueueState.CreateOrder.ToString());
+        queueConfiguration.Names.Add(QueueState.CreateCargo, QueueState.CreateCargo.ToString());
         queueConfiguration.Names.Add(QueueState.CreateSelfie, QueueState.CreateSelfie.ToString());
-        queueConfiguration.Names.Add(QueueState.OrderApproved, QueueState.OrderApproved.ToString());
-        queueConfiguration.Names.Add(QueueState.OrderRejected, QueueState.OrderRejected.ToString());
+        queueConfiguration.Names.Add(QueueState.CargoApproved, QueueState.CargoApproved.ToString());
+        queueConfiguration.Names.Add(QueueState.CargoRejected, QueueState.CargoRejected.ToString());
 
         queueConfiguration.Names.Add(QueueState.RouteConfirmed, QueueState.RouteConfirmed.ToString());
         queueConfiguration.Names.Add(QueueState.AutoRoute, QueueState.AutoRoute.ToString());
