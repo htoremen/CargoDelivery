@@ -1,11 +1,11 @@
 ﻿using Cargo.Application.Cargos.CreateCargos;
 
 namespace Cargo.Application.Consumer;
-public class CargoOrderConsumer : IConsumer<ICreateOrder>
+public class CreateCargoConsumer : IConsumer<ICreateOrder>
 {
     private readonly IMediator _mediator;
 
-    public CargoOrderConsumer(IMediator mediator)
+    public CreateCargoConsumer(IMediator mediator)
     {
         _mediator = mediator;
     }

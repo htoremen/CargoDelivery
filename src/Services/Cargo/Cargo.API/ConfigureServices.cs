@@ -33,9 +33,11 @@ public static class ConfigureServices
 
         services.AddMassTransit<IEventBus>(x =>
         {
-            x.AddConsumer<CargoOrderConsumer>();
+            x.AddConsumer<CreateCargoConsumer>();
             x.AddConsumer<CreateSelfieConsumer>();
+            x.AddConsumer<CargoSendApprovedConsumer>();
             x.AddConsumer<CargoApprovedConsumer>();
+            x.AddConsumer<CargoRejectedConsumer>();
             x.SetKebabCaseEndpointNameFormatter();
 
             x.UsingRabbitMq((context, cfg) =>
@@ -62,7 +64,7 @@ public static class ConfigureServices
                         cb.ActiveThreshold = config.ActiveThreshold;
                         cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                     });
-                    e.ConfigureConsumer<CargoOrderConsumer>(context);
+                    e.ConfigureConsumer<CreateCargoConsumer>(context);
                 });
 
                 cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateSelfie], e =>
@@ -79,6 +81,20 @@ public static class ConfigureServices
                     e.ConfigureConsumer<CreateSelfieConsumer>(context);
                 });
 
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CargoSendApproved], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<CargoSendApprovedConsumer>(context);
+                });
+
                 cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CargoApproved], e =>
                 {
                     e.PrefetchCount = 1;
@@ -91,6 +107,20 @@ public static class ConfigureServices
                         cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                     });
                     e.ConfigureConsumer<CargoApprovedConsumer>(context);
+                });
+
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CargoRejected], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<CargoRejectedConsumer>(context);
                 });
 
             });

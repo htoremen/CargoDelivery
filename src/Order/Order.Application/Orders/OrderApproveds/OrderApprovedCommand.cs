@@ -18,11 +18,11 @@ public class OrderApprovedCommandHandler : IRequestHandler<OrderApprovedCommand,
 
     public async Task<GenericResponse<OrderApprovedResponse>> Handle(OrderApprovedCommand request, CancellationToken cancellationToken)
     {
-        var orderApproved = new OrderApproved
+        var orderApproved = new CargoSendApproved
         {
             Id = request.Id,
         };
-        await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueState.CargoApproved], cancellationToken);
+        await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueState.CargoSendApproved], cancellationToken);
         var response = new OrderApprovedResponse { Id = request.Id };
 
         return GenericResponse<OrderApprovedResponse>.Success(response, 200);

@@ -1,4 +1,6 @@
-﻿namespace Cargo.Application.Cargos.CargoApproveds;
+﻿using Core.Domain.Enums;
+
+namespace Cargo.Application.Cargos.CargoApproveds;
 
 public class CargoApprovedCommand : IRequest<GenericResponse<CargoApprovedResponse>>
 {
@@ -9,6 +11,7 @@ public class OrderApprovedCommandHandler : IRequestHandler<CargoApprovedCommand,
 {
     public async Task<GenericResponse<CargoApprovedResponse>> Handle(CargoApprovedCommand request, CancellationToken cancellationToken)
     {
+
         return GenericResponse<CargoApprovedResponse>.Success(new CargoApprovedResponse { }, 200);
     }
 }

@@ -13,6 +13,7 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueState.CreateCargo, QueueState.CreateCargo.ToString());
         queueConfiguration.Names.Add(QueueState.CreateSelfie, QueueState.CreateSelfie.ToString());
         queueConfiguration.Names.Add(QueueState.CargoApproved, QueueState.CargoApproved.ToString());
+        queueConfiguration.Names.Add(QueueState.CargoSendApproved, QueueState.CargoSendApproved.ToString());
         queueConfiguration.Names.Add(QueueState.CargoRejected, QueueState.CargoRejected.ToString());
 
         queueConfiguration.Names.Add(QueueState.RouteConfirmed, QueueState.RouteConfirmed.ToString());

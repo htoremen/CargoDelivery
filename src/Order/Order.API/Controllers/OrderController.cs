@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Order.Application.Orders.CreateOrders;
 using Order.Application.Orders.CreateSelfies;
+using Order.Application.Orders.OrderApproveds;
 
 namespace Order.API.Controllers
 {
@@ -37,7 +38,7 @@ namespace Order.API.Controllers
         [HttpPost]
         public async Task<IActionResult> OrderApproved()
         {
-            var response = await Mediator.Send(new CreateSelfieCommand
+            var response = await Mediator.Send(new OrderApprovedCommand
             {
                 Id = Guid.NewGuid(),
             });

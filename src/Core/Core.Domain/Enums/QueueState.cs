@@ -7,8 +7,9 @@ public enum QueueState
     // Zimmetine Geçir
     CreateCargo = 101,
     CreateSelfie = 102,
-    CargoApproved = 103,
-    CargoRejected = 104,
+    CargoSendApproved = 103,
+    CargoApproved = 104,
+    CargoRejected = 105,
 
     // Güzergah Oluştur
     RouteConfirmed = 201,
