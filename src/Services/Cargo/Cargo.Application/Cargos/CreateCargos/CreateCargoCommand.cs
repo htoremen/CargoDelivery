@@ -2,6 +2,10 @@
 
 public class CreateCargoCommand : IRequest<Response<CreateCargoResponse>>
 {
+    public Guid Id { get; set; }
+    public Guid OrderId { get; set; }
+    public Guid CustomerId { get; set; }
+    public Guid ProductId { get; set; }
 }
 
 public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, Response<CreateCargoResponse>>

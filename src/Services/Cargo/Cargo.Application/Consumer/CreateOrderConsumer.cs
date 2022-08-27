@@ -1,9 +1,5 @@
-﻿using MassTransit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cargo.Application.Cargos.CreateCargos;
+using MassTransit;
 
 namespace Cargo.Application.Consumer;
 public class CreateOrderConsumer : IConsumer<ICreateOrder>
@@ -15,9 +11,16 @@ public class CreateOrderConsumer : IConsumer<ICreateOrder>
         _mediator = mediator;
     }
 
-    public Task Consume(ConsumeContext<ICreateOrder> context)
+    public async Task Consume(ConsumeContext<ICreateOrder> context)
     {
         var command = context.Message;
-        throw new NotImplementedException();
+
+        await _mediator.Send(new CreateCargoCommand
+        {
+            Id = command.Id,
+            CustomerId = command.CustomerId,
+            OrderId = command.OrderId,
+            ProductId= command.ProductId,
+        });
     }
 }

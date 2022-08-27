@@ -8,4 +8,5 @@ namespace Cargo.Application.Cargos.CreateCargos;
 
 public class CreateCargoResponse
 {
+    public Guid Id { get; set; }
 }
