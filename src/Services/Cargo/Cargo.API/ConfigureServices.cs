@@ -34,6 +34,7 @@ public static class ConfigureServices
         services.AddMassTransit<IEventBus>(x =>
         {
             x.AddConsumer<CreateOrderConsumer>();
+            x.AddConsumer<CreateSelfieConsumer>();
             x.SetKebabCaseEndpointNameFormatter();
 
             x.UsingRabbitMq((context, cfg) =>
@@ -63,6 +64,19 @@ public static class ConfigureServices
                     e.ConfigureConsumer<CreateOrderConsumer>(context);
                 });
 
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateSelfie], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<CreateSelfieConsumer>(context);
+                });
             });
         });
 

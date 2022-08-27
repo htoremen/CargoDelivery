@@ -1,11 +1,11 @@
 ﻿namespace Order.Application.Orders.CreateSelfies;
 
-public class CreateSelfieCommand : IRequest<Response<CreateSelfeiResponse>>
+public class CreateSelfieCommand : IRequest<GenericResponse<CreateSelfeiResponse>>
 {
     public Guid Id { get; set; }
 }
 
-public class CreateSelfeiCommandHandler : IRequestHandler<CreateSelfieCommand, Response<CreateSelfeiResponse>>
+public class CreateSelfeiCommandHandler : IRequestHandler<CreateSelfieCommand, GenericResponse<CreateSelfeiResponse>>
 {
     private readonly IEventBusService<IEventBus> _eventBusService;
     private readonly IQueueConfiguration _queueConfiguration;
@@ -16,7 +16,7 @@ public class CreateSelfeiCommandHandler : IRequestHandler<CreateSelfieCommand, R
         _queueConfiguration = queueConfiguration;
     }
 
-    public async Task<Response<CreateSelfeiResponse>> Handle(CreateSelfieCommand request, CancellationToken cancellationToken)
+    public async Task<GenericResponse<CreateSelfeiResponse>> Handle(CreateSelfieCommand request, CancellationToken cancellationToken)
     {
         var createSelfei = new CreateSelfie
         {
@@ -25,7 +25,7 @@ public class CreateSelfeiCommandHandler : IRequestHandler<CreateSelfieCommand, R
         await _eventBusService.SendCommandAsync(createSelfei, _queueConfiguration.Names[QueueState.CreateSelfie], cancellationToken);
         var response = new CreateSelfeiResponse { Id = request.Id };
 
-        return Response<CreateSelfeiResponse>.Success(response, 200);
+        return GenericResponse<CreateSelfeiResponse>.Success(response, 200);
     }
 }
 
