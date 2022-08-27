@@ -18,7 +18,7 @@ public class CreateCargoConsumer : IConsumer<ICreateCargo>
         {
             Id = command.Id,
             CustomerId = command.CustomerId,
-            OrderId = command.OrderId,
+            CargoId = command.CargoId,
             ProductId= command.ProductId,
         });
 

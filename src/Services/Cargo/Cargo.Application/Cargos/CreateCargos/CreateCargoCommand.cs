@@ -5,7 +5,7 @@ namespace Cargo.Application.Cargos.CreateCargos;
 public class CreateCargoCommand : IRequest<GenericResponse<CreateCargoResponse>>
 {
     public Guid Id { get; set; }
-    public Guid OrderId { get; set; }
+    public Guid CargoId { get; set; }
     public Guid CustomerId { get; set; }
     public Guid ProductId { get; set; }
 }

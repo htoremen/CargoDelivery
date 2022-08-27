@@ -9,6 +9,10 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public CargoStateMachine()
     {
         InstanceState(instance => instance.CurrentState);
+
+        Event(() => CreateCargoEvent, instance => instance
+                .CorrelateBy<Guid>(state => state.CargoId, context => context.Message.CargoId)
+                .SelectId(s => Guid.NewGuid()));
     }
 
     public State CreateCargo { get; set; }

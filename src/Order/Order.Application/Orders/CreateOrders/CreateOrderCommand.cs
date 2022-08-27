@@ -4,7 +4,7 @@ namespace Order.Application.Orders.CreateOrders;
 public class CreateOrderCommand : IRequest<CreateOrderResponse>
 {
     public Guid Id { get; set; }
-    public Guid OrderId { get; set; }
+    public Guid CargoId { get; set; }
     public Guid CustomerId { get; set; }
     public Guid ProductId { get; set; }
 }
@@ -25,11 +25,11 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Cre
         var createOrderEvent = new CreateCargo
         {
             CustomerId = request.CustomerId,
-            Id = request.OrderId,
-            OrderId = request.OrderId,
+            Id = request.Id,
+            CargoId = request.CargoId,
             ProductId = request.ProductId,
         };
         await _eventBusService.SendCommandAsync(createOrderEvent, _queueConfiguration.Names[QueueName.CreateCargo], cancellationToken);
-        return new CreateOrderResponse { Id = request.Id, OrderId = request.OrderId };
+        return new CreateOrderResponse { Id = request.Id, CargoId = request.CargoId };
     }
 }

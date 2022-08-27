@@ -15,7 +15,7 @@ namespace Order.API.Controllers
         {
             var response = await Mediator.Send(new CreateOrderCommand
             {
-                OrderId = Guid.NewGuid(),   
+                CargoId = Guid.NewGuid(),   
                 Id = Guid.NewGuid(),
                 CustomerId = Guid.NewGuid(),
                 ProductId= Guid.NewGuid(),
