@@ -17,7 +17,7 @@ public class CargoRejectedConsumer : IConsumer<ICargoRejected>
 
         await _mediator.Send(new CargoRejectedCommand
         {
-            Id = command.Id,
+            CorrelationId = command.CorrelationId,
         });
 
     }

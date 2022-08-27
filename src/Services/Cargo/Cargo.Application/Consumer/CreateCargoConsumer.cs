@@ -16,7 +16,7 @@ public class CreateCargoConsumer : IConsumer<ICreateCargo>
 
         await _mediator.Send(new CreateCargoCommand
         {
-            Id = command.Id,
+            Id = command.CorrelationId,
             CustomerId = command.CustomerId,
             CargoId = command.CargoId,
             ProductId= command.ProductId,

@@ -7,6 +7,6 @@ public interface ICargoSendApproved : IEvent
 
 public class CargoSendApproved : ICargoSendApproved
 {
-    public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
     public Guid OrderId { get; set; }
 }

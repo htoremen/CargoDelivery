@@ -7,6 +7,6 @@ public interface ICreateSelfie : IEvent
 
 public class CreateSelfie : ICreateSelfie
 {
-    public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
     public Guid OrderId { get; set; }
 }

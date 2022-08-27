@@ -6,6 +6,6 @@ public interface ICargoApproved : IEvent
 
 public class CargoApproved : ICargoApproved
 {
-    public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
     public Guid OrderId { get; set; }
 }

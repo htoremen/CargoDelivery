@@ -20,7 +20,7 @@ public class CreateSelfeiCommandHandler : IRequestHandler<CreateSelfieCommand, G
     {
         var createSelfei = new CreateSelfie
         {
-            Id = request.Id,
+            CorrelationId = request.Id,
         };
         await _eventBusService.SendCommandAsync(createSelfei, _queueConfiguration.Names[QueueName.CreateSelfie], cancellationToken);
         var response = new CreateSelfeiResponse { Id = request.Id };

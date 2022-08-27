@@ -25,7 +25,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Cre
         var createOrderEvent = new CreateCargo
         {
             CustomerId = request.CustomerId,
-            Id = request.Id,
+            CorrelationId = request.Id,
             CargoId = request.CargoId,
             ProductId = request.ProductId,
         };

@@ -9,7 +9,7 @@ public interface ICreateCargo : IEvent
 
 public class CreateCargo : ICreateCargo
 {
-    public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
     public Guid CustomerId { get; set; }
     public Guid ProductId { get; set; }

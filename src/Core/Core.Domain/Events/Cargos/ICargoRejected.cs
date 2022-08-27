@@ -7,6 +7,6 @@ public interface ICargoRejected : IEvent
 
 public class CargoRejected : ICargoRejected
 {
-    public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
     public Guid OrderId { get; set; }
 }

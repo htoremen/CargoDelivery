@@ -20,7 +20,7 @@ public class OrderApprovedCommandHandler : IRequestHandler<OrderApprovedCommand,
     {
         var orderApproved = new CargoSendApproved
         {
-            Id = request.Id,
+            CorrelationId = request.Id,
         };
         await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueName.CargoSendApproved], cancellationToken);
         var response = new OrderApprovedResponse { Id = request.Id };

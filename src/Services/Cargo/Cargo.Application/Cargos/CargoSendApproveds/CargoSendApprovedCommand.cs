@@ -25,7 +25,7 @@ public class CargoSendApprovedCommandHandler : IRequestHandler<CargoSendApproved
         {
             var orderApproved = new CargoApproved()
             {
-                Id = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid(),
             };
 
             await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueName.CargoApproved], cancellationToken);
@@ -34,7 +34,7 @@ public class CargoSendApprovedCommandHandler : IRequestHandler<CargoSendApproved
         {
             var orderRejected = new CargoRejected()
             {
-                Id = Guid.NewGuid(),
+                CorrelationId = Guid.NewGuid(),
             };
             await _eventBusService.SendCommandAsync(orderRejected, _queueConfiguration.Names[QueueName.CargoRejected], cancellationToken);
         }

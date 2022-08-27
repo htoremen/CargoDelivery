@@ -13,6 +13,20 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         Event(() => CreateCargoEvent, instance => instance
                 .CorrelateBy<Guid>(state => state.CargoId, context => context.Message.CargoId)
                 .SelectId(s => Guid.NewGuid()));
+
+        Event(() => CreateSelfieEvent, instance => instance
+              .CorrelateById(selector => selector.Message.CorrelationId));
+
+        Event(() => CargoSendApprovedEvent, instance => instance
+              .CorrelateById(selector => selector.Message.CorrelationId));
+
+        Event(() => CargoApprovedEvent, instance => instance
+              .CorrelateById(selector => selector.Message.CorrelationId));
+
+        Event(() => CargoRejectedEvent, instance => instance
+              .CorrelateById(selector => selector.Message.CorrelationId));
+
+
     }
 
     public State CreateCargo { get; set; }
