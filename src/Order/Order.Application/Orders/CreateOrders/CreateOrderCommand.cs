@@ -22,14 +22,14 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Cre
 
     public async Task<CreateOrderResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        var createOrderEvent = new CreateOrder
+        var createOrderEvent = new CreateCargo
         {
             CustomerId = request.CustomerId,
             Id = request.OrderId,
             OrderId = request.OrderId,
             ProductId = request.ProductId,
         };
-        await _eventBusService.SendCommandAsync(createOrderEvent, _queueConfiguration.Names[QueueState.CreateCargo], cancellationToken);
+        await _eventBusService.SendCommandAsync(createOrderEvent, _queueConfiguration.Names[QueueName.CreateCargo], cancellationToken);
         return new CreateOrderResponse { Id = request.Id, OrderId = request.OrderId };
     }
 }

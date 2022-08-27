@@ -22,7 +22,7 @@ public class OrderApprovedCommandHandler : IRequestHandler<OrderApprovedCommand,
         {
             Id = request.Id,
         };
-        await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueState.CargoSendApproved], cancellationToken);
+        await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueName.CargoSendApproved], cancellationToken);
         var response = new OrderApprovedResponse { Id = request.Id };
 
         return GenericResponse<OrderApprovedResponse>.Success(response, 200);

@@ -1,7 +1,7 @@
 ﻿using Cargo.Application.Cargos.CreateCargos;
 
 namespace Cargo.Application.Consumer;
-public class CreateCargoConsumer : IConsumer<ICreateOrder>
+public class CreateCargoConsumer : IConsumer<ICreateCargo>
 {
     private readonly IMediator _mediator;
 
@@ -10,7 +10,7 @@ public class CreateCargoConsumer : IConsumer<ICreateOrder>
         _mediator = mediator;
     }
 
-    public async Task Consume(ConsumeContext<ICreateOrder> context)
+    public async Task Consume(ConsumeContext<ICreateCargo> context)
     {
         var command = context.Message;
 

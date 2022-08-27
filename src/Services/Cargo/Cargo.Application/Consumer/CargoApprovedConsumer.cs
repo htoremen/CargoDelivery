@@ -2,7 +2,7 @@
 
 namespace Cargo.Application.Consumer;
 
-public class CargoApprovedConsumer : IConsumer<IOrderApproved>
+public class CargoApprovedConsumer : IConsumer<ICargoApproved>
 {
     private readonly IMediator _mediator;
 
@@ -11,7 +11,7 @@ public class CargoApprovedConsumer : IConsumer<IOrderApproved>
         _mediator = mediator;
     }
 
-    public async Task Consume(ConsumeContext<IOrderApproved> context)
+    public async Task Consume(ConsumeContext<ICargoApproved> context)
     {
         var command = context.Message;
 

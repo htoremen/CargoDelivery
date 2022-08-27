@@ -1,8 +1,9 @@
 ﻿namespace Core.Domain.Enums;
 
-public enum QueueState
+public enum QueueName
 {
     None = 0,
+    SagaQueue = 10,
 
     // Zimmetine Geçir
     CreateCargo = 101,

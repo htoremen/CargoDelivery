@@ -2,6 +2,6 @@
 {
     public interface IQueueConfiguration
     {
-        public Dictionary<QueueState, string> Names { get; set; }
+        public Dictionary<QueueName, string> Names { get; set; }
     }
 }

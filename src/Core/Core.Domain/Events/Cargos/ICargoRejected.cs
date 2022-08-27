@@ -1,4 +1,4 @@
-﻿namespace Core.Domain.Events.Orders;
+﻿namespace Core.Domain.Events.Cargos;
 
 public interface ICargoRejected : IEvent
 {

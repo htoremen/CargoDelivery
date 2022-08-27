@@ -22,7 +22,7 @@ public class CreateSelfeiCommandHandler : IRequestHandler<CreateSelfieCommand, G
         {
             Id = request.Id,
         };
-        await _eventBusService.SendCommandAsync(createSelfei, _queueConfiguration.Names[QueueState.CreateSelfie], cancellationToken);
+        await _eventBusService.SendCommandAsync(createSelfei, _queueConfiguration.Names[QueueName.CreateSelfie], cancellationToken);
         var response = new CreateSelfeiResponse { Id = request.Id };
 
         return GenericResponse<CreateSelfeiResponse>.Success(response, 200);

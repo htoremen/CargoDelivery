@@ -53,7 +53,7 @@ public static class ConfigureServices
                 cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
                 cfg.ConfigureEndpoints(context);
 
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateCargo], e =>
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateCargo], e =>
                 {
                     e.PrefetchCount = 1;
                     e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
@@ -67,7 +67,7 @@ public static class ConfigureServices
                     e.ConfigureConsumer<CreateCargoConsumer>(context);
                 });
 
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CreateSelfie], e =>
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateSelfie], e =>
                 {
                     e.PrefetchCount = 1;
                     e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
@@ -81,7 +81,7 @@ public static class ConfigureServices
                     e.ConfigureConsumer<CreateSelfieConsumer>(context);
                 });
 
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CargoSendApproved], e =>
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSendApproved], e =>
                 {
                     e.PrefetchCount = 1;
                     e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
@@ -95,7 +95,7 @@ public static class ConfigureServices
                     e.ConfigureConsumer<CargoSendApprovedConsumer>(context);
                 });
 
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CargoApproved], e =>
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoApproved], e =>
                 {
                     e.PrefetchCount = 1;
                     e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
@@ -109,7 +109,7 @@ public static class ConfigureServices
                     e.ConfigureConsumer<CargoApprovedConsumer>(context);
                 });
 
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueState.CargoRejected], e =>
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoRejected], e =>
                 {
                     e.PrefetchCount = 1;
                     e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));

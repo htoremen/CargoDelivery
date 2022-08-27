@@ -23,12 +23,12 @@ public class CargoSendApprovedCommandHandler : IRequestHandler<CargoSendApproved
         var rnd = new Random();
         if (rnd.Next(1, 1000) % 2 == 0)
         {
-            var orderApproved = new OrderApproved()
+            var orderApproved = new CargoApproved()
             {
                 Id = Guid.NewGuid(),
             };
 
-            await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueState.CargoApproved], cancellationToken);
+            await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueName.CargoApproved], cancellationToken);
         }
         else
         {
@@ -36,7 +36,7 @@ public class CargoSendApprovedCommandHandler : IRequestHandler<CargoSendApproved
             {
                 Id = Guid.NewGuid(),
             };
-            await _eventBusService.SendCommandAsync(orderRejected, _queueConfiguration.Names[QueueState.CargoRejected], cancellationToken);
+            await _eventBusService.SendCommandAsync(orderRejected, _queueConfiguration.Names[QueueName.CargoRejected], cancellationToken);
         }
 
         return GenericResponse<CargoSendApprovedResponse>.Success(new CargoSendApprovedResponse { }, 200);

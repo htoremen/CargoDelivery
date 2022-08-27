@@ -1,13 +1,13 @@
-﻿namespace Core.Domain.Events.Orders;
+﻿namespace Core.Domain.Events.Cargos;
 
-public interface ICreateOrder : IEvent
+public interface ICreateCargo : IEvent
 {
     public Guid OrderId { get; set; }
     public Guid CustomerId { get; set; }
     public Guid ProductId { get; set; }
 }
 
-public class CreateOrder : ICreateOrder
+public class CreateCargo : ICreateCargo
 {
     public Guid Id { get; set; }
     public Guid OrderId { get; set; }

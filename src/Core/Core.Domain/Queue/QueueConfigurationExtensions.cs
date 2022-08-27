@@ -7,42 +7,44 @@ public static class QueueConfigurationExtensions
     {
         queueConfiguration = new QueueConfiguration()
         {
-            Names = new Dictionary<QueueState, string>()
+            Names = new Dictionary<QueueName, string>()
         };
 
-        queueConfiguration.Names.Add(QueueState.CreateCargo, QueueState.CreateCargo.ToString());
-        queueConfiguration.Names.Add(QueueState.CreateSelfie, QueueState.CreateSelfie.ToString());
-        queueConfiguration.Names.Add(QueueState.CargoApproved, QueueState.CargoApproved.ToString());
-        queueConfiguration.Names.Add(QueueState.CargoSendApproved, QueueState.CargoSendApproved.ToString());
-        queueConfiguration.Names.Add(QueueState.CargoRejected, QueueState.CargoRejected.ToString());
+        queueConfiguration.Names.Add(QueueName.SagaQueue, QueueName.SagaQueue.ToString());
 
-        queueConfiguration.Names.Add(QueueState.RouteConfirmed, QueueState.RouteConfirmed.ToString());
-        queueConfiguration.Names.Add(QueueState.AutoRoute, QueueState.AutoRoute.ToString());
-        queueConfiguration.Names.Add(QueueState.ManuelRoute, QueueState.ManuelRoute.ToString());
-        queueConfiguration.Names.Add(QueueState.RouteCreated, QueueState.RouteCreated.ToString());
+        queueConfiguration.Names.Add(QueueName.CreateCargo, QueueName.CreateCargo.ToString());
+        queueConfiguration.Names.Add(QueueName.CreateSelfie, QueueName.CreateSelfie.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoApproved, QueueName.CargoApproved.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoSendApproved, QueueName.CargoSendApproved.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoRejected, QueueName.CargoRejected.ToString());
 
-        queueConfiguration.Names.Add(QueueState.NotDelivered, QueueState.NotDelivered.ToString());
-        queueConfiguration.Names.Add(QueueState.CreateRefund, QueueState.CreateRefund.ToString());
-        queueConfiguration.Names.Add(QueueState.TakeSelfei, QueueState.TakeSelfei.ToString());
-        queueConfiguration.Names.Add(QueueState.CargoRefundCompleted, QueueState.CargoRefundCompleted.ToString());
+        queueConfiguration.Names.Add(QueueName.RouteConfirmed, QueueName.RouteConfirmed.ToString());
+        queueConfiguration.Names.Add(QueueName.AutoRoute, QueueName.AutoRoute.ToString());
+        queueConfiguration.Names.Add(QueueName.ManuelRoute, QueueName.ManuelRoute.ToString());
+        queueConfiguration.Names.Add(QueueName.RouteCreated, QueueName.RouteCreated.ToString());
 
-        queueConfiguration.Names.Add(QueueState.SendDamageReport, QueueState.SendDamageReport.ToString());
-        queueConfiguration.Names.Add(QueueState.DamageRecordCompletion, QueueState.DamageRecordCompletion.ToString());
+        queueConfiguration.Names.Add(QueueName.NotDelivered, QueueName.NotDelivered.ToString());
+        queueConfiguration.Names.Add(QueueName.CreateRefund, QueueName.CreateRefund.ToString());
+        queueConfiguration.Names.Add(QueueName.TakeSelfei, QueueName.TakeSelfei.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoRefundCompleted, QueueName.CargoRefundCompleted.ToString());
+
+        queueConfiguration.Names.Add(QueueName.SendDamageReport, QueueName.SendDamageReport.ToString());
+        queueConfiguration.Names.Add(QueueName.DamageRecordCompletion, QueueName.DamageRecordCompletion.ToString());
 
         // Delivery Process
-        queueConfiguration.Names.Add(QueueState.CreateDelivery, QueueState.CreateDelivery.ToString());
+        queueConfiguration.Names.Add(QueueName.CreateDelivery, QueueName.CreateDelivery.ToString());
 
-        queueConfiguration.Names.Add(QueueState.CardPayment, QueueState.CardPayment.ToString());
-        queueConfiguration.Names.Add(QueueState.CardPaymentCompleted, QueueState.CardPaymentCompleted.ToString());
+        queueConfiguration.Names.Add(QueueName.CardPayment, QueueName.CardPayment.ToString());
+        queueConfiguration.Names.Add(QueueName.CardPaymentCompleted, QueueName.CardPaymentCompleted.ToString());
 
-        queueConfiguration.Names.Add(QueueState.PayAtDoor, QueueState.PayAtDoor.ToString());
-        queueConfiguration.Names.Add(QueueState.PayAtDoorCompleted, QueueState.PayAtDoorCompleted.ToString());
+        queueConfiguration.Names.Add(QueueName.PayAtDoor, QueueName.PayAtDoor.ToString());
+        queueConfiguration.Names.Add(QueueName.PayAtDoorCompleted, QueueName.PayAtDoorCompleted.ToString());
 
-        queueConfiguration.Names.Add(QueueState.RollBack, QueueState.RollBack.ToString());
-        queueConfiguration.Names.Add(QueueState.CancelDelivered, QueueState.CancelDelivered.ToString());
+        queueConfiguration.Names.Add(QueueName.RollBack, QueueName.RollBack.ToString());
+        queueConfiguration.Names.Add(QueueName.CancelDelivered, QueueName.CancelDelivered.ToString());
 
-        queueConfiguration.Names.Add(QueueState.DisributionCheck, QueueState.DisributionCheck.ToString());
-        queueConfiguration.Names.Add(QueueState.ShiftCompletion, QueueState.ShiftCompletion.ToString());
+        queueConfiguration.Names.Add(QueueName.DisributionCheck, QueueName.DisributionCheck.ToString());
+        queueConfiguration.Names.Add(QueueName.ShiftCompletion, QueueName.ShiftCompletion.ToString());
 
         services.AddSingleton<IQueueConfiguration>(queueConfiguration);
 
