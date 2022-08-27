@@ -1,13 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Saga.Infrastructure\Saga.Infrastructure.csproj" />
+    <ProjectReference Include="..\Saga.Application\Saga.Application.csproj" />
   </ItemGroup>
 
 </Project>

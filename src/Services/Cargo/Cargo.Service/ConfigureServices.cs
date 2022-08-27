@@ -2,7 +2,7 @@
 using Core.Domain.Bus;
 using MassTransit;
 using MediatR;
-using Cargo.API.Services;
+using Cargo.Service.Services;
 using Core.Application;
 using Core.Domain.Enums;
 
