@@ -16,7 +16,8 @@ public class CreateSelfieConsumer : IConsumer<ICreateSelfie>
 
         await _mediator.Send(new CreateSelfieCommand
         {
-            Id = command.CorrelationId,
+            CorrelationId = command.CorrelationId,
+            CargoId = command.CargoId,
         });
     }
 }

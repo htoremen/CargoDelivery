@@ -7,6 +7,6 @@ public class CargoStateInstance : SagaStateMachineInstance
     public Guid CorrelationId { get; set; }
     public string CurrentState { get; set; }
     public Guid CargoId { get; set; }
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
     public DateTime CreatedOn { get; set; }
 }

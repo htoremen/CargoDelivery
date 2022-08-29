@@ -10,7 +10,7 @@ public static class QueueConfigurationExtensions
             Names = new Dictionary<QueueName, string>()
         };
 
-        queueConfiguration.Names.Add(QueueName.SagaQueue, QueueName.SagaQueue.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoSaga, QueueName.CargoSaga.ToString());
 
         queueConfiguration.Names.Add(QueueName.CreateCargo, QueueName.CreateCargo.ToString());
         queueConfiguration.Names.Add(QueueName.CreateSelfie, QueueName.CreateSelfie.ToString());

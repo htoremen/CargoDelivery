@@ -3,7 +3,7 @@
 public enum QueueName
 {
     None = 0,
-    SagaQueue = 10,
+    CargoSaga = 10,
 
     // Zimmetine Geçir
     CreateCargo = 101,

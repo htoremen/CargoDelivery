@@ -3,7 +3,10 @@ using Core.Domain;
 using Core.Domain.Bus;
 using Core.Domain.Enums;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Saga.Domain.Instances;
+using Saga.Infrastructure.Persistence;
+using Saga.Service.StateMachines;
 
 namespace Saga.Service;
 public static class ConfigureServices
@@ -23,24 +26,19 @@ public static class ConfigureServices
         {
             x.SetKebabCaseEndpointNameFormatter();
 
-            //x.UsingRabbitMq((context, cfg) =>
-            //{
-            //    var mediator = context.GetRequiredService<IMediator>();
-            //    cfg.Host(config.RabbitMqHostUrl, config.VirtualHost, h =>
-            //    {
-            //        h.Username(config.Username);
-            //        h.Password(config.Password);
-            //    });
-
-            //    cfg.UseJsonSerializer();
-            //    cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
-            //    cfg.ConfigureEndpoints(context);
-            //});
+            x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance>()
+               .EntityFrameworkRepository(config =>
+               {
+                   config.AddDbContext<DbContext, CargoStateDbContext>((p, b) =>
+                   {
+                       b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
+                   });
+               });
 
             x.AddBus(factory => Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
                 cfg.Host(config.RabbitMqHostUrl);
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.SagaQueue], e =>
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSaga], e =>
                 {
                     e.ConfigureSaga<CargoStateInstance>(factory);
                 });

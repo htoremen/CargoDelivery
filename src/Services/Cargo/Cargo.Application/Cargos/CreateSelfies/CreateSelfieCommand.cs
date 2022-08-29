@@ -2,7 +2,8 @@
 
 public class CreateSelfieCommand : IRequest<GenericResponse<CreateSelfieResponse>>
 {
-    public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
+    public Guid CargoId { get; set; }
 }
 
 public class CreateSelfieCommandhandler : IRequestHandler<CreateSelfieCommand, GenericResponse<CreateSelfieResponse>>

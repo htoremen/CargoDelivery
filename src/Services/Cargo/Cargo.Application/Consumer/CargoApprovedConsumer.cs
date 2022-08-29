@@ -17,7 +17,7 @@ public class CargoApprovedConsumer : IConsumer<ICargoApproved>
 
         await _mediator.Send(new CargoApprovedCommand
         {
-            Id = command.CorrelationId
+            CorrelationId = command.CorrelationId,
         });
     }
 }

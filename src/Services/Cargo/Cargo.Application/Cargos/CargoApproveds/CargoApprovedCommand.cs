@@ -4,7 +4,7 @@ namespace Cargo.Application.Cargos.CargoApproveds;
 
 public class CargoApprovedCommand : IRequest<GenericResponse<CargoApprovedResponse>>
 {
-    public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
 }
 
 public class OrderApprovedCommandHandler : IRequestHandler<CargoApprovedCommand, GenericResponse<CargoApprovedResponse>>
