@@ -9,6 +9,12 @@ public class EventBusManager<TBus> : IEventBusManager<TBus> where TBus : IBus
         _bus = bus;
     }
 
+    public async Task Publish<T>(T request, string queueName, CancellationToken cancellationToken = default(CancellationToken)) where T : ICommand
+    {
+
+        await _bus.Publish(request, request.GetType(), cancellationToken);
+    }
+
     public async Task Send<T>(T request, string queueName, CancellationToken cancellationToken = default(CancellationToken)) where T : ICommand
     {
         var sendEndpoint = await _bus.GetSendEndpoint(new Uri($"queue:{queueName}"));

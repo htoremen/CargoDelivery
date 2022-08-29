@@ -1,5 +1,6 @@
-﻿using Core.Domain.Enums;
-using Core.Domain.Events.Cargos;
+﻿using Core.Domain;
+using Core.Domain.Enums;
+using Cargos;
 using MassTransit;
 using Saga.Application.Cargos;
 using Saga.Domain.Instances;
@@ -14,67 +15,78 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public State CargoApproved { get; set; }
     public State CargoRejected { get; set; }
 
-    public Event<ICreateCargo> CreateCargoCommand { get; set; }
-    public Event<ICreateSelfie> CreateSelfieCommand { get; set; }
-    public Event<ICargoSendApproved> CargoSendApprovedCommand { get; set; }
-    public Event<ICargoApproved> CargoApprovedCommand { get; set; }
-    public Event<ICargoRejected> CargoRejectedCommand { get; set; }
+    public Event<ICreateCargo> CreateCargoEvent { get; private set; }
+    public Event<ICreateSelfie> CreateSelfieEvent { get; private set; }
+    public Event<ICargoSendApproved> CargoSendApprovedEvent { get; private set; }
+    public Event<ICargoApproved> CargoApprovedEvent { get; private set; }
+    public Event<ICargoRejected> CargoRejectedEvent { get; private set; }
 
     public CargoStateMachine()
     {
+        QueueConfigurationExtensions.AddQueueConfiguration(null, out IQueueConfiguration queueConfiguration);
         InstanceState(instance => instance.CurrentState);
 
-        Event(() => CreateCargoCommand, instance => instance
+        Event(() => CreateCargoEvent, instance => instance
                 .CorrelateBy<Guid>(state => state.CargoId, context => context.Message.CargoId)
                 .SelectId(s => Guid.NewGuid()));
 
-        Event(() => CreateSelfieCommand, instance => instance
+        Event(() => CreateSelfieEvent, instance => instance
               .CorrelateById(selector => selector.Message.CorrelationId));
 
-        Event(() => CargoSendApprovedCommand, instance => instance
+        Event(() => CargoSendApprovedEvent, instance => instance
               .CorrelateById(selector => selector.Message.CorrelationId));
 
-        Event(() => CargoApprovedCommand, instance => instance
+        Event(() => CargoApprovedEvent, instance => instance
               .CorrelateById(selector => selector.Message.CorrelationId));
 
-        Event(() => CargoRejectedCommand, instance => instance
+        Event(() => CargoRejectedEvent, instance => instance
               .CorrelateById(selector => selector.Message.CorrelationId));
 
 
-        Initially(When(CreateCargoCommand)
-        .Then(context =>
-        {
-            context.Instance.UserId = context.Data.UserId;
-            context.Instance.CargoId = context.Data.CargoId;
-            context.Instance.CreatedOn = DateTime.Now;
-        })
-        .TransitionTo(CreateCargo)
-        .Send(new Uri($"queue:{QueueName.CreateCargo.ToString()}"), context => new CreateCargoCommand(context.Instance.CorrelationId)
-        {
-            CargoId = context.Data.CargoId,
-            UserId = context.Data.UserId,
-        }));
+        Initially(
+            When(CreateCargoEvent)
+            .Then(context =>
+                {
+                    context.Instance.UserId = context.Data.UserId;
+                    context.Instance.CargoId = context.Data.CargoId;
+                    context.Instance.CreatedOn = DateTime.Now;
+                })
+                .TransitionTo(CreateCargo)
+                .Send(new Uri($"queue:create.cargo"), context => new CreateCargoCommand(context.Instance.CorrelationId)
+                {
+                    CargoId = context.Data.CargoId,
+                    UserId = context.Data.UserId,
+                }));
 
         During(CreateCargo,
-         When(CreateSelfieCommand)
+         When(CreateSelfieEvent)
          .TransitionTo(CreateSelfie)
-         .Send(new Uri($"queue:{QueueName.CreateSelfie}"), context => new CreateSelfieCommand(context.Instance.CorrelationId)
+         .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateSelfie]}"), context => new CreateSelfieCommand(context.Data.CorrelationId)
          {
              CargoId = context.Instance.CargoId,
+             CorrelationId = context.Instance.CorrelationId
          }));
 
+        During(CreateSelfie,
+         When(CargoSendApprovedEvent)
+         .TransitionTo(CargoSendApproved)
+         .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoSendApproved]}"), context => new CargoSendApprovedCommand(context.Data.CorrelationId)
+         {
+             CargoId = context.Instance.CargoId,
+             CorrelationId = context.Instance.CorrelationId
+         }));
 
         During(CargoSendApproved,
-            When(CargoApprovedCommand)
+            When(CargoApprovedEvent)
             .TransitionTo(CargoApproved)
-            .Send(new Uri($"queue:{QueueName.CargoApproved}"), context => new CargoApprovedCommand(context.Instance.CorrelationId)
+            .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoApproved]}"), context => new CargoApprovedCommand(context.Data.CorrelationId)
             {
                 CargoId = context.Instance.CargoId,
             })
             .Finalize(),
-            When(CargoRejectedCommand)
+            When(CargoRejectedEvent)
             .TransitionTo(CargoRejected)
-            .Send(new Uri($"queue:{QueueName.CargoRejected}"), context => new CargoRejectedCommand
+            .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoRejected]}"), context => new CargoRejectedCommand
             {
                 CargoId = context.Instance.CargoId,
             }));
@@ -84,4 +96,3 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
 
 }
-

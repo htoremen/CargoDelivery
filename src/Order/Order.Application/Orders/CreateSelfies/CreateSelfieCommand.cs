@@ -2,7 +2,8 @@
 
 public class CreateSelfieCommand : IRequest<GenericResponse<CreateSelfeiResponse>>
 {
-    public Guid Id { get; set; }
+    public Guid CargoId { get; set; }
+    public Guid CorrelationId { get; set; }
 }
 
 public class CreateSelfeiCommandHandler : IRequestHandler<CreateSelfieCommand, GenericResponse<CreateSelfeiResponse>>
@@ -20,10 +21,11 @@ public class CreateSelfeiCommandHandler : IRequestHandler<CreateSelfieCommand, G
     {
         var createSelfei = new CreateSelfie
         {
-            CorrelationId = request.Id,
+            CargoId = request.CargoId,
+            CorrelationId = request.CorrelationId
         };
-        await _eventBusService.SendCommandAsync(createSelfei, _queueConfiguration.Names[QueueName.CreateSelfie], cancellationToken);
-        var response = new CreateSelfeiResponse { Id = request.Id };
+        await _eventBusService.SendCommandAsync(createSelfei, _queueConfiguration.Names[QueueName.CargoSaga], cancellationToken);
+        var response = new CreateSelfeiResponse { Id = request.CargoId };
 
         return GenericResponse<CreateSelfeiResponse>.Success(response, 200);
     }

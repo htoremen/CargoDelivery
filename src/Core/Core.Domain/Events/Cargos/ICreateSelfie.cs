@@ -1,7 +1,7 @@
-﻿namespace Core.Domain.Events.Cargos;
-
+﻿namespace Cargos;
 public interface ICreateSelfie : IEvent
 {
+    public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
 }
 

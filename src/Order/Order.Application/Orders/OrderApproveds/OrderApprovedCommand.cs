@@ -2,7 +2,8 @@
 
 public class OrderApprovedCommand : IRequest<GenericResponse<OrderApprovedResponse>>
 {
-    public Guid Id { get; set; }
+    public Guid CargoId { get; set; }
+    public Guid CorrelationId { get; set; }
 }
 
 public class OrderApprovedCommandHandler : IRequestHandler<OrderApprovedCommand, GenericResponse<OrderApprovedResponse>>
@@ -20,10 +21,11 @@ public class OrderApprovedCommandHandler : IRequestHandler<OrderApprovedCommand,
     {
         var orderApproved = new CargoSendApproved
         {
-            CorrelationId = request.Id,
+            CargoId = request.CargoId,
+            CorrelationId = request.CorrelationId
         };
-        await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueName.CargoSendApproved], cancellationToken);
-        var response = new OrderApprovedResponse { Id = request.Id };
+        await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueName.CargoSaga], cancellationToken);
+        var response = new OrderApprovedResponse { Id = request.CargoId };
 
         return GenericResponse<OrderApprovedResponse>.Success(response, 200);
     }

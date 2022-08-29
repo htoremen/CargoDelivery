@@ -25,22 +25,24 @@ namespace Order.API.Controllers
 
         [Route("create-selfie")]
         [HttpPost]
-        public async Task<IActionResult> CreateSelfie()
+        public async Task<IActionResult> CreateSelfie(Guid correlationId)
         {
             var response = await Mediator.Send(new CreateSelfieCommand
             {
-                Id = Guid.NewGuid(),
+                CargoId = Guid.NewGuid(),
+                CorrelationId = correlationId
             });
             return Ok(response);
         }
 
         [Route("order-approved")]
         [HttpPost]
-        public async Task<IActionResult> OrderApproved()
+        public async Task<IActionResult> OrderApproved(Guid correlationId)
         {
             var response = await Mediator.Send(new OrderApprovedCommand
             {
-                Id = Guid.NewGuid(),
+                CargoId = Guid.NewGuid(),
+                CorrelationId = correlationId
             });
             return Ok(response);
         }

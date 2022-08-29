@@ -9,5 +9,5 @@ public class CreateSelfieCommand : ICreateSelfie
 
     public Guid CargoId { get; set;}
 
-    public Guid CorrelationId { get; }
+    public Guid CorrelationId { get; set; }
 }

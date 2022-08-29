@@ -26,9 +26,9 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Cre
         {
             CustomerId = request.CustomerId,
             CargoId = request.CargoId,
-            ProductId = request.ProductId,
+            ProductId = request.ProductId
         };
-        await _eventBusService.SendCommandAsync(createOrderEvent, _queueConfiguration.Names[QueueName.CreateCargo], cancellationToken);
+        await _eventBusService.SendCommandAsync(createOrderEvent, _queueConfiguration.Names[QueueName.CargoSaga], cancellationToken);
         return new CreateOrderResponse { Id = request.Id, CargoId = request.CargoId };
     }
 }
