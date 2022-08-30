@@ -4,10 +4,12 @@ public enum QueueName
 {
     None = 0,
     CargoSaga = 10,
+    CargoSagaError = 11,
 
     // Zimmetine Geçir
     CreateCargo = 101,
     CreateSelfie = 102,
+    CreateSelfieFault = 112,
     CargoSendApproved = 103,
     CargoApproved = 104,
     CargoRejected = 105,

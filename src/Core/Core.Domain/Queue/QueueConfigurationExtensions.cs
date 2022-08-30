@@ -10,13 +10,17 @@ public static class QueueConfigurationExtensions
             Names = new Dictionary<QueueName, string>()
         };
 
-        queueConfiguration.Names.Add(QueueName.CargoSaga, "cargo.saga");
+        queueConfiguration.Names.Add(QueueName.CargoSaga, "Cargos." + QueueName.CargoSaga.ToString());
+        //queueConfiguration.Names.Add(QueueName.CargoSagaError, "Cargos.CargoSaga_error");
 
-        queueConfiguration.Names.Add(QueueName.CreateCargo, "create.cargo");
-        queueConfiguration.Names.Add(QueueName.CreateSelfie, "create.selfie");
-        queueConfiguration.Names.Add(QueueName.CargoSendApproved, "cargo.send.approved");
-        queueConfiguration.Names.Add(QueueName.CargoApproved, "create.approved");
-        queueConfiguration.Names.Add(QueueName.CargoRejected, "cargo.rejected");
+        queueConfiguration.Names.Add(QueueName.CreateCargo, "Cargos." + QueueName.CreateCargo.ToString());
+
+        queueConfiguration.Names.Add(QueueName.CreateSelfie, "Cargos." + QueueName.CreateSelfie.ToString());
+        queueConfiguration.Names.Add(QueueName.CreateSelfieFault, "Cargos." + QueueName.CreateSelfieFault.ToString());
+
+        queueConfiguration.Names.Add(QueueName.CargoSendApproved, "Cargos." + QueueName.CargoSendApproved.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoApproved, "Cargos." + QueueName.CargoApproved.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoRejected, "Cargos." + QueueName.CargoRejected.ToString());
 
         queueConfiguration.Names.Add(QueueName.RouteConfirmed, QueueName.RouteConfirmed.ToString());
         queueConfiguration.Names.Add(QueueName.AutoRoute, QueueName.AutoRoute.ToString());
