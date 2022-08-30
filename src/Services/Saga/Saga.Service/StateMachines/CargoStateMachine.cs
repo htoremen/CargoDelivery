@@ -52,7 +52,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                     context.Instance.CreatedOn = DateTime.Now;
                 })
                 .TransitionTo(CreateCargo)
-                .Send(new Uri($"queue:create.cargo"), context => new CreateCargoCommand(context.Instance.CorrelationId)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateCargo]}"), context => new CreateCargoCommand(context.Instance.CorrelationId)
                 {
                     CargoId = context.Data.CargoId,
                     UserId = context.Data.UserId,
@@ -82,13 +82,15 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
             .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoApproved]}"), context => new CargoApprovedCommand(context.Data.CorrelationId)
             {
                 CargoId = context.Instance.CargoId,
-            })
-            .Finalize(),
+                CorrelationId = context.Instance.CorrelationId
+            }),
+           // .Finalize(),
             When(CargoRejectedEvent)
             .TransitionTo(CargoRejected)
-            .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoRejected]}"), context => new CargoRejectedCommand
+            .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoRejected]}"), context => new CargoRejectedCommand(context.Data.CorrelationId)
             {
                 CargoId = context.Instance.CargoId,
+                CorrelationId = context.Instance.CorrelationId
             }));
 
         SetCompletedWhenFinalized();

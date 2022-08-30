@@ -20,16 +20,15 @@ public static class ConfigureServices
         return services;
     }
 
-
     public static IServiceCollection AddEventBus(this IServiceCollection services, IConfigurationRoot configuration)
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
 
-        var rabbitMQConfig = new List<RabbitMqSettings>();
         var rabbitMqConfigurations = configuration.GetSection("RabbitMqSettings").Get<List<RabbitMqSettings>>();
 
         var config = rabbitMqConfigurations.FirstOrDefault(y => y.Name == "MainHost");
         if (config == null) throw new ArgumentNullException("MainHost section hasn't been found in the appsettings.");
+
 
         services.AddMassTransit<IEventBus>(x =>
         {
@@ -63,9 +62,6 @@ public static class ConfigureServices
             });
         });
 
-        services.AddSingleton(rabbitMQConfig);
-        services.AddTransient(typeof(IEventBusService<>), typeof(EventBusService<>));
-        services.AddTransient(typeof(IEventBusManager<>), typeof(EventBusManager<>));
 
         services.Configure<MassTransitHostOptions>(options =>
         {
@@ -76,6 +72,19 @@ public static class ConfigureServices
 
         services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
+        var bus = Bus.Factory.CreateUsingRabbitMq(cfg =>
+        {
+            cfg.Host(config.RabbitMqHostUrl, config.VirtualHost, h =>
+            {
+                h.Username(config.Username);
+                h.Password(config.Password);
+            });
+        });
+
+        services.AddSingleton<IPublishEndpoint>(bus);
+        services.AddSingleton<ISendEndpointProvider>(bus);
+        services.AddSingleton<IBus>(bus);
+        services.AddSingleton<IBusControl>(bus);
 
         return services;
 

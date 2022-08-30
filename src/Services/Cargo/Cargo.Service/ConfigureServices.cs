@@ -24,7 +24,6 @@ public static class ConfigureServices
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
 
-        var rabbitMQConfig = new List<RabbitMqSettings>();
         var rabbitMqConfigurations = configuration.GetSection("RabbitMqSettings").Get<List<RabbitMqSettings>>();
 
         var config = rabbitMqConfigurations.FirstOrDefault(y => y.Name == "MainHost");
@@ -126,16 +125,27 @@ public static class ConfigureServices
             });
         });
 
-        services.AddSingleton(rabbitMQConfig);
-        services.AddTransient(typeof(IEventBusService<>), typeof(EventBusService<>));
-        services.AddTransient(typeof(IEventBusManager<>), typeof(EventBusManager<>));
-
         services.Configure<MassTransitHostOptions>(options =>
         {
             options.WaitUntilStarted = true;
             options.StartTimeout = TimeSpan.FromSeconds(30);
             options.StopTimeout = TimeSpan.FromMinutes(1);
         });
+
+        var bus = Bus.Factory.CreateUsingRabbitMq(cfg =>
+        {
+            cfg.Host(config.RabbitMqHostUrl, config.VirtualHost, h =>
+            {
+                h.Username(config.Username);
+                h.Password(config.Password);
+            });
+        });
+
+        services.AddSingleton<IPublishEndpoint>(bus);
+        services.AddSingleton<ISendEndpointProvider>(bus);
+        services.AddSingleton<IBus>(bus);
+        services.AddSingleton<IBusControl>(bus);
+
         return services;
 
     }

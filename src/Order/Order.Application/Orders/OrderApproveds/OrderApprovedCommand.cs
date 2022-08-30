@@ -1,4 +1,6 @@
-﻿namespace Order.Application.Orders.OrderApproveds;
+﻿using MassTransit;
+
+namespace Order.Application.Orders.OrderApproveds;
 
 public class OrderApprovedCommand : IRequest<GenericResponse<OrderApprovedResponse>>
 {
@@ -8,23 +10,22 @@ public class OrderApprovedCommand : IRequest<GenericResponse<OrderApprovedRespon
 
 public class OrderApprovedCommandHandler : IRequestHandler<OrderApprovedCommand, GenericResponse<OrderApprovedResponse>>
 {
-    private readonly IEventBusService<IEventBus> _eventBusService;
+    private readonly ISendEndpoint _sendEndpoint;
     private readonly IQueueConfiguration _queueConfiguration;
 
-    public OrderApprovedCommandHandler(IEventBusService<IEventBus> eventBusService, IQueueConfiguration queueConfiguration)
+    public OrderApprovedCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
     {
-        _eventBusService = eventBusService;
         _queueConfiguration = queueConfiguration;
+        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
     }
 
     public async Task<GenericResponse<OrderApprovedResponse>> Handle(OrderApprovedCommand request, CancellationToken cancellationToken)
     {
-        var orderApproved = new CargoSendApproved
+        await _sendEndpoint.Send<ICargoSendApproved>(new
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
-        };
-        await _eventBusService.SendCommandAsync(orderApproved, _queueConfiguration.Names[QueueName.CargoSaga], cancellationToken);
+        }, cancellationToken);
         var response = new OrderApprovedResponse { Id = request.CargoId };
 
         return GenericResponse<OrderApprovedResponse>.Success(response, 200);

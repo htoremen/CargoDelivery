@@ -17,7 +17,8 @@ public class CargoSendApprovedConsumer : IConsumer<ICargoSendApproved>
 
         await _mediator.Send(new CargoSendApprovedCommand
         {
-            Id = command.CorrelationId,
+            CorrelationId = command.CorrelationId,
+            CargoId = command.CargoId,
         });
     }
 }

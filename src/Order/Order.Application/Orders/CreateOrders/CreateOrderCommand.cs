@@ -1,4 +1,6 @@
 ﻿
+using MassTransit;
+
 namespace Order.Application.Orders.CreateOrders;
 
 public class CreateOrderCommand : IRequest<CreateOrderResponse>
@@ -11,24 +13,23 @@ public class CreateOrderCommand : IRequest<CreateOrderResponse>
 
 public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, CreateOrderResponse>
 {
-    private readonly IEventBusService<IEventBus> _eventBusService;
+    private readonly ISendEndpoint _sendEndpoint;
     private readonly IQueueConfiguration _queueConfiguration;
 
-    public CreateOrderCommandHandler(IEventBusService<IEventBus> eventBusService, IQueueConfiguration queueConfiguration)
+    public CreateOrderCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
     {
-        _eventBusService = eventBusService;
         _queueConfiguration = queueConfiguration;
+        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
     }
 
     public async Task<CreateOrderResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        var createOrderEvent = new CreateCargo
+        await _sendEndpoint.Send<ICreateCargo>(new
         {
             CustomerId = request.CustomerId,
             CargoId = request.CargoId,
             ProductId = request.ProductId
-        };
-        await _eventBusService.SendCommandAsync(createOrderEvent, _queueConfiguration.Names[QueueName.CargoSaga], cancellationToken);
+        }, cancellationToken);
         return new CreateOrderResponse { Id = request.Id, CargoId = request.CargoId };
     }
 }
