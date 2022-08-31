@@ -1,5 +1,6 @@
 ﻿global using Core.Domain;
-global using Core.Domain.Bus;
+global using Bus;
+global using Events;
 global using MediatR;
 global using Cargos;
 global using Routes;

@@ -1,4 +1,4 @@
-﻿namespace Core.Domain.Events;
+﻿namespace Events;
 
 public interface IEvent : ICommand
 {

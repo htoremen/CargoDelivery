@@ -103,7 +103,7 @@ public static class ConfigureServices
             options.StopTimeout = TimeSpan.FromMinutes(1);
         });
 
-        var bus = Bus.Factory.CreateUsingRabbitMq(cfg =>
+        var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
         {
             cfg.Host(config.RabbitMqHostUrl, config.VirtualHost, h =>
             {

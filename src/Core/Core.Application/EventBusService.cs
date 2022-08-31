@@ -1,4 +1,6 @@
 ﻿
+using Bus;
+
 namespace Core.Application;
 
 public class EventBusService<TBus> : IEventBusService<TBus> where TBus : IBus

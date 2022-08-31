@@ -44,7 +44,7 @@ public static class ConfigureServices
                    });
                });
 
-            x.AddBus(factory => Bus.Factory.CreateUsingRabbitMq(cfg =>
+            x.AddBus(factory => MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
                 cfg.Host(config.RabbitMqHostUrl);
                 cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSaga], e =>

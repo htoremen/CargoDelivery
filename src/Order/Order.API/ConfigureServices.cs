@@ -77,7 +77,7 @@ public static class ConfigureServices
 
         services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
-        var bus = Bus.Factory.CreateUsingRabbitMq(cfg =>
+        var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
         {
             cfg.Host(config.RabbitMqHostUrl, config.VirtualHost, h =>
             {

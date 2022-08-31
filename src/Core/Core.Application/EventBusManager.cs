@@ -1,4 +1,6 @@
-﻿namespace Core.Application;
+﻿using Bus;
+
+namespace Core.Application;
 
 public class EventBusManager<TBus> : IEventBusManager<TBus> where TBus : IBus
 {
