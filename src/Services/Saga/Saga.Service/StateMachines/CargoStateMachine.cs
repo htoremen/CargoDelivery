@@ -13,17 +13,15 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public State CreateCargo { get; set; }
 
     public State CreateSelfie { get; set; }
-    public State CreateSelfieFault { get; set; }
+   // public State CreateSelfieFault { get; set; }
 
     public State CargoSendApproved { get; set; }
     public State CargoApproved { get; set; }
     public State CargoRejected { get; set; }
 
     public Event<ICreateCargo> CreateCargoEvent { get; private set; }
-  //  public Event<Fault<ICreateCargo>> CreateCargoFaulted { get; private set; }
-
     public Event<ICreateSelfie> CreateSelfieEvent { get; private set; }
-    public Event<Fault<ICreateSelfie>> CreateSelfieFaultEvent { get; private set; }
+    //public Event<Fault<ICreateSelfie>> CreateSelfieFaultEvent { get; private set; }
     public Event<ICargoSendApproved> CargoSendApprovedEvent { get; private set; }
     public Event<ICargoApproved> CargoApprovedEvent { get; private set; }
     public Event<ICargoRejected> CargoRejectedEvent { get; private set; }
@@ -37,7 +35,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
       //  Event(() => CreateCargoFaulted, instance => instance.CorrelateById(m => m.Message.Message.CargoId).SelectId(m => m.Message.Message.CargoId));
 
         Event(() => CreateSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => CreateSelfieFaultEvent, instance => instance.CorrelateById(m => m.Message.Message.CorrelationId).SelectId(m => m.Message.Message.CorrelationId));
+       // Event(() => CreateSelfieFaultEvent, instance => instance.CorrelateById(m => m.Message.Message.CorrelationId).SelectId(m => m.Message.Message.CorrelationId));
 
         Event(() => CargoSendApprovedEvent, instance => instance
               .CorrelateById(selector => selector.Message.CorrelationId));
@@ -81,14 +79,15 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
          {
              CargoId = context.Instance.CargoId,
              CorrelationId = context.Instance.CorrelationId
-         }),
-         When(CreateSelfieFaultEvent)
-            .TransitionTo(CreateSelfieFault)
-             .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateSelfieFault]}"), context => new CreateSelfieFaultCommand(context.Message.Message.CorrelationId)
-             {
-                 CargoId = context.Instance.CargoId,
-                 CorrelationId = context.Instance.CorrelationId
-             })
+         })
+         ,
+         //When(CreateSelfieFaultEvent)
+         //   .TransitionTo(CreateSelfieFault)
+         //    .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateSelfieFault]}"), context => new CreateSelfieFaultCommand(context.Message.Message.CorrelationId)
+         //    {
+         //        CargoId = context.Instance.CargoId,
+         //        CorrelationId = context.Instance.CorrelationId
+         //    })
          );
 
         During(CargoSendApproved,

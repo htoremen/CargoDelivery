@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{4450
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Order", "Order", "{FD62EEBE-46D6-4F0E-8592-A4C357F63BD2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shipment", "Shipment", "{BD9CFCFB-E175-418B-974C-727512DDB969}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Route", "Route", "{BD9CFCFB-E175-418B-974C-727512DDB969}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Delivery", "Delivery", "{3BD1931D-8682-4220-B552-6B10B4B926B8}"
 EndProject
@@ -21,21 +21,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payment", "Payment", "{6579
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8E2EA79A-4CE2-4E5F-8A38-5497905AAAB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.API", "src\Order\Order.API\Order.API.csproj", "{D223E623-C353-412D-9AF3-E12389EAF64B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.API", "src\Order\Order.API\Order.API.csproj", "{D223E623-C353-412D-9AF3-E12389EAF64B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.Application", "src\Order\Order.Application\Order.Application.csproj", "{E4CFED05-DC44-4738-B3B2-CB07A6C9BFC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Application", "src\Order\Order.Application\Order.Application.csproj", "{E4CFED05-DC44-4738-B3B2-CB07A6C9BFC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.Domain", "src\Order\Order.Domain\Order.Domain.csproj", "{6B164D74-FF0D-4B0E-911E-CC28E0C4BABF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Domain", "src\Order\Order.Domain\Order.Domain.csproj", "{6B164D74-FF0D-4B0E-911E-CC28E0C4BABF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.Infrastructure", "src\Order\Order.Infrastructure\Order.Infrastructure.csproj", "{A7EE8BC6-963E-442A-87A4-AFCF51102CFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Infrastructure", "src\Order\Order.Infrastructure\Order.Infrastructure.csproj", "{A7EE8BC6-963E-442A-87A4-AFCF51102CFF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{5249378F-13DA-4AB7-81D1-42FE90AE558E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cargo", "Cargo", "{4A9520A2-217B-4F2C-BAAB-D496BC448759}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cargo.Domain", "src\Services\Cargo\Cargo.Domain\Cargo.Domain.csproj", "{DFEC623C-EB45-4ECB-B668-57E79AD8CD3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cargo.Domain", "src\Services\Cargo\Cargo.Domain\Cargo.Domain.csproj", "{DFEC623C-EB45-4ECB-B668-57E79AD8CD3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cargo.Infrastructure", "src\Services\Cargo\Cargo.Infrastructure\Cargo.Infrastructure.csproj", "{10AC3601-9A98-46CA-8B0E-90731583149D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cargo.Infrastructure", "src\Services\Cargo\Cargo.Infrastructure\Cargo.Infrastructure.csproj", "{10AC3601-9A98-46CA-8B0E-90731583149D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cargo.Application", "src\Services\Cargo\Cargo.Application\Cargo.Application.csproj", "{A3A1DD1B-FAA6-45D5-AF5A-01F6CA17488C}"
 EndProject
@@ -45,13 +45,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Saga", "Saga", "{07142A57-8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saga.Service", "src\Services\Saga\Saga.Service\Saga.Service.csproj", "{6B6B06EB-8226-4198-8FC7-F1E0FA7E1718}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cargo.Service", "src\Services\Cargo\Cargo.Service\Cargo.Service.csproj", "{B45E0F23-1EB0-43D4-9B58-59B18697430E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cargo.Service", "src\Services\Cargo\Cargo.Service\Cargo.Service.csproj", "{B45E0F23-1EB0-43D4-9B58-59B18697430E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saga.Domain", "src\Services\Saga\Saga.Domain\Saga.Domain.csproj", "{CF93A3EB-5FE3-4EE2-A057-D6DC29BCA68C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saga.Domain", "src\Services\Saga\Saga.Domain\Saga.Domain.csproj", "{CF93A3EB-5FE3-4EE2-A057-D6DC29BCA68C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saga.Application", "src\Services\Saga\Saga.Application\Saga.Application.csproj", "{F0D95B40-7DD5-4F43-89D3-A7C2B8FA4B57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saga.Application", "src\Services\Saga\Saga.Application\Saga.Application.csproj", "{F0D95B40-7DD5-4F43-89D3-A7C2B8FA4B57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saga.Infrastructure", "src\Services\Saga\Saga.Infrastructure\Saga.Infrastructure.csproj", "{31F15817-1DE7-4B13-A39D-55C95C8DDFCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saga.Infrastructure", "src\Services\Saga\Saga.Infrastructure\Saga.Infrastructure.csproj", "{31F15817-1DE7-4B13-A39D-55C95C8DDFCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
