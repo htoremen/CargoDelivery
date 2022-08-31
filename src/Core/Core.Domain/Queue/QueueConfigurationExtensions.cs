@@ -10,6 +10,7 @@ public static class QueueConfigurationExtensions
             Names = new Dictionary<QueueName, string>()
         };
 
+        // Cargo
         queueConfiguration.Names.Add(QueueName.CargoSaga, "Cargo." + QueueName.CargoSaga.ToString()); // Saga
         queueConfiguration.Names.Add(QueueName.CreateCargo, "Cargo." + QueueName.CreateCargo.ToString());
         queueConfiguration.Names.Add(QueueName.CreateSelfie, "Cargo." + QueueName.CreateSelfie.ToString());
@@ -17,8 +18,7 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueName.CargoApproved, "Cargo." + QueueName.CargoApproved.ToString());
         queueConfiguration.Names.Add(QueueName.CargoRejected, "Cargo." + QueueName.CargoRejected.ToString());
 
-
-        queueConfiguration.Names.Add(QueueName.RouteSaga, "Route." + QueueName.RouteSaga.ToString()); // Saga
+        // Route
         queueConfiguration.Names.Add(QueueName.RouteConfirmed, "Route." + QueueName.RouteConfirmed.ToString());
         queueConfiguration.Names.Add(QueueName.AutoRoute, "Route." + QueueName.AutoRoute.ToString());
         queueConfiguration.Names.Add(QueueName.ManuelRoute, "Route." + QueueName.ManuelRoute.ToString());

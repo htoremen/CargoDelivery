@@ -33,10 +33,6 @@ public static class ConfigureServices
                 {
                     e.ConfigureSaga<CargoStateInstance>(factory);
                 });
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.RouteSaga], e =>
-                {
-                    e.ConfigureSaga<RouteStateInstance>(factory);
-                });
             }));
 
             x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance>()
@@ -47,17 +43,6 @@ public static class ConfigureServices
                         b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
                     });
                 });
-
-            x.AddSagaStateMachine<RouteStateMachine, RouteStateInstance>()
-               .EntityFrameworkRepository(config =>
-               {
-                   config.AddDbContext<DbContext, RouteStateDbContext>((p, b) =>
-                   {
-                       b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
-                   });
-               });
-
-
         });
 
         //services.AddSingleton(rabbitMQConfig);

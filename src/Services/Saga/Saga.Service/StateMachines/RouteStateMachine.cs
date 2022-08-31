@@ -57,7 +57,6 @@ public class RouteStateMachine : MassTransitStateMachine<RouteStateInstance>
          })
          );
 
-
         SetCompletedWhenFinalized();
     }
 }

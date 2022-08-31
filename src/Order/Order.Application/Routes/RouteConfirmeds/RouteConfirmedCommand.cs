@@ -16,7 +16,7 @@ public class RouteConfirmedCommandHandler : IRequestHandler<RouteConfirmedComman
     public RouteConfirmedCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
     {
         _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.RouteSaga]}")).Result;
+        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
     }
 
     public async Task<GenericResponse<RouteConfirmedResponse>> Handle(RouteConfirmedCommand request, CancellationToken cancellationToken)

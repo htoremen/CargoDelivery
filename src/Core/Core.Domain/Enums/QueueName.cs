@@ -4,7 +4,6 @@ public enum QueueName
 {
     None = 0,
     CargoSaga = 10,
-    RouteSaga = 11,
 
     // Zimmetine Geçir
     CreateCargo = 101,
