@@ -1,6 +1,6 @@
 ﻿namespace Routes;
 
-public interface IManuelRoute : IEvent
+public interface IManuelRoute //: IEvent
 {
     public Guid CargoId { get; set; }
     public Guid CorrelationId { get; set; }

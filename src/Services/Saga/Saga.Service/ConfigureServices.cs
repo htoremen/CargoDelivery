@@ -15,7 +15,7 @@ public static class ConfigureServices
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
 
-        var rabbitMQConfig = new List<RabbitMqSettings>();
+       // var rabbitMQConfig = new List<RabbitMqSettings>();
         var rabbitMqConfigurations = configuration.GetSection("RabbitMqSettings").Get<List<RabbitMqSettings>>();
 
         var config = rabbitMqConfigurations.FirstOrDefault(y => y.Name == "MainHost");
@@ -26,18 +26,22 @@ public static class ConfigureServices
         {
             x.SetKebabCaseEndpointNameFormatter();
 
+
+
             x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance>()
-               .EntityFrameworkRepository(config =>
-               {
-                   config.AddDbContext<DbContext, CargoStateDbContext>((p, b) =>
-                   {
-                       b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
-                   });
-               });
+                .EntityFrameworkRepository(config =>
+                {
+                    config.ConcurrencyMode = ConcurrencyMode.Optimistic;
+                    config.AddDbContext<DbContext, CargoStateDbContext>((p, b) =>
+                    {
+                        b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
+                    });
+                });
 
             x.AddSagaStateMachine<RouteStateMachine, RouteStateInstance>()
                .EntityFrameworkRepository(config =>
                {
+                   config.ConcurrencyMode = ConcurrencyMode.Optimistic;
                    config.AddDbContext<DbContext, RouteStateDbContext>((p, b) =>
                    {
                        b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
@@ -50,19 +54,20 @@ public static class ConfigureServices
                 cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSaga], e =>
                 {
                     e.ConfigureSaga<CargoStateInstance>(factory);
-                });
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.RouteSaga], e =>
-                {
                     e.ConfigureSaga<RouteStateInstance>(factory);
                 });
+                //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.RouteSaga], e =>
+                //{
+                //    e.ConfigureSaga<RouteStateInstance>(factory);
+                //});
             }));
 
 
         });
 
-        services.AddSingleton(rabbitMQConfig);
-        services.AddTransient(typeof(IEventBusService<>), typeof(EventBusService<>));
-        services.AddTransient(typeof(IEventBusManager<>), typeof(EventBusManager<>));
+        //services.AddSingleton(rabbitMQConfig);
+        //services.AddTransient(typeof(IEventBusService<>), typeof(EventBusService<>));
+        //services.AddTransient(typeof(IEventBusManager<>), typeof(EventBusManager<>));
 
         services.Configure<MassTransitHostOptions>(options =>
         {

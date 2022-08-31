@@ -10,8 +10,8 @@ using Saga.Infrastructure.Persistence;
 
 namespace Saga.Infrastructure.Migrations
 {
-    [DbContext(typeof(CargoStateDbContext))]
-    partial class CargoStateDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(RouteStateDbContext))]
+    partial class RouteStateDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -22,7 +22,7 @@ namespace Saga.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Saga.Domain.Instances.CargoStateInstance", b =>
+            modelBuilder.Entity("Saga.Domain.Instances.RouteStateInstance", b =>
                 {
                     b.Property<Guid>("CorrelationId")
                         .HasColumnType("uniqueidentifier");
@@ -41,7 +41,7 @@ namespace Saga.Infrastructure.Migrations
 
                     b.HasKey("CorrelationId");
 
-                    b.ToTable("CargoStateInstance");
+                    b.ToTable("RouteStateInstance");
                 });
 #pragma warning restore 612, 618
         }

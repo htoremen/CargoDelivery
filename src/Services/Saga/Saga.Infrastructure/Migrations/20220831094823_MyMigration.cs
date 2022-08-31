@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Saga.Infrastructure.Migrations
 {
-    public partial class i : Migration
+    public partial class MyMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CargoStateInstance",
+                name: "RouteStateInstance",
                 columns: table => new
                 {
                     CorrelationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -21,14 +21,14 @@ namespace Saga.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CargoStateInstance", x => x.CorrelationId);
+                    table.PrimaryKey("PK_RouteStateInstance", x => x.CorrelationId);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CargoStateInstance");
+                name: "RouteStateInstance");
         }
     }
 }

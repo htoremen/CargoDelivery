@@ -1,5 +1,5 @@
 ﻿namespace Cargos;
-public interface ICargoRejected : IEvent
+public interface ICargoRejected // : IEvent
 {
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }

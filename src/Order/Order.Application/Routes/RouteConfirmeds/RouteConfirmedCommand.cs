@@ -1,9 +1,4 @@
 ﻿using MassTransit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Order.Application.Routes.RouteConfirmeds;
 
@@ -20,7 +15,7 @@ public class RouteConfirmedCommandHandler : IRequestHandler<RouteConfirmedComman
     public RouteConfirmedCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
     {
         _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.RouteSaga]}")).Result;
+        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
     }
 
     public async Task<GenericResponse<RouteConfirmedResponse>> Handle(RouteConfirmedCommand request, CancellationToken cancellationToken)

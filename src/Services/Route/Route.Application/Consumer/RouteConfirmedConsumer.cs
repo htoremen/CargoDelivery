@@ -11,7 +11,7 @@ public class RouteConfirmedConsumer : IConsumer<IRouteConfirmed>
 
     public async Task Consume(ConsumeContext<IRouteConfirmed> context)
     {
-
+        var command = context.Message;
     }
 }
 

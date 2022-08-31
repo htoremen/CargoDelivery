@@ -1,6 +1,6 @@
 ﻿namespace Cargos;
 
-public interface ICreateCargo : IEvent
+public interface ICreateCargo //: IEvent
 {
     public Guid CorrelationId { get; }
     public Guid CargoId { get; set; }

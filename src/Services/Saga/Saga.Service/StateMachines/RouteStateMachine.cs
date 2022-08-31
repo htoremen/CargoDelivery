@@ -36,7 +36,7 @@ public class RouteStateMachine : MassTransitStateMachine<RouteStateInstance>
                 context.Instance.CreatedOn = DateTime.Now;
             })
                 .TransitionTo(RouteConfirmed)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateCargo]}"), context => new RouteConfirmedCommand(context.Instance.CorrelationId)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.RouteConfirmed]}"), context => new RouteConfirmedCommand(context.Instance.CorrelationId)
                 {
                     CargoId = context.Data.CargoId,
                     UserId = context.Data.UserId,
@@ -46,17 +46,18 @@ public class RouteStateMachine : MassTransitStateMachine<RouteStateInstance>
         During(RouteConfirmed,
          When(AutoRouteEvent)
          .TransitionTo(AutoRoute)
-         .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.RouteConfirmed]}"), context => new AutoRouteCommand(context.Data.CorrelationId)
+         .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.AutoRoute]}"), context => new AutoRouteCommand(context.Data.CorrelationId)
          {
              CorrelationId = context.Instance.CorrelationId
          }),
          When(ManuelRouteEvent)
          .TransitionTo(ManuelRoute)
-         .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.RouteConfirmed]}"), context => new ManuelRouteCommand(context.Data.CorrelationId)
+         .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ManuelRoute]}"), context => new ManuelRouteCommand(context.Data.CorrelationId)
          {
              CorrelationId = context.Instance.CorrelationId
          })
          );
 
+        SetCompletedWhenFinalized();
     }
 }

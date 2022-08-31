@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain.Events.Sagas;
 
-public interface ICargoSagaError : IEvent
+public interface ICargoSagaError //: IEvent
 {
     public Guid CargoId { get; set; }
     public Guid CorrelationId { get; set; }
