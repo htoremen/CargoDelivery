@@ -1,6 +1,6 @@
 ﻿
 
-namespace Cargo.Infrastructure.Identity;
+namespace Route.Infrastructure.Identity;
 
 public class IdentityService : IIdentityService
 {

@@ -35,6 +35,15 @@ public static class ConfigureServices
                    });
                });
 
+            x.AddSagaStateMachine<RouteStateMachine, RouteStateInstance>()
+               .EntityFrameworkRepository(config =>
+               {
+                   config.AddDbContext<DbContext, RouteStateDbContext>((p, b) =>
+                   {
+                       b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
+                   });
+               });
+
             x.AddBus(factory => Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
                 cfg.Host(config.RabbitMqHostUrl);
@@ -42,7 +51,12 @@ public static class ConfigureServices
                 {
                     e.ConfigureSaga<CargoStateInstance>(factory);
                 });
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.RouteSaga], e =>
+                {
+                    e.ConfigureSaga<RouteStateInstance>(factory);
+                });
             }));
+
 
         });
 

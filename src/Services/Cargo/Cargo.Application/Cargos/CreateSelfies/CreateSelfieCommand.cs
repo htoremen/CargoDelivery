@@ -13,3 +13,4 @@ public class CreateSelfieCommandhandler : IRequestHandler<CreateSelfieCommand, G
         return GenericResponse<CreateSelfieResponse>.Success(new CreateSelfieResponse { }, 200);
     }
 }
+

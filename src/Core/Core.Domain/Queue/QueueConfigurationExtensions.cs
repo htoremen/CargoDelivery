@@ -10,27 +10,26 @@ public static class QueueConfigurationExtensions
             Names = new Dictionary<QueueName, string>()
         };
 
-        queueConfiguration.Names.Add(QueueName.CargoSaga, "Cargos." + QueueName.CargoSaga.ToString());
-        //queueConfiguration.Names.Add(QueueName.CargoSagaError, "Cargos.CargoSaga_error");
+        queueConfiguration.Names.Add(QueueName.CargoSaga, "Cargo." + QueueName.CargoSaga.ToString()); // Saga
+        queueConfiguration.Names.Add(QueueName.CreateCargo, "Cargo." + QueueName.CreateCargo.ToString());
+        queueConfiguration.Names.Add(QueueName.CreateSelfie, "Cargo." + QueueName.CreateSelfie.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoSendApproved, "Cargo." + QueueName.CargoSendApproved.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoApproved, "Cargo." + QueueName.CargoApproved.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoRejected, "Cargo." + QueueName.CargoRejected.ToString());
 
-        queueConfiguration.Names.Add(QueueName.CreateCargo, "Cargos." + QueueName.CreateCargo.ToString());
 
-        queueConfiguration.Names.Add(QueueName.CreateSelfie, "Cargos." + QueueName.CreateSelfie.ToString());
-        queueConfiguration.Names.Add(QueueName.CreateSelfieFault, "Cargos." + QueueName.CreateSelfieFault.ToString());
+        queueConfiguration.Names.Add(QueueName.RouteSaga, "Route." + QueueName.RouteSaga.ToString()); // Saga
+        queueConfiguration.Names.Add(QueueName.RouteConfirmed, "Route." + QueueName.RouteConfirmed.ToString());
+        queueConfiguration.Names.Add(QueueName.AutoRoute, "Route." + QueueName.AutoRoute.ToString());
+        queueConfiguration.Names.Add(QueueName.ManuelRoute, "Route." + QueueName.ManuelRoute.ToString());
+        queueConfiguration.Names.Add(QueueName.RouteCreated, "Route." + QueueName.RouteCreated.ToString());
 
-        queueConfiguration.Names.Add(QueueName.CargoSendApproved, "Cargos." + QueueName.CargoSendApproved.ToString());
-        queueConfiguration.Names.Add(QueueName.CargoApproved, "Cargos." + QueueName.CargoApproved.ToString());
-        queueConfiguration.Names.Add(QueueName.CargoRejected, "Cargos." + QueueName.CargoRejected.ToString());
-
-        queueConfiguration.Names.Add(QueueName.RouteConfirmed, "Routes." + QueueName.RouteConfirmed.ToString());
-        queueConfiguration.Names.Add(QueueName.AutoRoute, "Routes." + QueueName.AutoRoute.ToString());
-        queueConfiguration.Names.Add(QueueName.ManuelRoute, "Routes." + QueueName.ManuelRoute.ToString());
-        queueConfiguration.Names.Add(QueueName.RouteCreated, "Routes." + QueueName.RouteCreated.ToString());
 
         queueConfiguration.Names.Add(QueueName.NotDelivered, QueueName.NotDelivered.ToString());
         queueConfiguration.Names.Add(QueueName.CreateRefund, QueueName.CreateRefund.ToString());
         queueConfiguration.Names.Add(QueueName.TakeSelfei, QueueName.TakeSelfei.ToString());
         queueConfiguration.Names.Add(QueueName.CargoRefundCompleted, QueueName.CargoRefundCompleted.ToString());
+
 
         queueConfiguration.Names.Add(QueueName.SendDamageReport, QueueName.SendDamageReport.ToString());
         queueConfiguration.Names.Add(QueueName.DamageRecordCompletion, QueueName.DamageRecordCompletion.ToString());

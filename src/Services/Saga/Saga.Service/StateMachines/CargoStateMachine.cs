@@ -4,7 +4,6 @@ using Cargos;
 using MassTransit;
 using Saga.Application.Cargos;
 using Saga.Domain.Instances;
-using Saga.Application.Cargos.Fault;
 
 namespace Saga.Service.StateMachines;
 
@@ -32,7 +31,6 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         InstanceState(instance => instance.CurrentState);
 
         Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CargoId, context => context.Message.CargoId).SelectId(s => Guid.NewGuid()));
-      //  Event(() => CreateCargoFaulted, instance => instance.CorrelateById(m => m.Message.Message.CargoId).SelectId(m => m.Message.Message.CargoId));
 
         Event(() => CreateSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
        // Event(() => CreateSelfieFaultEvent, instance => instance.CorrelateById(m => m.Message.Message.CorrelationId).SelectId(m => m.Message.Message.CorrelationId));
@@ -80,7 +78,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
              CargoId = context.Instance.CargoId,
              CorrelationId = context.Instance.CorrelationId
          })
-         ,
+        // ,
          //When(CreateSelfieFaultEvent)
          //   .TransitionTo(CreateSelfieFault)
          //    .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateSelfieFault]}"), context => new CreateSelfieFaultCommand(context.Message.Message.CorrelationId)

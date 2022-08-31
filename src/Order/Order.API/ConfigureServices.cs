@@ -31,7 +31,7 @@ public static class ConfigureServices
 
         services.AddMassTransit<IEventBus>(x =>
         {
-            x.AddConsumer<CreateSelfieFaultConsumer>();
+            //x.AddConsumer<CreateSelfieFaultConsumer>();
 
             x.SetKebabCaseEndpointNameFormatter();
 
@@ -48,21 +48,22 @@ public static class ConfigureServices
                 cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
                 cfg.ConfigureEndpoints(context);
 
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateSelfieFault], e =>
-                {
-                    e.PrefetchCount = 1;
-                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                    e.UseCircuitBreaker(cb =>
-                    {
-                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                        cb.TripThreshold = config.TripThreshold;
-                        cb.ActiveThreshold = config.ActiveThreshold;
-                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                    });
+                //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateSelfieFault], e =>
+                //{
+                //    e.PrefetchCount = 1;
+                //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                //    e.UseCircuitBreaker(cb =>
+                //    {
+                //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                //        cb.TripThreshold = config.TripThreshold;
+                //        cb.ActiveThreshold = config.ActiveThreshold;
+                //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                //    });
 
-                    e.ConfigureConsumer<CreateSelfieFaultConsumer>(context);
+                //    e.ConfigureConsumer<CreateSelfieFaultConsumer>(context);
+                //});
 
-                });
+
             });
         });
 

@@ -7,13 +7,13 @@ namespace Order.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController : ApiControllerBase
+    public class CargoController : ApiControllerBase
     {
-        [Route("create-order")]
+        [Route("create-cargo")]
         [HttpPost]
-        public async Task<IActionResult> CreateOrder()
+        public async Task<IActionResult> CreateCargo()
         {
-            var response = await Mediator.Send(new CreateOrderCommand
+            var response = await Mediator.Send(new CreateCargoCommand
             {
                 CargoId = Guid.NewGuid(),   
                 Id = Guid.NewGuid(),
@@ -35,11 +35,11 @@ namespace Order.API.Controllers
             return Ok(response);
         }
 
-        [Route("order-approved")]
+        [Route("cargo-approved")]
         [HttpPost]
-        public async Task<IActionResult> OrderApproved(Guid correlationId)
+        public async Task<IActionResult> CargoApproved(Guid correlationId)
         {
-            var response = await Mediator.Send(new OrderApprovedCommand
+            var response = await Mediator.Send(new CargoApprovedCommand
             {
                 CargoId = Guid.NewGuid(),
                 CorrelationId = correlationId

@@ -1,4 +1,4 @@
-﻿namespace Core.Domain.Events.Routes;
+﻿namespace Routes;
 
 public interface IAutoRoute : IEvent
 {

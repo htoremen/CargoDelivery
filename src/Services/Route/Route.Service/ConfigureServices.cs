@@ -3,7 +3,6 @@ using Core.Domain.Bus;
 using MassTransit;
 using MediatR;
 using Core.Domain.Enums;
-using Core.Domain.Events.Routes;
 using Route.Service.Services;
 
 namespace Cargo.Service;

@@ -1,6 +1,4 @@
-﻿using Core.Domain.Events.Routes;
-
-namespace Route.Application.Consumer;
+﻿namespace Route.Application.Consumer;
 
 public class ManuelRouteConsumer : IConsumer<IManuelRoute>
 {
