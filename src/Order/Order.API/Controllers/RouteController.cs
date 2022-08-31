@@ -9,11 +9,13 @@ public class RouteController : ApiControllerBase
 {
     [Route("route-confirmed")]
     [HttpPost]
-    public async Task<IActionResult> RouteConfirmed()
+    public async Task<IActionResult> RouteConfirmed(Guid correlationId)
     {
         var response = await Mediator.Send(new RouteConfirmedCommand
         {
-            CargoId = Guid.NewGuid()
+            CargoId = Guid.NewGuid(),
+            CorrelationId = correlationId   
+
         });
         return Ok(response);
     }

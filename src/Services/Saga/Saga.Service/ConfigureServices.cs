@@ -26,12 +26,22 @@ public static class ConfigureServices
         {
             x.SetKebabCaseEndpointNameFormatter();
 
-
+            x.AddBus(factory => MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
+            {
+                cfg.Host(config.RabbitMqHostUrl);
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSaga], e =>
+                {
+                    e.ConfigureSaga<CargoStateInstance>(factory);
+                });
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.RouteSaga], e =>
+                {
+                    e.ConfigureSaga<RouteStateInstance>(factory);
+                });
+            }));
 
             x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance>()
                 .EntityFrameworkRepository(config =>
                 {
-                    config.ConcurrencyMode = ConcurrencyMode.Optimistic;
                     config.AddDbContext<DbContext, CargoStateDbContext>((p, b) =>
                     {
                         b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
@@ -41,26 +51,11 @@ public static class ConfigureServices
             x.AddSagaStateMachine<RouteStateMachine, RouteStateInstance>()
                .EntityFrameworkRepository(config =>
                {
-                   config.ConcurrencyMode = ConcurrencyMode.Optimistic;
                    config.AddDbContext<DbContext, RouteStateDbContext>((p, b) =>
                    {
                        b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
                    });
                });
-
-            x.AddBus(factory => MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
-            {
-                cfg.Host(config.RabbitMqHostUrl);
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSaga], e =>
-                {
-                    e.ConfigureSaga<CargoStateInstance>(factory);
-                    e.ConfigureSaga<RouteStateInstance>(factory);
-                });
-                //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.RouteSaga], e =>
-                //{
-                //    e.ConfigureSaga<RouteStateInstance>(factory);
-                //});
-            }));
 
 
         });

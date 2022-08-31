@@ -7,7 +7,7 @@ public class RouteConfirmedCommand : IRouteConfirmed
     {
         CorrelationId = correlationId;
     }
-    public Guid CorrelationId { get; private set; }
+    public Guid CorrelationId { get; set; }
 
     public Guid CargoId { get; set; }
     public Guid UserId { get; set; }

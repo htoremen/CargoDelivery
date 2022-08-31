@@ -1,7 +1,7 @@
 ﻿namespace Routes;
 public interface IRouteConfirmed //: IEvent
 {
-    public Guid CorrelationId { get; }
+    public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
     public Guid UserId { get; set; }
     public DateTime? SubmitDate { get; set; }
@@ -11,7 +11,7 @@ public interface IRouteConfirmed //: IEvent
 
 public class RouteConfirmed : IRouteConfirmed
 {
-    public Guid CorrelationId { get; }
+    public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
     public Guid UserId { get; set; }
     public DateTime? SubmitDate { get; set; }

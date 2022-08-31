@@ -1,4 +1,5 @@
-﻿using Core.Domain;
+﻿using Cargos;
+using Core.Domain;
 using Core.Domain.Enums;
 using MassTransit;
 using Routes;
@@ -26,7 +27,6 @@ public class RouteStateMachine : MassTransitStateMachine<RouteStateInstance>
         Event(() => AutoRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => ManuelRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
-
         Initially(
             When(RouteConfirmedEvent)
             .Then(context =>
@@ -36,12 +36,11 @@ public class RouteStateMachine : MassTransitStateMachine<RouteStateInstance>
                 context.Instance.CreatedOn = DateTime.Now;
             })
                 .TransitionTo(RouteConfirmed)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.RouteConfirmed]}"), context => new RouteConfirmedCommand(context.Instance.CorrelationId)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateCargo]}"), context => new RouteConfirmedCommand(context.Instance.CorrelationId)
                 {
                     CargoId = context.Data.CargoId,
                     UserId = context.Data.UserId,
                 }));
-
 
         During(RouteConfirmed,
          When(AutoRouteEvent)
@@ -57,6 +56,7 @@ public class RouteStateMachine : MassTransitStateMachine<RouteStateInstance>
              CorrelationId = context.Instance.CorrelationId
          })
          );
+
 
         SetCompletedWhenFinalized();
     }

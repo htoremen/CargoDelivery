@@ -5,6 +5,7 @@ namespace Order.Application.Routes.RouteConfirmeds;
 public class RouteConfirmedCommand : IRequest<GenericResponse<RouteConfirmedResponse>>
 {
     public Guid CargoId { get; set; }
+    public Guid CorrelationId { get; set; }
 }
 
 public class RouteConfirmedCommandHandler : IRequestHandler<RouteConfirmedCommand, GenericResponse<RouteConfirmedResponse>>
@@ -15,7 +16,7 @@ public class RouteConfirmedCommandHandler : IRequestHandler<RouteConfirmedComman
     public RouteConfirmedCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
     {
         _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.RouteSaga]}")).Result;
     }
 
     public async Task<GenericResponse<RouteConfirmedResponse>> Handle(RouteConfirmedCommand request, CancellationToken cancellationToken)
@@ -23,6 +24,7 @@ public class RouteConfirmedCommandHandler : IRequestHandler<RouteConfirmedComman
         await _sendEndpoint.Send<IRouteConfirmed>(new
         {
             CargoId = request.CargoId,
+            CorrelationId = request.CorrelationId
         }, cancellationToken);
         return GenericResponse<RouteConfirmedResponse>.Success(new RouteConfirmedResponse { CargoId = request.CargoId }, 200);
     }
