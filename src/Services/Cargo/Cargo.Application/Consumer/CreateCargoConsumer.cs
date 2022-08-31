@@ -29,18 +29,18 @@ public class CreateCargoConsumer : IConsumer<ICreateCargo>
     }
 }
 
-public class CreateCargoFaultConsumer : IConsumer<Fault<CreateCargo>>
-{
-    public async Task Consume(ConsumeContext<Fault<CreateCargo>> context)
-    {
-        var command = context.Message;
+//public class CreateCargoFaultConsumer : IConsumer<Fault<CreateCargo>>
+//{
+//    public async Task Consume(ConsumeContext<Fault<CreateCargo>> context)
+//    {
+//        var command = context.Message;
 
-        //await context.Publish<OrderSubmitted>(new
-        //{
-        //    context.Message.OrderId
-        //});
-    }
-}
+//        //await context.Publish<OrderSubmitted>(new
+//        //{
+//        //    context.Message.OrderId
+//        //});
+//    }
+//}
 
 
 //public class CreateCargoConsumerDefinition : ConsumerDefinition<CreateCargoConsumer>

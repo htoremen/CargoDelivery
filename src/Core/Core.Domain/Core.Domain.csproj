@@ -14,7 +14,6 @@
   <ItemGroup>
     <Folder Include="Events\Delivery\" />
     <Folder Include="Events\Payments\" />
-    <Folder Include="Events\Shipments\" />
   </ItemGroup>
 
 </Project>

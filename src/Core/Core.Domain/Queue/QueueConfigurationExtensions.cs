@@ -22,10 +22,10 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueName.CargoApproved, "Cargos." + QueueName.CargoApproved.ToString());
         queueConfiguration.Names.Add(QueueName.CargoRejected, "Cargos." + QueueName.CargoRejected.ToString());
 
-        queueConfiguration.Names.Add(QueueName.RouteConfirmed, QueueName.RouteConfirmed.ToString());
-        queueConfiguration.Names.Add(QueueName.AutoRoute, QueueName.AutoRoute.ToString());
-        queueConfiguration.Names.Add(QueueName.ManuelRoute, QueueName.ManuelRoute.ToString());
-        queueConfiguration.Names.Add(QueueName.RouteCreated, QueueName.RouteCreated.ToString());
+        queueConfiguration.Names.Add(QueueName.RouteConfirmed, "Routes." + QueueName.RouteConfirmed.ToString());
+        queueConfiguration.Names.Add(QueueName.AutoRoute, "Routes." + QueueName.AutoRoute.ToString());
+        queueConfiguration.Names.Add(QueueName.ManuelRoute, "Routes." + QueueName.ManuelRoute.ToString());
+        queueConfiguration.Names.Add(QueueName.RouteCreated, "Routes." + QueueName.RouteCreated.ToString());
 
         queueConfiguration.Names.Add(QueueName.NotDelivered, QueueName.NotDelivered.ToString());
         queueConfiguration.Names.Add(QueueName.CreateRefund, QueueName.CreateRefund.ToString());
