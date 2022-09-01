@@ -67,6 +67,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                     UserId = context.Data.UserId,
                 }));
 
+        #region Cargo
+
         During(CreateCargo,
              When(CreateSelfieEvent)
                  .TransitionTo(CreateSelfie)
@@ -101,7 +103,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                     CorrelationId = context.Instance.CorrelationId
                 }));
 
-
+        #endregion
 
         #region Route
 
