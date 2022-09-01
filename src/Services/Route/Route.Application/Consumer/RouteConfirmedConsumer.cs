@@ -14,4 +14,3 @@ public class RouteConfirmedConsumer : IConsumer<IRouteConfirmed>
         var command = context.Message;
     }
 }
-
