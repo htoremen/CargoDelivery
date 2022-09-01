@@ -1,4 +1,6 @@
-﻿namespace Route.Application.Consumer;
+﻿using Route.Application.Routes.AutoRoutes;
+
+namespace Route.Application.Consumer;
 
 public class AutoRouteConsumer : IConsumer<IAutoRoute>
 {
@@ -11,7 +13,12 @@ public class AutoRouteConsumer : IConsumer<IAutoRoute>
 
     public async Task Consume(ConsumeContext<IAutoRoute> context)
     {
-
+        var command = context.Message;
+        await _mediator.Send(new AutoRouteCommand
+        {
+            CorrelationId = command.CorrelationId,
+            CargoId = command.CargoId,
+        });
     }
 }
 

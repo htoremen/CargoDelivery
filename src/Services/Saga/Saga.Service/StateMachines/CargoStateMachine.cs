@@ -20,6 +20,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public State RouteConfirmed { get; set; }
     public State AutoRoute { get; set; }
     public State ManuelRoute { get; set; }
+    public State RouteCreated { get; set; }
 
 
 
@@ -32,6 +33,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public Event<IRouteConfirmed> RouteConfirmedEvent { get; private set; }
     public Event<IAutoRoute> AutoRouteEvent { get; private set; }
     public Event<IManuelRoute> ManuelRouteEvent { get; private set; }
+    public Event<IRouteCreated> RouteCreatedEvent { get; private set; }
 
 
 
@@ -50,6 +52,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         Event(() => RouteConfirmedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => AutoRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => ManuelRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => RouteCreatedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
 
         Initially(
@@ -131,6 +134,36 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                     CorrelationId = context.Instance.CorrelationId
                 })
             );
+
+        During(AutoRoute,
+            When(RouteCreatedEvent)
+                .TransitionTo(RouteCreated)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.AutoRoute]}"), context => new RouteCreatedCommand(context.Data.CorrelationId)
+                {
+                    CorrelationId = context.Instance.CorrelationId
+                }),
+            When(CargoApprovedEvent)
+                .TransitionTo(CargoApproved)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ManuelRoute]}"), context => new CargoApprovedCommand(context.Data.CorrelationId)
+                {
+                    CorrelationId = context.Instance.CorrelationId
+                })
+            );
+
+        During(ManuelRoute,
+           When(RouteCreatedEvent)
+               .TransitionTo(RouteCreated)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.AutoRoute]}"), context => new RouteCreatedCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId
+               }),
+           When(CargoApprovedEvent)
+               .TransitionTo(CargoApproved)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ManuelRoute]}"), context => new CargoApprovedCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId
+               })
+           );
 
         #endregion
 

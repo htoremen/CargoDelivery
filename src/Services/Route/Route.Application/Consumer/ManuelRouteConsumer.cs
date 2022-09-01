@@ -1,4 +1,6 @@
-﻿namespace Route.Application.Consumer;
+﻿using Route.Application.Routes.ManuelRoutes;
+
+namespace Route.Application.Consumer;
 
 public class ManuelRouteConsumer : IConsumer<IManuelRoute>
 {
@@ -11,7 +13,13 @@ public class ManuelRouteConsumer : IConsumer<IManuelRoute>
 
     public async Task Consume(ConsumeContext<IManuelRoute> context)
     {
+        var command = context.Message;
 
+        await _mediator.Send(new ManuelRouteCommand
+        {
+            CorrelationId = command.CorrelationId,
+            CargoId = command.CargoId,
+        });
     }
 }
 
