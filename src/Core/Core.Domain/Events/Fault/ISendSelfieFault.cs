@@ -1,12 +1,12 @@
 ﻿namespace Core.Domain.Events.Fault;
 
-public interface ICreateSelfieFault //: IEvent
+public interface ISendSelfieFault //: IEvent
 {
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
 }
 
-public class CreateSelfieFault : ICreateSelfieFault
+public class SendSelfieFault : ISendSelfieFault
 {
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }

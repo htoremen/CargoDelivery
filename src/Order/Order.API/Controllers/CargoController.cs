@@ -1,7 +1,7 @@
 ﻿using Cargo.Application.Orders.CreateOrders;
 using Cargo.Application.Orders.OrderApproveds;
 using Microsoft.AspNetCore.Mvc;
-using Order.Application.Orders.CreateSelfies;
+using Order.Application.Orders.SendSelfies;
 
 namespace Order.API.Controllers
 {
@@ -23,11 +23,11 @@ namespace Order.API.Controllers
             return Ok(response);
         }
 
-        [Route("create-selfie")]
+        [Route("send-selfie")]
         [HttpPost]
-        public async Task<IActionResult> CreateSelfie(Guid correlationId)
+        public async Task<IActionResult> SendSelfie(Guid correlationId)
         {
-            var response = await Mediator.Send(new CreateSelfieCommand
+            var response = await Mediator.Send(new SendSelfieCommand
             {
                 CargoId = Guid.NewGuid(),
                 CorrelationId = correlationId

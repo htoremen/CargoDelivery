@@ -7,7 +7,7 @@ public enum QueueName
 
     // Zimmetine Geçir
     CreateCargo = 101,
-    CreateSelfie = 102,
+    SendSelfie = 102,
     CargoApproved = 103,
     CargoRejected = 104,
 

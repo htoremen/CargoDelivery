@@ -2,16 +2,16 @@
 
 namespace Order.Application.FaultConsumer;
 
-public class CreateSelfieFaultConsumer : IConsumer<Fault<ICreateSelfie>>
+public class SendSelfieFaultConsumer : IConsumer<Fault<ISendSelfie>>
 {
     private readonly IMediator _mediator;
 
-    public CreateSelfieFaultConsumer(IMediator mediator)
+    public SendSelfieFaultConsumer(IMediator mediator)
     {
         _mediator = mediator;
     }
 
-    public async Task Consume(ConsumeContext<Fault<ICreateSelfie>> context)
+    public async Task Consume(ConsumeContext<Fault<ISendSelfie>> context)
     {
         var command = context.Message;
         int? maxAttempts = context.Headers.Get("MT-Redelivery-Count", default(int?));

@@ -13,7 +13,7 @@ public static class QueueConfigurationExtensions
         // Cargo
         queueConfiguration.Names.Add(QueueName.CargoSaga, "Cargo." + QueueName.CargoSaga.ToString()); // Saga
         queueConfiguration.Names.Add(QueueName.CreateCargo, "Cargo." + QueueName.CreateCargo.ToString());
-        queueConfiguration.Names.Add(QueueName.CreateSelfie, "Cargo." + QueueName.CreateSelfie.ToString());
+        queueConfiguration.Names.Add(QueueName.SendSelfie, "Cargo." + QueueName.SendSelfie.ToString());
         queueConfiguration.Names.Add(QueueName.CargoApproved, "Cargo." + QueueName.CargoApproved.ToString());
         queueConfiguration.Names.Add(QueueName.CargoRejected, "Cargo." + QueueName.CargoRejected.ToString());
 

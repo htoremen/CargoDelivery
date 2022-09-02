@@ -2,9 +2,9 @@
 
 namespace Saga.Application.Cargos.Fault;
 
-public class CreateSelfieFaultCommand : ICreateSelfieFault
+public class SendSelfieFaultCommand : ISendSelfieFault
 {
-    public CreateSelfieFaultCommand(Guid correlationId)
+    public SendSelfieFaultCommand(Guid correlationId)
     {
         CorrelationId = correlationId;
     }

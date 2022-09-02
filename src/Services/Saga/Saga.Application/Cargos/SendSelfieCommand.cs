@@ -1,8 +1,8 @@
 ﻿namespace Saga.Application.Cargos;
 
-public class CreateSelfieCommand : ICreateSelfie
+public class SendSelfieCommand : ISendSelfie
 {
-    public CreateSelfieCommand(Guid correlationId)
+    public SendSelfieCommand(Guid correlationId)
     {
         CorrelationId = correlationId;
     }

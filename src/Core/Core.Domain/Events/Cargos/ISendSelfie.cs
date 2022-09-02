@@ -1,11 +1,11 @@
 ﻿namespace Cargos;
-public interface ICreateSelfie //: IEvent
+public interface ISendSelfie //: IEvent
 {
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
 }
 
-public class CreateSelfie : ICreateSelfie
+public class SendSelfie : ISendSelfie
 {
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }

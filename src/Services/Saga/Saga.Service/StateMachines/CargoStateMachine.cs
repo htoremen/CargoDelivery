@@ -14,7 +14,7 @@ namespace Saga.Service.StateMachines;
 public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 {
     public State CreateCargo { get; set; }
-    public State CreateSelfie { get; set; }
+    public State SendSelfie { get; set; }
     public State CargoApproved { get; set; }
     public State CargoRejected { get; set; }
 
@@ -31,7 +31,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
 
     public Event<ICreateCargo> CreateCargoEvent { get; private set; }
-    public Event<ICreateSelfie> CreateSelfieEvent { get; private set; }
+    public Event<ISendSelfie> SendSelfieEvent { get; private set; }
     public Event<ICargoApproved> CargoApprovedEvent { get; private set; }
     public Event<ICargoRejected> CargoRejectedEvent { get; private set; }
 
@@ -54,7 +54,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         InstanceState(instance => instance.CurrentState);
 
         Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CargoId, context => context.Message.CargoId).SelectId(s => Guid.NewGuid()));
-        Event(() => CreateSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoApprovedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
        
@@ -87,15 +87,15 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         #region Cargo
 
         During(CreateCargo,
-             When(CreateSelfieEvent)
-                 .TransitionTo(CreateSelfie)
-                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateSelfie]}"), context => new CreateSelfieCommand(context.Data.CorrelationId)
+             When(SendSelfieEvent)
+                 .TransitionTo(SendSelfie)
+                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.SendSelfie]}"), context => new SendSelfieCommand(context.Data.CorrelationId)
                  {
                      CargoId = context.Instance.CargoId,
                      CorrelationId = context.Instance.CorrelationId
                  }));
 
-        During(CreateSelfie,
+        During(SendSelfie,
            When(CargoApprovedEvent)
                .TransitionTo(CargoApproved)
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoApproved]}"), context => new CargoApprovedCommand(context.Data.CorrelationId)
