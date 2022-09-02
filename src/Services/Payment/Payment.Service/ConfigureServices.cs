@@ -1,7 +1,9 @@
 ﻿using Core.Domain;
 using Core.Domain.Bus;
+using Core.Domain.Enums;
 using MassTransit;
 using MediatR;
+using Payment.Application.Consumer;
 using Payment.Service.Services;
 
 namespace Payment.Service;
@@ -29,7 +31,9 @@ public static class ConfigureServices
 
         services.AddMassTransit<IEventBus>(x =>
         {
-            //x.AddConsumer<CreateSelfieFaultConsumer>();
+            x.AddConsumer<CardPaymentConsumer>();
+            x.AddConsumer<FreeDeliveryConsumer>();
+            x.AddConsumer<PayAtDoorConsumer>();
 
             x.SetKebabCaseEndpointNameFormatter();
 
@@ -46,22 +50,47 @@ public static class ConfigureServices
                 cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
                 cfg.ConfigureEndpoints(context);
 
-                //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateSelfieFault], e =>
-                //{
-                //    e.PrefetchCount = 1;
-                //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                //    e.UseCircuitBreaker(cb =>
-                //    {
-                //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                //        cb.TripThreshold = config.TripThreshold;
-                //        cb.ActiveThreshold = config.ActiveThreshold;
-                //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                //    });
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CardPayment], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<CardPaymentConsumer>(context);
+                });
 
-                //    e.ConfigureConsumer<CreateSelfieFaultConsumer>(context);
-                //});
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.FreeDelivery], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<FreeDeliveryConsumer>(context);
+                });
 
-
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.PayAtDoor], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<PayAtDoorConsumer>(context);
+                });
             });
         });
 

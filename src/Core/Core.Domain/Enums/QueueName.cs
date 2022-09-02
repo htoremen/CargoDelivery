@@ -26,13 +26,10 @@ public enum QueueName
     CreateDelivery = 321,
     // Kredi Kartı
     CardPayment = 331,
-    CardPaymentCompleted = 332,
     // Manuel Ödeme
     PayAtDoor = 341,
-    PayAtDoorCompleted = 342,
     // Teslimat İptal
-    RollBack = 351,
-    CancelDelivered = 352,
+    FreeDelivery = 351,
 
     // Kargo İşlemleri Ortak
     DeliveryCompleted = 361,
