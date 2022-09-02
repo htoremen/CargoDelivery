@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 
-namespace Order.Application.Orders.OrderApproveds;
+namespace Cargo.Application.Orders.OrderApproveds;
 
 public class CargoApprovedCommand : IRequest<GenericResponse<CargoApprovedResponse>>
 {

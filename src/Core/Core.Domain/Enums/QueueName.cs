@@ -23,13 +23,13 @@ public enum QueueName
 
     // Teslim Edilemedi
     NotDelivered = 301,
-    CreateRefund = 302,
+    NotDeliveredCreateRefund = 302,
     TakeSelfei = 303,
     CargoRefundCompleted = 304,
 
     // İade Oluştur
-    SendDamageReport = 311,
-    DamageRecordCompletion = 312,
+    CreateRefund = 311,
+    CreateRefundCompletion = 312,
 
     // Teslimat Oluştur
     CreateDelivery = 321,

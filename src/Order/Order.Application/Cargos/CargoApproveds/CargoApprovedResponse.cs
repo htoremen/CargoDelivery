@@ -1,4 +1,4 @@
-﻿namespace Order.Application.Orders.OrderApproveds;
+﻿namespace Cargo.Application.Orders.OrderApproveds;
 
 public class CargoApprovedResponse
 {

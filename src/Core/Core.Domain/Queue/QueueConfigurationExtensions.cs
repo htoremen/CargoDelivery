@@ -25,29 +25,29 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueName.RouteCreated, "Route." + QueueName.RouteCreated.ToString());
 
 
-        queueConfiguration.Names.Add(QueueName.NotDelivered, QueueName.NotDelivered.ToString());
-        queueConfiguration.Names.Add(QueueName.CreateRefund, QueueName.CreateRefund.ToString());
-        queueConfiguration.Names.Add(QueueName.TakeSelfei, QueueName.TakeSelfei.ToString());
-        queueConfiguration.Names.Add(QueueName.CargoRefundCompleted, QueueName.CargoRefundCompleted.ToString());
+        queueConfiguration.Names.Add(QueueName.NotDelivered, "Delivery." + QueueName.NotDelivered.ToString());
+        queueConfiguration.Names.Add(QueueName.NotDeliveredCreateRefund, "Delivery.NotDelivered." + QueueName.NotDeliveredCreateRefund.ToString());
+        queueConfiguration.Names.Add(QueueName.TakeSelfei, "Delivery.NotDelivered." + QueueName.TakeSelfei.ToString());
+        queueConfiguration.Names.Add(QueueName.CargoRefundCompleted, "Delivery.NotDelivered." + QueueName.CargoRefundCompleted.ToString());
 
 
-        queueConfiguration.Names.Add(QueueName.SendDamageReport, QueueName.SendDamageReport.ToString());
-        queueConfiguration.Names.Add(QueueName.DamageRecordCompletion, QueueName.DamageRecordCompletion.ToString());
+        queueConfiguration.Names.Add(QueueName.CreateRefund, "Delivery." + QueueName.CreateRefund.ToString());
+        queueConfiguration.Names.Add(QueueName.CreateRefundCompletion, "Delivery.CreateRefund." + QueueName.CreateRefundCompletion.ToString());
 
         // Delivery Process
-        queueConfiguration.Names.Add(QueueName.CreateDelivery, QueueName.CreateDelivery.ToString());
+        queueConfiguration.Names.Add(QueueName.CreateDelivery, "Delivery." + QueueName.CreateDelivery.ToString());
 
-        queueConfiguration.Names.Add(QueueName.CardPayment, QueueName.CardPayment.ToString());
-        queueConfiguration.Names.Add(QueueName.CardPaymentCompleted, QueueName.CardPaymentCompleted.ToString());
+        queueConfiguration.Names.Add(QueueName.CardPayment, "Delivery.Payment." + QueueName.CardPayment.ToString());
+        queueConfiguration.Names.Add(QueueName.CardPaymentCompleted, "Delivery.Payment." + QueueName.CardPaymentCompleted.ToString());
 
-        queueConfiguration.Names.Add(QueueName.PayAtDoor, QueueName.PayAtDoor.ToString());
-        queueConfiguration.Names.Add(QueueName.PayAtDoorCompleted, QueueName.PayAtDoorCompleted.ToString());
+        queueConfiguration.Names.Add(QueueName.PayAtDoor, "Delivery." + QueueName.PayAtDoor.ToString());
+        queueConfiguration.Names.Add(QueueName.PayAtDoorCompleted, "Delivery." + QueueName.PayAtDoorCompleted.ToString());
 
-        queueConfiguration.Names.Add(QueueName.RollBack, QueueName.RollBack.ToString());
-        queueConfiguration.Names.Add(QueueName.CancelDelivered, QueueName.CancelDelivered.ToString());
+        queueConfiguration.Names.Add(QueueName.RollBack, "Delivery." + QueueName.RollBack.ToString());
+        queueConfiguration.Names.Add(QueueName.CancelDelivered, "Delivery." + QueueName.CancelDelivered.ToString());
 
-        queueConfiguration.Names.Add(QueueName.DisributionCheck, QueueName.DisributionCheck.ToString());
-        queueConfiguration.Names.Add(QueueName.ShiftCompletion, QueueName.ShiftCompletion.ToString());
+        queueConfiguration.Names.Add(QueueName.DisributionCheck, "Delivery." + QueueName.DisributionCheck.ToString());
+        queueConfiguration.Names.Add(QueueName.ShiftCompletion, "Delivery." + QueueName.ShiftCompletion.ToString());
 
         if(services != null)
             services.AddSingleton<IQueueConfiguration>(queueConfiguration);

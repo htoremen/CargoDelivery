@@ -1,4 +1,4 @@
-﻿namespace Order.Application.Orders.CreateOrders;
+﻿namespace Cargo.Application.Orders.CreateOrders;
 public class CreateCargoResponse
 {
     public Guid Id { get; set; }

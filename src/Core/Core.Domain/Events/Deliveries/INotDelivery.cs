@@ -1,13 +1,13 @@
-﻿namespace Routes;
+﻿namespace Deliveries;
 
-public interface IRouteCreated
+public interface INotDelivery
 {
     public Guid CargoId { get; set; }
     public Guid CorrelationId { get; set; }
 }
 
-public class RouteCreated : IRouteCreated
+public class NotDelivery : INotDelivery
 {
-    public Guid CargoId { get; set; }
     public Guid CorrelationId { get; set; }
+    public Guid CargoId { get; set; }
 }

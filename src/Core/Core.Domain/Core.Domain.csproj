@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Events\Delivery\" />
     <Folder Include="Events\Payments\" />
   </ItemGroup>
 

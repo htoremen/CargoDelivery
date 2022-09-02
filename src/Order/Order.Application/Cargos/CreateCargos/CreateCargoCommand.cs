@@ -1,7 +1,7 @@
 ﻿
 using MassTransit;
 
-namespace Order.Application.Orders.CreateOrders;
+namespace Cargo.Application.Orders.CreateOrders;
 
 public class CreateCargoCommand : IRequest<CreateCargoResponse>
 {
