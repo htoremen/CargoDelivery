@@ -1,4 +1,6 @@
-﻿namespace Delivery.Application.Consumer;
+﻿using Delivery.Application.Deliveries.CreateRefunds;
+
+namespace Delivery.Application.Consumer;
 
 public class CreateRefundConsumer : IConsumer<ICreateRefund>
 {

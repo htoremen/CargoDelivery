@@ -1,4 +1,6 @@
-﻿namespace Delivery.Application.Deliveries.DeliveryCompleteds;
+﻿using Core.Domain.Enums;
+
+namespace Delivery.Application.Deliveries.DeliveryCompleteds;
 
 public class DeliveryCompletedCommand : IRequest<GenericResponse<DeliveryCompletedResponse>>
 {
@@ -19,13 +21,12 @@ public class DeliveryCompletedCommandHandler : IRequestHandler<DeliveryCompleted
 
     public async Task<GenericResponse<DeliveryCompletedResponse>> Handle(DeliveryCompletedCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IRouteCompleted>(new
+        await _sendEndpoint.Send<IStartDelivery>(new
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
 
         }, cancellationToken);
         return GenericResponse<DeliveryCompletedResponse>.Success(new DeliveryCompletedResponse { }, 200);
-
     }
 }

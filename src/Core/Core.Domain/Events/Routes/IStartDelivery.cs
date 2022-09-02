@@ -1,12 +1,12 @@
 ﻿namespace Routes;
 
-public interface IRouteCompleted
+public interface IStartDelivery
 {
     public Guid CargoId { get; set; }
     public Guid CorrelationId { get; set; }
 }
 
-public class RouteCompleted : IRouteCompleted
+public class StartDelivery : IStartDelivery
 {
     public Guid CargoId { get; set; }
     public Guid CorrelationId { get; set; }

@@ -22,9 +22,8 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueName.RouteConfirmed, "Route." + QueueName.RouteConfirmed.ToString());
         queueConfiguration.Names.Add(QueueName.AutoRoute, "Route." + QueueName.AutoRoute.ToString());
         queueConfiguration.Names.Add(QueueName.ManuelRoute, "Route." + QueueName.ManuelRoute.ToString());
-        queueConfiguration.Names.Add(QueueName.RouteCreated, "Route." + QueueName.RouteCreated.ToString());
 
-
+        queueConfiguration.Names.Add(QueueName.StartDelivery, "Delivery." + QueueName.StartDelivery.ToString());
         queueConfiguration.Names.Add(QueueName.NotDelivered, "Delivery." + QueueName.NotDelivered.ToString());
         queueConfiguration.Names.Add(QueueName.NotDeliveredCreateRefund, "Delivery.NotDelivered." + QueueName.NotDeliveredCreateRefund.ToString());
         queueConfiguration.Names.Add(QueueName.TakeSelfei, "Delivery.NotDelivered." + QueueName.TakeSelfei.ToString());

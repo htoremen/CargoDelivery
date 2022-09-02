@@ -1,8 +1,8 @@
 ﻿namespace Saga.Application.Routes;
 
-public class RouteCompletedCommand : IRouteCompleted
+public class StartDeliveryCommand : IStartDelivery
 {
-    public RouteCompletedCommand(Guid correlationId)
+    public StartDeliveryCommand(Guid correlationId)
     {
         CorrelationId = correlationId;
     }

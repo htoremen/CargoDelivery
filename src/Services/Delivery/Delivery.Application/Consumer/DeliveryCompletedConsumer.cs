@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Delivery.Application.Deliveries.DeliveryCompleteds;
 
 namespace Delivery.Application.Consumer;
 public class DeliveryCompletedConsumer : IConsumer<IDeliveryCompleted>

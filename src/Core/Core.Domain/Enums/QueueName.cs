@@ -17,9 +17,9 @@ public enum QueueName
     RouteConfirmed = 201,
     AutoRoute = 202,
     ManuelRoute = 203,
-    RouteCreated = 204,
 
     // Kargo İşlemleri
+    StartDelivery = 300,
 
     // Teslim Edilemedi
     NotDelivered = 301,
