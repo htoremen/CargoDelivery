@@ -19,16 +19,8 @@ public enum QueueName
 
     // Kargo İşlemleri
     StartDelivery = 300,
-
-    // Teslim Edilemedi
     NotDelivered = 301,
-    NotDeliveredCreateRefund = 302,
-    TakeSelfei = 303,
-    CargoRefundCompleted = 304,
-
-    // İade Oluştur
     CreateRefund = 311,
-    CreateRefundCompletion = 312,
 
     // Teslimat Oluştur
     CreateDelivery = 321,

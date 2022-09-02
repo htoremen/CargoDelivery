@@ -199,6 +199,16 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         #region NotDelivered
 
+        During(NotDelivered,
+          When(DeliveryCompletedEvent)
+              .TransitionTo(DeliveryCompleted)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DeliveryCompleted]}"), context => new DeliveryCompletedCommand(context.Data.CorrelationId)
+               {
+                   CargoId = context.Instance.CargoId,
+                   CorrelationId = context.Instance.CorrelationId
+               })
+          );
+
         #endregion
 
         #region CreateRefund

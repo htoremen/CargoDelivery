@@ -25,13 +25,9 @@ public static class QueueConfigurationExtensions
 
         queueConfiguration.Names.Add(QueueName.StartDelivery, "Delivery." + QueueName.StartDelivery.ToString());
         queueConfiguration.Names.Add(QueueName.NotDelivered, "Delivery." + QueueName.NotDelivered.ToString());
-        queueConfiguration.Names.Add(QueueName.NotDeliveredCreateRefund, "Delivery.NotDelivered." + QueueName.NotDeliveredCreateRefund.ToString());
-        queueConfiguration.Names.Add(QueueName.TakeSelfei, "Delivery.NotDelivered." + QueueName.TakeSelfei.ToString());
-        queueConfiguration.Names.Add(QueueName.CargoRefundCompleted, "Delivery.NotDelivered." + QueueName.CargoRefundCompleted.ToString());
 
 
         queueConfiguration.Names.Add(QueueName.CreateRefund, "Delivery." + QueueName.CreateRefund.ToString());
-        queueConfiguration.Names.Add(QueueName.CreateRefundCompletion, "Delivery.CreateRefund." + QueueName.CreateRefundCompletion.ToString());
 
         // Delivery Process
         queueConfiguration.Names.Add(QueueName.CreateDelivery, "Delivery." + QueueName.CreateDelivery.ToString());
