@@ -38,7 +38,7 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
         }
         else
         {
-            await _sendEndpoint.Send<IRouteCreated>(new
+            await _sendEndpoint.Send<IRouteCompleted>(new
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId

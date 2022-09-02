@@ -1,8 +1,8 @@
 ﻿namespace Saga.Application.Routes;
 
-public class RouteCreatedCommand : IRouteCreated
+public class RouteCompletedCommand : IRouteCompleted
 {
-    public RouteCreatedCommand(Guid correlationId)
+    public RouteCompletedCommand(Guid correlationId)
     {
         CorrelationId = correlationId;
     }

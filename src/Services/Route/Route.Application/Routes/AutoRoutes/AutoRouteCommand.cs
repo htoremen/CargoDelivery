@@ -31,7 +31,7 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
         }
         else
         {
-            await _sendEndpoint.Send<IRouteCreated>(new
+            await _sendEndpoint.Send<IRouteCompleted>(new
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId
