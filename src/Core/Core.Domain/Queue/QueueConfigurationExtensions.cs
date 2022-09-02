@@ -46,7 +46,8 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueName.RollBack, "Delivery." + QueueName.RollBack.ToString());
         queueConfiguration.Names.Add(QueueName.CancelDelivered, "Delivery." + QueueName.CancelDelivered.ToString());
 
-        queueConfiguration.Names.Add(QueueName.DisributionCheck, "Delivery." + QueueName.DisributionCheck.ToString());
+        queueConfiguration.Names.Add(QueueName.DeliveryCompleted, "Delivery." + QueueName.DeliveryCompleted.ToString());
+      
         queueConfiguration.Names.Add(QueueName.ShiftCompletion, "Delivery." + QueueName.ShiftCompletion.ToString());
 
         if(services != null)

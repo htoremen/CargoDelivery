@@ -44,6 +44,8 @@ public enum QueueName
     CancelDelivered = 352,
 
     // Kargo İşlemleri Ortak
-    DisributionCheck = 361,
-    ShiftCompletion = 362,
+    DeliveryCompleted = 361,
+
+    // Vardia Tamamlama
+    ShiftCompletion = 371,
 }

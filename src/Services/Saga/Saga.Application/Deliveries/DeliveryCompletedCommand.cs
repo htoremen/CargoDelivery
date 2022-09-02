@@ -1,7 +1,8 @@
 ﻿namespace Saga.Application.Deliveries;
-public class CreateDeliveryCommand : ICreateDelivery
+
+public class DeliveryCompletedCommand : IDeliveryCompleted
 {
-    public CreateDeliveryCommand(Guid correlationId)
+    public DeliveryCompletedCommand(Guid correlationId)
     {
         CorrelationId = correlationId;
     }
