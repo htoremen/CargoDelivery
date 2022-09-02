@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Payment.Application.Payments.PayAtDoors;
 
 namespace Payment.Application.Consumer;
 
