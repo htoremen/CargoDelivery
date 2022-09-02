@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Order.Application.Deliveries.CreateDeliveries;
 using Order.Application.Deliveries.CreateRefunds;
-using Order.Application.Deliveries.NotDeliveries;
+using Order.Application.Deliveries.NotDelivereds;
 
 namespace Order.API.Controllers
 {
@@ -23,11 +22,11 @@ namespace Order.API.Controllers
             return Ok(response);
         }
 
-        [Route("not-delivery")]
+        [Route("not-delivered")]
         [HttpPost]
-        public async Task<IActionResult> NotDelivery(Guid correlationId, Guid cargoId)
+        public async Task<IActionResult> NotDelivered(Guid correlationId, Guid cargoId)
         {
-            var response = await Mediator.Send(new NotDeliveryCommand
+            var response = await Mediator.Send(new NotDeliveredCommand
             {
                 CargoId = cargoId,
                 CorrelationId = correlationId

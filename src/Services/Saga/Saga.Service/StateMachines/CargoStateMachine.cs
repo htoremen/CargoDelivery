@@ -6,6 +6,8 @@ using Saga.Application.Cargos;
 using Saga.Domain.Instances;
 using Routes;
 using Saga.Application.Routes;
+using Deliveries;
+using Saga.Application.Deliveries;
 
 namespace Saga.Service.StateMachines;
 
@@ -22,6 +24,9 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public State ManuelRoute { get; set; }
     public State RouteCreated { get; set; }
 
+    public State CreateDelivery { get; set; }
+    public State NotDelivered { get; set; }
+    public State CreateRefund { get; set; }
 
 
     public Event<ICreateCargo> CreateCargoEvent { get; private set; }
@@ -34,6 +39,10 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public Event<IAutoRoute> AutoRouteEvent { get; private set; }
     public Event<IManuelRoute> ManuelRouteEvent { get; private set; }
     public Event<IRouteCreated> RouteCreatedEvent { get; private set; }
+    
+    public Event<ICreateDelivery> CreateDeliveryEvent { get; private set; }
+    public Event<INotDelivered> NotDeliveredEvent { get; private set; }
+    public Event<ICreateRefund> CreateRefundEvent { get; private set; }
 
 
 
@@ -54,6 +63,9 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         Event(() => ManuelRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => RouteCreatedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
+        Event(() => CreateDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => NotDeliveredEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => CreateRefundEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
         Initially(
             When(CreateCargoEvent)
@@ -166,6 +178,35 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
            );
 
         #endregion
+
+        #region Delivery
+
+        During(RouteCreated,
+           When(CreateDeliveryEvent)
+               .TransitionTo(CreateDelivery)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateDelivery]}"), context => new CreateDeliveryCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId,
+                   CargoId = context.Instance.CargoId
+               }),
+           When(NotDeliveredEvent)
+               .TransitionTo(NotDelivered)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.NotDelivered]}"), context => new NotDeliveredCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId,
+                   CargoId = context.Instance.CargoId
+               }),
+           When(CreateRefundEvent)
+               .TransitionTo(CreateRefund)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateRefund]}"), context => new CreateRefundCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId,
+                   CargoId = context.Instance.CargoId
+               })
+           );
+
+        #endregion
+
 
         SetCompletedWhenFinalized();
     }
