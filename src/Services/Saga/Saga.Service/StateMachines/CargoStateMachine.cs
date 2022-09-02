@@ -215,6 +215,17 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         #endregion
 
+        During(DeliveryCompleted,
+           When(StartDeliveryEvent)
+               .TransitionTo(StartDelivery)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartDelivery]}"), context => new StartDeliveryCommand(context.Data.CorrelationId)
+                {
+                    CargoId = context.Instance.CargoId,
+                    CorrelationId = context.Instance.CorrelationId
+                })
+           );
+
+
         #endregion
 
 

@@ -7,8 +7,8 @@ public class CreateDeliveryCommand : IRequest<GenericResponse<CreateDeliveryResp
 }
 public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryCommand, GenericResponse<CreateDeliveryResponse>>
 {
-    public Task<GenericResponse<CreateDeliveryResponse>> Handle(CreateDeliveryCommand request, CancellationToken cancellationToken)
+    public async Task<GenericResponse<CreateDeliveryResponse>> Handle(CreateDeliveryCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return GenericResponse<CreateDeliveryResponse>.Success(new CreateDeliveryResponse { }, 200);
     }
 }

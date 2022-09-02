@@ -10,7 +10,7 @@ public class StartDeliveryCommandHandler : IRequestHandler<StartDeliveryCommand,
 {
     public async Task<GenericResponse<StartDeliveryResponse>> Handle(StartDeliveryCommand request, CancellationToken cancellationToken)
     {
-        return await Handle(request, cancellationToken).ConfigureAwait(false);
+        return GenericResponse<StartDeliveryResponse>.Success(new StartDeliveryResponse { }, 200);
     }
 }
 
