@@ -4,7 +4,7 @@ using MassTransit;
 using MediatR;
 using Core.Domain.Enums;
 using Route.Service.Services;
-using Delivery.Application.Common.Interfaces;
+using Delivery.Application.Consumer;
 
 namespace Delivery.Service;
 
@@ -32,7 +32,11 @@ public static class ConfigureServices
 
         services.AddMassTransit<IEventBus>(x =>
         {
-            //x.AddConsumer<RouteConfirmedConsumer>();
+            x.AddConsumer<StartDeliveryConsumer>();
+            x.AddConsumer<CreateDeliveryConsumer>();
+            x.AddConsumer<NotDeliveredConsumer>();
+            x.AddConsumer<CreateRefundConsumer>();
+            x.AddConsumer<DeliveryCompletedConsumer>();
 
             x.SetKebabCaseEndpointNameFormatter();
 
@@ -49,20 +53,76 @@ public static class ConfigureServices
                 cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
                 cfg.ConfigureEndpoints(context);
 
-                //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.RouteConfirmed], e =>
-                //{
-                //    e.PrefetchCount = 1;
-                //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                //    e.UseCircuitBreaker(cb =>
-                //    {
-                //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                //        cb.TripThreshold = config.TripThreshold;
-                //        cb.ActiveThreshold = config.ActiveThreshold;
-                //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                //    });
-                //    e.ConfigureConsumer<RouteConfirmedConsumer>(context);
-                //});
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.StartDelivery], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<StartDeliveryConsumer>(context);
+                });
 
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDelivery], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<CreateDeliveryConsumer>(context);
+                });
+
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.NotDelivered], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<NotDeliveredConsumer>(context);
+                });
+
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateRefund], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<CreateRefundConsumer>(context);
+                });
+
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.DeliveryCompleted], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<DeliveryCompletedConsumer>(context);
+                });
+               
 
             });
         });

@@ -8,12 +8,11 @@ public enum QueueName
     // Zimmetine Geçir
     CreateCargo = 101,
     CreateSelfie = 102,
-    CreateSelfieFault = 112,
-    CargoSendApproved = 103,
-    CargoApproved = 104,
-    CargoRejected = 105,
+    CargoApproved = 103,
+    CargoRejected = 104,
 
     // Güzergah Oluştur
+    StartRoute = 200,
     RouteConfirmed = 201,
     AutoRoute = 202,
     ManuelRoute = 203,

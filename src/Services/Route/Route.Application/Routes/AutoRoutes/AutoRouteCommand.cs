@@ -22,11 +22,16 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
         var rnd = new Random();
         if (rnd.Next(1, 1000) % 2 == 0)
         {
-            await _sendEndpoint.Send<ICargoApproved>(new
+            //await _sendEndpoint.Send<ICargoApproved>(new
+            //{
+            //    CargoId = request.CargoId,
+            //    CorrelationId = request.CorrelationId
+
+            //}, cancellationToken);
+            await _sendEndpoint.Send<IStartDelivery>(new
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId
-
             }, cancellationToken);
         }
         else

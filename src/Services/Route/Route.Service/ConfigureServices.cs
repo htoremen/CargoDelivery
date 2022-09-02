@@ -34,6 +34,7 @@ public static class ConfigureServices
             x.AddConsumer<RouteConfirmedConsumer>();
             x.AddConsumer<ManuelRouteConsumer>();
             x.AddConsumer<AutoRouteConsumer>();
+            x.AddConsumer<StartRouteConsumer>();
 
             x.SetKebabCaseEndpointNameFormatter();
 
@@ -93,6 +94,19 @@ public static class ConfigureServices
                 });
 
 
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.StartRoute], e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                        cb.TripThreshold = config.TripThreshold;
+                        cb.ActiveThreshold = config.ActiveThreshold;
+                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                    });
+                    e.ConfigureConsumer<StartRouteConsumer>(context);
+                });
             });
         });
 

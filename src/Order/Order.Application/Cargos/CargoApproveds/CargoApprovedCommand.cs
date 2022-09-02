@@ -21,7 +21,7 @@ public class CargoApprovedCommandHandler : IRequestHandler<CargoApprovedCommand,
 
     public async Task<GenericResponse<CargoApprovedResponse>> Handle(CargoApprovedCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<ICargoSendApproved>(new
+        await _sendEndpoint.Send<ICargoApproved>(new
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
