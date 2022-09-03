@@ -9,6 +9,7 @@ using Saga.Application.Routes;
 using Deliveries;
 using Saga.Application.Deliveries;
 using Saga.Application.Payments;
+using Payments;
 
 namespace Saga.Service.StateMachines;
 
@@ -50,9 +51,9 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
     public Event<IStartDelivery> StartDeliveryEvent { get; private set; }    
     public Event<ICreateDelivery> CreateDeliveryEvent { get; private set; }
-    public Event<ICreateDelivery> CardPaymentEvent { get; private set; }
-    public Event<ICreateDelivery> FreeDeliveryEvent { get; private set; }
-    public Event<ICreateDelivery> PayAtDoorEvent { get; private set; }
+    public Event<ICardPayment> CardPaymentEvent { get; private set; }
+    public Event<IFreeDelivery> FreeDeliveryEvent { get; private set; }
+    public Event<IPayAtDoor> PayAtDoorEvent { get; private set; }
 
     public Event<INotDelivered> NotDeliveredEvent { get; private set; }
     public Event<ICreateRefund> CreateRefundEvent { get; private set; }
@@ -114,6 +115,15 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                      CargoId = context.Instance.CargoId,
                      CorrelationId = context.Instance.CorrelationId
                  }));
+
+        During(SendSelfie,
+         When(SendSelfieEvent)
+             .TransitionTo(SendSelfie)
+             .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.SendSelfie]}"), context => new SendSelfieCommand(context.Data.CorrelationId)
+             {
+                 CargoId = context.Instance.CargoId,
+                 CorrelationId = context.Instance.CorrelationId
+             }));
 
         During(SendSelfie,
            When(CargoApprovedEvent)

@@ -1,7 +1,7 @@
 ﻿using Deliveries;
 using MassTransit;
 
-namespace Order.Application.Deliveries.CreateDeliveries;
+namespace Delivery.Application.Deliveries.CreateDeliveries;
 
 public class CreateDeliveryCommand : IRequest<GenericResponse<CreateDeliveryResponse>>
 {

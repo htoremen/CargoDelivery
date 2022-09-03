@@ -1,4 +1,4 @@
-﻿namespace Order.Application.Deliveries.CreateRefunds;
+﻿namespace Delivery.Application.Deliveries.CreateRefunds;
 
 public class CreateRefundResponse
 {

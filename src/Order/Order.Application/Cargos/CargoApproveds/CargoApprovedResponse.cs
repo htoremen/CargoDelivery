@@ -1,7 +1,8 @@
-﻿namespace Cargo.Application.Orders.OrderApproveds;
+﻿namespace Cargo.Application.Cargos.OrderApproveds;
 
 public class CargoApprovedResponse
 {
-    public Guid Id { get; set; }
+    public Guid CargoId { get; set; }
+    public Guid CorrelationId { get; set; }
 }
 

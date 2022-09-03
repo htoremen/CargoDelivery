@@ -1,7 +1,7 @@
 ﻿
 using MassTransit;
 
-namespace Order.Application.Deliveries.ShiftCompletions;
+namespace Delivery.Application.Deliveries.ShiftCompletions;
 
 public class ShiftCompletionCommand : IRequest<GenericResponse<ShiftCompletionResponse>>
 {

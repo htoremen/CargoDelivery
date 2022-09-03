@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 
-namespace Cargo.Application.Orders.OrderApproveds;
+namespace Cargo.Application.Cargos.OrderApproveds;
 
 public class CargoApprovedCommand : IRequest<GenericResponse<CargoApprovedResponse>>
 {
@@ -26,7 +26,7 @@ public class CargoApprovedCommandHandler : IRequestHandler<CargoApprovedCommand,
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
         }, cancellationToken);
-        var response = new CargoApprovedResponse { Id = request.CargoId };
+        var response = new CargoApprovedResponse { CargoId = request.CargoId };
 
         return GenericResponse<CargoApprovedResponse>.Success(response, 200);
     }

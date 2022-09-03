@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 
-namespace Order.Application.Orders.SendSelfies;
+namespace Cargo.Application.Cargos.SendSelfies;
 
 public class SendSelfieCommand : IRequest<GenericResponse<SendSelfieResponse>>
 {

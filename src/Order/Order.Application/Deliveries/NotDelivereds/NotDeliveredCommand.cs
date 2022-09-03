@@ -1,7 +1,7 @@
 ﻿using Deliveries;
 using MassTransit;
 
-namespace Order.Application.Deliveries.NotDelivereds;
+namespace Delivery.Application.Deliveries.NotDelivereds;
 
 public class NotDeliveredCommand : IRequest<GenericResponse<NotDeliveredResponse>>
 {

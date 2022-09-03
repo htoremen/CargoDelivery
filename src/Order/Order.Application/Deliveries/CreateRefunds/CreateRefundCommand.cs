@@ -1,7 +1,7 @@
 ﻿using Deliveries;
 using MassTransit;
 
-namespace Order.Application.Deliveries.CreateRefunds;
+namespace Delivery.Application.Deliveries.CreateRefunds;
 
 public class CreateRefundCommand : IRequest<GenericResponse<CreateRefundResponse>>
 {

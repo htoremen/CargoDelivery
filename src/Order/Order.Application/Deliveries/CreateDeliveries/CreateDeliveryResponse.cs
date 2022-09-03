@@ -1,4 +1,4 @@
-﻿namespace Order.Application.Deliveries.CreateDeliveries;
+﻿namespace Delivery.Application.Deliveries.CreateDeliveries;
 
 public class CreateDeliveryResponse
 {

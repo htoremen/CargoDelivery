@@ -1,7 +1,8 @@
-﻿using Cargo.Application.Orders.CreateOrders;
-using Cargo.Application.Orders.OrderApproveds;
+﻿using Cargo.Application.Cargos.CreateOrders;
+using Cargo.Application.Cargos.OrderApproveds;
+using Cargo.Application.Cargos.SendSelfies;
 using Microsoft.AspNetCore.Mvc;
-using Order.Application.Orders.SendSelfies;
+using Order.Application.Cargos.SendSelfieAgains;
 
 namespace Order.API.Controllers
 {
