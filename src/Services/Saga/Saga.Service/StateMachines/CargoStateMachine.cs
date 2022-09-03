@@ -33,7 +33,9 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
     public State NotDelivered { get; set; }
     public State CreateRefund { get; set; }
+
     public State DeliveryCompleted { get; set; }
+    public State ShiftCompletion { get; set; }
 
 
     public Event<ICreateCargo> CreateCargoEvent { get; private set; }
@@ -54,7 +56,9 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
     public Event<INotDelivered> NotDeliveredEvent { get; private set; }
     public Event<ICreateRefund> CreateRefundEvent { get; private set; }
+
     public Event<IDeliveryCompleted> DeliveryCompletedEvent { get; private set; }
+    public Event<IShiftCompletion> ShiftCompletionEvent { get; private set; }
 
 
     [Obsolete]
@@ -81,7 +85,9 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         Event(() => CreateDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => NotDeliveredEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CreateRefundEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+
         Event(() => DeliveryCompletedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => ShiftCompletionEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
         Initially(
             When(CreateCargoEvent)
@@ -305,6 +311,16 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                     CorrelationId = context.Instance.CorrelationId
                 })
            );
+
+        During(DeliveryCompleted,
+          When(ShiftCompletionEvent)
+              .TransitionTo(ShiftCompletion)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ShiftCompletion]}"), context => new ShiftCompletionCommand(context.Data.CorrelationId)
+               {
+                   CargoId = context.Instance.CargoId,
+                   CorrelationId = context.Instance.CorrelationId
+               })
+          );
 
         #endregion
 
