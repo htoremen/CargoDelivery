@@ -8,6 +8,7 @@ using Routes;
 using Saga.Application.Routes;
 using Deliveries;
 using Saga.Application.Deliveries;
+using Saga.Application.Payments;
 
 namespace Saga.Service.StateMachines;
 
@@ -23,8 +24,13 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public State AutoRoute { get; set; }
     public State ManuelRoute { get; set; }
 
+    // Delivery
     public State StartDelivery { get; set; }
     public State CreateDelivery { get; set; }
+    public State CardPayment { get; set; }
+    public State FreeDelivery { get; set; }
+    public State PayAtDoor { get; set; }
+
     public State NotDelivered { get; set; }
     public State CreateRefund { get; set; }
     public State DeliveryCompleted { get; set; }
@@ -42,6 +48,10 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
     public Event<IStartDelivery> StartDeliveryEvent { get; private set; }    
     public Event<ICreateDelivery> CreateDeliveryEvent { get; private set; }
+    public Event<ICreateDelivery> CardPaymentEvent { get; private set; }
+    public Event<ICreateDelivery> FreeDeliveryEvent { get; private set; }
+    public Event<ICreateDelivery> PayAtDoorEvent { get; private set; }
+
     public Event<INotDelivered> NotDeliveredEvent { get; private set; }
     public Event<ICreateRefund> CreateRefundEvent { get; private set; }
     public Event<IDeliveryCompleted> DeliveryCompletedEvent { get; private set; }
@@ -64,6 +74,10 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         Event(() => ManuelRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         
         Event(() => StartDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => CardPaymentEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => FreeDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => PayAtDoorEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+
         Event(() => CreateDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => NotDeliveredEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CreateRefundEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
@@ -167,6 +181,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         #endregion
 
+        #region Delivery
+
         #region Start Delivery
 
         During(StartDelivery,
@@ -193,8 +209,63 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                })
            );
 
+        #endregion
+
         #region CreateDelivery
 
+        During(CreateDelivery,
+          When(CardPaymentEvent)
+              .TransitionTo(CardPayment)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CardPayment]}"), context => new CardPaymentCommand(context.Data.CorrelationId)
+               {
+                   CargoId = context.Instance.CargoId,
+                   CorrelationId = context.Instance.CorrelationId
+               }),
+           When(FreeDeliveryEvent)
+              .TransitionTo(FreeDelivery)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.FreeDelivery]}"), context => new FreeDeliveryCommand(context.Data.CorrelationId)
+               {
+                   CargoId = context.Instance.CargoId,
+                   CorrelationId = context.Instance.CorrelationId
+               }),
+            When(PayAtDoorEvent)
+              .TransitionTo(PayAtDoor)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.PayAtDoor]}"), context => new PayAtDoorCommand(context.Data.CorrelationId)
+               {
+                   CargoId = context.Instance.CargoId,
+                   CorrelationId = context.Instance.CorrelationId
+               })
+          );
+
+        During(CardPayment,
+         When(DeliveryCompletedEvent)
+             .TransitionTo(DeliveryCompleted)
+              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DeliveryCompleted]}"), context => new DeliveryCompletedCommand(context.Data.CorrelationId)
+              {
+                  CargoId = context.Instance.CargoId,
+                  CorrelationId = context.Instance.CorrelationId
+              })
+         );
+
+        During(FreeDelivery,
+         When(DeliveryCompletedEvent)
+             .TransitionTo(DeliveryCompleted)
+              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DeliveryCompleted]}"), context => new DeliveryCompletedCommand(context.Data.CorrelationId)
+              {
+                  CargoId = context.Instance.CargoId,
+                  CorrelationId = context.Instance.CorrelationId
+              })
+         );
+
+        During(PayAtDoor,
+         When(DeliveryCompletedEvent)
+             .TransitionTo(DeliveryCompleted)
+              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DeliveryCompleted]}"), context => new DeliveryCompletedCommand(context.Data.CorrelationId)
+              {
+                  CargoId = context.Instance.CargoId,
+                  CorrelationId = context.Instance.CorrelationId
+              })
+         );
         #endregion
 
         #region NotDelivered
@@ -235,9 +306,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                 })
            );
 
-
         #endregion
-
 
         SetCompletedWhenFinalized();
     }
