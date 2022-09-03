@@ -47,5 +47,18 @@ namespace Order.API.Controllers
             });
             return Ok(response);
         }
+
+        [Route("shift-completion")]
+        [HttpPost]
+        public async Task<IActionResult> ShiftCompletion(Guid correlationId, Guid cargoId)
+        {
+            var response = await Mediator.Send(new ShiftCompletionCommand
+            {
+                CargoId = cargoId,
+                CorrelationId = correlationId
+
+            });
+            return Ok(response);
+        }
     }
 }
