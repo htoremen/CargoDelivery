@@ -1,8 +1,7 @@
-﻿using Cargo.Application.Cargos.CreateOrders;
-using Cargo.Application.Cargos.OrderApproveds;
+﻿using Cargo.Application.Cargos.CargoApprovals;
+using Cargo.Application.Cargos.CreateOrders;
 using Cargo.Application.Cargos.SendSelfies;
 using Microsoft.AspNetCore.Mvc;
-using Order.Application.Cargos.SendSelfieAgains;
 
 namespace Order.API.Controllers
 {
@@ -36,11 +35,11 @@ namespace Order.API.Controllers
             return Ok(response);
         }
 
-        [Route("cargo-approved")]
+        [Route("cargo-approval")]
         [HttpPost]
-        public async Task<IActionResult> CargoApproved(Guid correlationId)
+        public async Task<IActionResult> CargoApproval(Guid correlationId)
         {
-            var response = await Mediator.Send(new CargoApprovedCommand
+            var response = await Mediator.Send(new CargoApprovalCommand
             {
                 CargoId = Guid.NewGuid(),
                 CorrelationId = correlationId

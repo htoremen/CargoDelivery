@@ -17,7 +17,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 {
     public State CreateCargo { get; set; }
     public State SendSelfie { get; set; }
-    public State CargoApproved { get; set; }
+    public State CargoApproval { get; set; }
     public State CargoRejected { get; set; }
 
     public State StartRoute { get; set; }
@@ -41,7 +41,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
     public Event<ICreateCargo> CreateCargoEvent { get; private set; }
     public Event<ISendSelfie> SendSelfieEvent { get; private set; }
-    public Event<ICargoApproved> CargoApprovedEvent { get; private set; }
+    public Event<ICargoApproval> CargoApprovalEvent { get; private set; }
     public Event<ICargoRejected> CargoRejectedEvent { get; private set; }
 
     public Event<IStartRoute> StartRouteEvent { get; private set; }
@@ -70,7 +70,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CargoId, context => context.Message.CargoId).SelectId(s => Guid.NewGuid()));
         Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => CargoApprovedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
        
         Event(() => StartRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
@@ -126,15 +126,15 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
              }));
 
         During(SendSelfie,
-           When(CargoApprovedEvent)
-               .TransitionTo(CargoApproved)
-               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoApproved]}"), context => new CargoApprovedCommand(context.Data.CorrelationId)
+           When(CargoApprovalEvent)
+               .TransitionTo(CargoApproval)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoApproval]}"), context => new CargoApprovalCommand(context.Data.CorrelationId)
                {
                    CargoId = context.Instance.CargoId,
                    CorrelationId = context.Instance.CorrelationId
                }));
 
-        During(CargoApproved,
+        During(CargoApproval,
             When(StartRouteEvent)
                 .TransitionTo(StartRoute)
                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartRoute]}"), context => new StartRouteCommand(context.Data.CorrelationId)

@@ -33,7 +33,7 @@ public static class ConfigureServices
         {
             x.AddConsumer<CreateCargoConsumer>();
             x.AddConsumer<SendSelfieConsumer>();
-            x.AddConsumer<CargoApprovedConsumer>();
+            x.AddConsumer<CargoApprovalConsumer>();
             x.AddConsumer<CargoRejectedConsumer>();
             x.SetKebabCaseEndpointNameFormatter();
 
@@ -78,7 +78,7 @@ public static class ConfigureServices
                     e.ConfigureConsumer<SendSelfieConsumer>(context);
                 });
 
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoApproved], e =>
+                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoApproval], e =>
                 {
                     e.PrefetchCount = 1;
                     e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
@@ -89,7 +89,7 @@ public static class ConfigureServices
                         cb.ActiveThreshold = config.ActiveThreshold;
                         cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                     });
-                    e.ConfigureConsumer<CargoApprovedConsumer>(context);
+                    e.ConfigureConsumer<CargoApprovalConsumer>(context);
                 });
 
                 cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoRejected], e =>
