@@ -1,7 +1,6 @@
-﻿using Deliveries;
-using MassTransit;
+﻿using MassTransit;
 
-namespace Payment.Application.Payments.PayAtDoors;
+namespace Order.Application.Payments.PayAtDoors;
 
 public class PayAtDoorCommand : IRequest<GenericResponse<PayAtDoorResponse>>
 {
@@ -22,12 +21,12 @@ public class PayAtDoorCommandHandler : IRequestHandler<PayAtDoorCommand, Generic
 
     public async Task<GenericResponse<PayAtDoorResponse>> Handle(PayAtDoorCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IDeliveryCompleted>(new
+        await _sendEndpoint.Send<IPayAtDoor>(new
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
-
         }, cancellationToken);
-        return GenericResponse<PayAtDoorResponse>.Success(new PayAtDoorResponse { }, 200);
+        return GenericResponse<PayAtDoorResponse>.Success(new PayAtDoorResponse { CargoId = request.CargoId }, 200);
+
     }
 }

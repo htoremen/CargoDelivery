@@ -1,7 +1,6 @@
-﻿using Deliveries;
-using MassTransit;
+﻿using MassTransit;
 
-namespace Payment.Application.Payments.FreeDeliveries;
+namespace Order.Application.Payments.FreeDeliveries;
 
 public class FreeDeliveryCommand : IRequest<GenericResponse<FreeDeliveryResponse>>
 {
@@ -21,12 +20,12 @@ public class FreeDeliveryCommandHandler : IRequestHandler<FreeDeliveryCommand, G
 
     public async Task<GenericResponse<FreeDeliveryResponse>> Handle(FreeDeliveryCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IDeliveryCompleted>(new
+        await _sendEndpoint.Send<IFreeDelivery>(new
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
-
         }, cancellationToken);
-        return GenericResponse<FreeDeliveryResponse>.Success(new FreeDeliveryResponse { }, 200);
+        return GenericResponse<FreeDeliveryResponse>.Success(new FreeDeliveryResponse { CargoId = request.CargoId }, 200);
+
     }
 }

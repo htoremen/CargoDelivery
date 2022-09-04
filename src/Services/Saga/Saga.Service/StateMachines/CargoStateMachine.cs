@@ -207,7 +207,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateDelivery]}"), context => new CreateDeliveryCommand(context.Data.CorrelationId)
                {
                    CorrelationId = context.Instance.CorrelationId,
-                   CargoId = context.Instance.CargoId
+                   CargoId = context.Instance.CargoId,
+                   PaymentType = context.Instance.PaymentType
                }),
            When(NotDeliveredEvent)
                .TransitionTo(NotDelivered)
@@ -235,21 +236,24 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CardPayment]}"), context => new CardPaymentCommand(context.Data.CorrelationId)
                {
                    CargoId = context.Instance.CargoId,
-                   CorrelationId = context.Instance.CorrelationId
+                   CorrelationId = context.Instance.CorrelationId,
+                   PaymentType = context.Instance.PaymentType
                }),
            When(FreeDeliveryEvent)
               .TransitionTo(FreeDelivery)
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.FreeDelivery]}"), context => new FreeDeliveryCommand(context.Data.CorrelationId)
                {
                    CargoId = context.Instance.CargoId,
-                   CorrelationId = context.Instance.CorrelationId
+                   CorrelationId = context.Instance.CorrelationId,
+                   PaymentType = context.Instance.PaymentType
                }),
             When(PayAtDoorEvent)
               .TransitionTo(PayAtDoor)
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.PayAtDoor]}"), context => new PayAtDoorCommand(context.Data.CorrelationId)
                {
                    CargoId = context.Instance.CargoId,
-                   CorrelationId = context.Instance.CorrelationId
+                   CorrelationId = context.Instance.CorrelationId,
+                   PaymentType = context.Instance.PaymentType
                })
           );
 

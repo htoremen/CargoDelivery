@@ -1,4 +1,4 @@
-﻿using Deliveries;
+﻿using Enums;
 using MassTransit;
 
 namespace Delivery.Application.Deliveries.CreateDeliveries;
@@ -7,6 +7,7 @@ public class CreateDeliveryCommand : IRequest<GenericResponse<CreateDeliveryResp
 {
     public Guid CargoId { get; set; }
     public Guid CorrelationId { get; set; }
+    public PaymentType PaymentType { get; set; }
 }
 public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryCommand, GenericResponse<CreateDeliveryResponse>>
 {
@@ -24,8 +25,9 @@ public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryComman
         await _sendEndpoint.Send<ICreateDelivery>(new
         {
             CargoId = request.CargoId,
-            CorrelationId = request.CorrelationId
+            CorrelationId = request.CorrelationId,
+            PaymentType = request.PaymentType
         }, cancellationToken);
-        return GenericResponse<CreateDeliveryResponse>.Success(new CreateDeliveryResponse { CargoId = request.CargoId }, 200);
+        return GenericResponse<CreateDeliveryResponse>.Success(new CreateDeliveryResponse { CargoId = request.CargoId, CorrelationId = request.CorrelationId }, 200);
     }
 }

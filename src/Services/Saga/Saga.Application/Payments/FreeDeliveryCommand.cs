@@ -1,4 +1,6 @@
-﻿namespace Saga.Application.Payments;
+﻿using Enums;
+
+namespace Saga.Application.Payments;
 
 public class FreeDeliveryCommand : IFreeDelivery
 {
@@ -9,4 +11,5 @@ public class FreeDeliveryCommand : IFreeDelivery
     public Guid CargoId { get; set; }
 
     public Guid CorrelationId { get; set; }
+    public PaymentType PaymentType { get; set; }
 }

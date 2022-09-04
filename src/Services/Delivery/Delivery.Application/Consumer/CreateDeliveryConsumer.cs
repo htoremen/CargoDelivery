@@ -19,6 +19,7 @@ public class CreateDeliveryConsumer : IConsumer<ICreateDelivery>
         {
             CorrelationId = command.CorrelationId,
             CargoId = command.CargoId,
+            PaymentType = command.PaymentType,
         });
     }
 }

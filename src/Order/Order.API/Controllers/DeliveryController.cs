@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Delivery.Application.Deliveries.CreateDeliveries;
 using Delivery.Application.Deliveries.CreateRefunds;
 using Delivery.Application.Deliveries.NotDelivereds;
+using Enums;
 
 namespace Order.API.Controllers
 {
@@ -12,13 +13,13 @@ namespace Order.API.Controllers
     {
         [Route("create-delivery")]
         [HttpPost]
-        public async Task<IActionResult> CreateDelivery(Guid correlationId, Guid cargoId)
+        public async Task<IActionResult> CreateDelivery(Guid correlationId, Guid cargoId, PaymentType paymentType)
         {
             var response = await Mediator.Send(new CreateDeliveryCommand
             {
                 CargoId = cargoId,
-                CorrelationId = correlationId
-
+                CorrelationId = correlationId,
+                PaymentType = paymentType
             });
             return Ok(response);
         }

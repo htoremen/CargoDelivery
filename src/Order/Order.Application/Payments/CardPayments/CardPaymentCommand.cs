@@ -1,14 +1,12 @@
-﻿using Deliveries;
-using MassTransit;
+﻿using MassTransit;
 
-namespace Payment.Application.Payments.CardPayments;
+namespace Order.Application.Payments.CardPayments;
 
 public class CardPaymentCommand : IRequest<GenericResponse<CardPaymentResponse>>
 {
     public Guid CargoId { get; set; }
     public Guid CorrelationId { get; set; }
 }
-
 public class CardPaymentCommandHandler : IRequestHandler<CardPaymentCommand, GenericResponse<CardPaymentResponse>>
 {
     private readonly ISendEndpoint _sendEndpoint;
@@ -22,13 +20,12 @@ public class CardPaymentCommandHandler : IRequestHandler<CardPaymentCommand, Gen
 
     public async Task<GenericResponse<CardPaymentResponse>> Handle(CardPaymentCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IDeliveryCompleted>(new
+        await _sendEndpoint.Send<ICardPayment>(new
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
-
         }, cancellationToken);
-        return GenericResponse<CardPaymentResponse>.Success(new CardPaymentResponse { }, 200);
+        return GenericResponse<CardPaymentResponse>.Success(new CardPaymentResponse { CargoId = request.CargoId }, 200);
 
     }
 }

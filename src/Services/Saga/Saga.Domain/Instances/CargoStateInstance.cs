@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using Enums;
+using MassTransit;
 
 namespace Saga.Domain.Instances;
 
@@ -9,4 +10,5 @@ public class CargoStateInstance : SagaStateMachineInstance
     public Guid CargoId { get; set; }
     public Guid UserId { get; set; }
     public DateTime CreatedOn { get; set; }
+    public PaymentType PaymentType { get; set; }
 }

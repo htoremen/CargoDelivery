@@ -21,12 +21,16 @@ public class DeliveryCompletedCommandHandler : IRequestHandler<DeliveryCompleted
 
     public async Task<GenericResponse<DeliveryCompletedResponse>> Handle(DeliveryCompletedCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IStartDelivery>(new
+        var rnd = new Random();
+        if (rnd.Next(1, 1000) % 2 == 0)
         {
-            CargoId = request.CargoId,
-            CorrelationId = request.CorrelationId
+            await _sendEndpoint.Send<IStartDelivery>(new
+            {
+                CargoId = request.CargoId,
+                CorrelationId = request.CorrelationId
 
-        }, cancellationToken);
+            }, cancellationToken);
+        }
         return GenericResponse<DeliveryCompletedResponse>.Success(new DeliveryCompletedResponse { }, 200);
     }
 }
