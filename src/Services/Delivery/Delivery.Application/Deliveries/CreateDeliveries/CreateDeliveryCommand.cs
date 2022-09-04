@@ -27,7 +27,8 @@ public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryComman
             await _sendEndpoint.Send<ICardPayment>(new
             {
                 CargoId = request.CargoId,
-                CorrelationId = request.CorrelationId
+                CorrelationId = request.CorrelationId,
+                PaymentType = request.PaymentType
             }, cancellationToken);
         }
         else if (request.PaymentType == PaymentType.PayAtDoor)
@@ -35,7 +36,8 @@ public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryComman
             await _sendEndpoint.Send<IPayAtDoor>(new
             {
                 CargoId = request.CargoId,
-                CorrelationId = request.CorrelationId
+                CorrelationId = request.CorrelationId,
+                PaymentType = request.PaymentType
             }, cancellationToken);
         }
         else if (request.PaymentType == PaymentType.FreeDelivery)
@@ -43,7 +45,18 @@ public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryComman
             await _sendEndpoint.Send<IFreeDelivery>(new
             {
                 CargoId = request.CargoId,
-                CorrelationId = request.CorrelationId
+                CorrelationId = request.CorrelationId,
+                PaymentType = request.PaymentType
+            }, cancellationToken);
+        }
+        else
+        {
+            request.PaymentType = PaymentType.CardPayment;
+            await _sendEndpoint.Send<ICardPayment>(new
+            {
+                CargoId = request.CargoId,
+                CorrelationId = request.CorrelationId,
+                PaymentType = request.PaymentType
             }, cancellationToken);
         }
         return GenericResponse<CreateDeliveryResponse>.Success(new CreateDeliveryResponse { }, 200);
