@@ -1,13 +1,14 @@
 ﻿using System.Reflection;
 using Cargo.Application.Common.Behaviours;
-using Core.Domain.MessageBrokers;
-using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using Core.Infrastructure.MessageBrokers;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
+
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfigurationRoot configuration)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
@@ -17,21 +18,9 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
-        services.AddMessageBusSender<IStartRoute>();
-        services.AddMessageBusSender<ICargoRejected>();
+        services.AddMessageBusSender<IStartRoute>(null)
+                .AddMessageBusSender<ICargoRejected>(null);
 
-        return services;
-    }
-
-    public static IServiceCollection AddRabbitMQSender<T>(this IServiceCollection services)
-    {
-        services.AddSingleton<IMessageSender<T>, RabbitMQSender<T>>();
-        return services;
-    }
-
-    public static IServiceCollection AddMessageBusSender<T>(this IServiceCollection services, IHealthChecksBuilder healthChecksBuilder = null, HashSet<string> checkDulicated = null)
-    {
-        services.AddRabbitMQSender<T>();
         return services;
     }
 }
