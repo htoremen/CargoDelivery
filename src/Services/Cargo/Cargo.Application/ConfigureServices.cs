@@ -18,8 +18,12 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
-        services.AddMessageBusSender<IStartRoute>(null)
-                .AddMessageBusSender<ICargoRejected>(null);
+        services
+            .AddMessageBusSender<ICreateCargo>(null)
+            .AddMessageBusSender<ISendSelfie>(null)
+            .AddMessageBusSender<ICargoApproval>(null)
+            .AddMessageBusSender<ICargoRejected>(null)
+            .AddMessageBusSender<IStartRoute>(null);
 
         return services;
     }
