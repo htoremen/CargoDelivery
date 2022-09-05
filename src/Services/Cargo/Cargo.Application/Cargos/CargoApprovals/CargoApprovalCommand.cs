@@ -1,5 +1,4 @@
-﻿using Core.Domain.Enums;
-using Core.Domain.MessageBrokers;
+﻿using Core.Domain.MessageBrokers;
 
 namespace Cargo.Application.Cargos.CargoApprovals;
 
@@ -11,57 +10,28 @@ public class CargoApprovalCommand : IRequest<GenericResponse<CargoApprovalRespon
 
 public class CargoApprovalCommandHandler : IRequestHandler<CargoApprovalCommand, GenericResponse<CargoApprovalResponse>>
 {
-    private readonly IMessageSender<IStartRoute> _messageSender;
+    private readonly IMessageSender<IStartRoute> _startRoute;
+    private readonly IMessageSender<ICargoRejected> _cargoRejected;
 
-    public CargoApprovalCommandHandler(IMessageSender<IStartRoute> messageSender)
+    public CargoApprovalCommandHandler(IMessageSender<IStartRoute> startRoute, IMessageSender<ICargoRejected> cargoRejected)
     {
-       _messageSender = messageSender;
+        _startRoute = startRoute;
+        _cargoRejected = cargoRejected;
     }
 
     public async Task<GenericResponse<CargoApprovalResponse>> Handle(CargoApprovalCommand request, CancellationToken cancellationToken)
     {
-
-        await _messageSender.SendAsync(new StartRoute
+        await _startRoute.SendAsync(new StartRoute
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
         }, null, cancellationToken);
 
-        if (false)
-        {
-
-            //await _messageSender.SendAsync(new StartRoute
-            //{
-            //    CargoId = request.CargoId,
-            //    CorrelationId = request.CorrelationId
-            //}, null, cancellationToken);
-        }
-
-        //var rnd = new Random();
-        //if (rnd.Next(1, 1000) % 2 == 0)
+        //await _cargoRejected.SendAsync(new CargoRejected
         //{
-        //    await _sendEndpoint.Send<IStartRoute>(new
-        //    {
-        //        CargoId = request.CargoId,
-        //        CorrelationId = request.CorrelationId
-
-        //    }, cancellationToken);
-        //}
-        //else
-        //{
-        //    await _sendEndpoint.Send<IStartRoute>(new
-        //    {
-        //        CargoId = request.CargoId,
-        //        CorrelationId = request.CorrelationId
-
-        //    }, cancellationToken);
-
-        //    //await _sendEndpoint.Send<ICargoRejected>(new
-        //    //{
-        //    //    CargoId = request.CargoId,
-        //    //    CorrelationId = request.CorrelationId
-        //    //}, cancellationToken);
-        //}
+        //    CargoId = request.CargoId,
+        //    CorrelationId = request.CorrelationId
+        //}, null, cancellationToken);
 
         return GenericResponse<CargoApprovalResponse>.Success(new CargoApprovalResponse { }, 200);
     }

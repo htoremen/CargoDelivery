@@ -18,6 +18,7 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
         services.AddMessageBusSender<IStartRoute>();
+        services.AddMessageBusSender<ICargoRejected>();
 
         return services;
     }
