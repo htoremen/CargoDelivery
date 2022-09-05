@@ -35,36 +35,7 @@ public static class ConfigureServices
 
             x.SetKebabCaseEndpointNameFormatter();
 
-            x.UsingRabbitMq((context, cfg) =>
-            {
-                var mediator = context.GetRequiredService<IMediator>();
-                cfg.Host(config.RabbitMqHostUrl, config.VirtualHost, h =>
-                {
-                    h.Username(config.Username);
-                    h.Password(config.Password);
-                });
-
-                cfg.UseJsonSerializer();
-                cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
-                cfg.ConfigureEndpoints(context);
-
-                //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateSelfieFault], e =>
-                //{
-                //    e.PrefetchCount = 1;
-                //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                //    e.UseCircuitBreaker(cb =>
-                //    {
-                //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                //        cb.TripThreshold = config.TripThreshold;
-                //        cb.ActiveThreshold = config.ActiveThreshold;
-                //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                //    });
-
-                //    e.ConfigureConsumer<CreateSelfieFaultConsumer>(context);
-                //});
-
-
-            });
+            UsingRabbitMq(x, config);
         });
 
 
@@ -93,5 +64,40 @@ public static class ConfigureServices
 
         return services;
 
+    }
+
+    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, RabbitMqSettings config)
+    {
+
+        x.UsingRabbitMq((context, cfg) =>
+        {
+            var mediator = context.GetRequiredService<IMediator>();
+            cfg.Host(config.RabbitMqHostUrl, config.VirtualHost, h =>
+            {
+                h.Username(config.Username);
+                h.Password(config.Password);
+            });
+
+            cfg.UseJsonSerializer();
+            cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
+            cfg.ConfigureEndpoints(context);
+
+            //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateSelfieFault], e =>
+            //{
+            //    e.PrefetchCount = 1;
+            //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+            //    e.UseCircuitBreaker(cb =>
+            //    {
+            //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+            //        cb.TripThreshold = config.TripThreshold;
+            //        cb.ActiveThreshold = config.ActiveThreshold;
+            //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+            //    });
+
+            //    e.ConfigureConsumer<CreateSelfieFaultConsumer>(context);
+            //});
+
+
+        });
     }
 }
