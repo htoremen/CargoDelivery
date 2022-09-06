@@ -15,8 +15,8 @@ public static class MessageBrokersCollectionExtensions
 
     public static IServiceCollection AddMessageBusSender<T>(this IServiceCollection services, MessageBrokerOptions options, IHealthChecksBuilder healthChecksBuilder = null, HashSet<string> checkDulicated = null)
     {
-        //if (options.UsedRabbitMQ())
-       // {
+        if (options.UsedRabbitMQ())
+        {
             services.AddRabbitMQSender<T>();
 
             if (healthChecksBuilder != null)
@@ -33,31 +33,30 @@ public static class MessageBrokersCollectionExtensions
 
                 checkDulicated?.Add(name);
             }
-       // }
-     
-        //else if (options.UsedKafka())
-        //{
-        //    services.AddKafkaSender<T>(options.Kafka);
+        }
+        else if (options.UsedKafka())
+        {
+            //services.AddKafkaSender<T>(options.Kafka);
 
-        //    if (healthChecksBuilder != null)
-        //    {
-        //        var name = "Message Broker (Kafka)";
+            //if (healthChecksBuilder != null)
+            //{
+            //    var name = "Message Broker (Kafka)";
 
-        //        if (checkDulicated == null || !checkDulicated.Contains(name))
-        //        {
-        //            healthChecksBuilder.AddKafka(
-        //                setup =>
-        //                {
-        //                    setup.BootstrapServers = options.Kafka.BootstrapServers;
-        //                    setup.MessageTimeoutMs = 5000;
-        //                },
-        //                name: name,
-        //                failureStatus: HealthStatus.Degraded);
-        //        }
+            //    if (checkDulicated == null || !checkDulicated.Contains(name))
+            //    {
+            //        healthChecksBuilder.AddKafka(
+            //            setup =>
+            //            {
+            //                setup.BootstrapServers = options.Kafka.BootstrapServers;
+            //                setup.MessageTimeoutMs = 5000;
+            //            },
+            //            name: name,
+            //            failureStatus: HealthStatus.Degraded);
+            //    }
 
-        //        checkDulicated?.Add(name);
-        //    }
-        //}
+            //    checkDulicated?.Add(name);
+            //}
+        }
 
         return services;
     }
