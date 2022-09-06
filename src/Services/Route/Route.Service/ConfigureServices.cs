@@ -4,6 +4,7 @@ using MassTransit;
 using MediatR;
 using Core.Domain.Enums;
 using Route.Service.Services;
+using Core.Infrastructure;
 
 namespace Cargo.Service;
 
@@ -19,15 +20,10 @@ public static class ConfigureServices
     }
 
 
-    public static IServiceCollection AddEventBus(this IServiceCollection services, IConfigurationRoot configuration)
+    public static IServiceCollection AddEventBus(this IServiceCollection services, AppSettings appSettings)
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
-
-        var rabbitMqConfigurations = configuration.GetSection("RabbitMqSettings").Get<List<RabbitMqSettings>>();
-
-        var config = rabbitMqConfigurations.FirstOrDefault(y => y.Name == "MainHost");
-        if (config == null) throw new ArgumentNullException("MainHost section hasn't been found in the appsettings.");
-
+        var messageBroker = appSettings.MessageBroker;
 
         services.AddMassTransit<IEventBus>(x =>
         {
@@ -38,76 +34,8 @@ public static class ConfigureServices
 
             x.SetKebabCaseEndpointNameFormatter();
 
-            x.UsingRabbitMq((context, cfg) =>
-            {
-                var mediator = context.GetRequiredService<IMediator>();
-                cfg.Host(config.RabbitMqHostUrl, config.VirtualHost, h =>
-                {
-                    h.Username(config.Username);
-                    h.Password(config.Password);
-                });
-
-                cfg.UseJsonSerializer();
-                cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
-                cfg.ConfigureEndpoints(context);
-
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.RouteConfirmed], e =>
-                {
-                    e.PrefetchCount = 1;
-                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                    e.UseCircuitBreaker(cb =>
-                    {
-                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                        cb.TripThreshold = config.TripThreshold;
-                        cb.ActiveThreshold = config.ActiveThreshold;
-                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                    });
-                    e.ConfigureConsumer<RouteConfirmedConsumer>(context);
-                });
-
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.ManuelRoute], e =>
-                {
-                    e.PrefetchCount = 1;
-                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                    e.UseCircuitBreaker(cb =>
-                    {
-                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                        cb.TripThreshold = config.TripThreshold;
-                        cb.ActiveThreshold = config.ActiveThreshold;
-                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                    });
-                    e.ConfigureConsumer<ManuelRouteConsumer>(context);
-                });
-
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.AutoRoute], e =>
-                {
-                    e.PrefetchCount = 1;
-                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                    e.UseCircuitBreaker(cb =>
-                    {
-                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                        cb.TripThreshold = config.TripThreshold;
-                        cb.ActiveThreshold = config.ActiveThreshold;
-                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                    });
-                    e.ConfigureConsumer<AutoRouteConsumer>(context);
-                });
-
-
-                cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.StartRoute], e =>
-                {
-                    e.PrefetchCount = 1;
-                    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                    e.UseCircuitBreaker(cb =>
-                    {
-                        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                        cb.TripThreshold = config.TripThreshold;
-                        cb.ActiveThreshold = config.ActiveThreshold;
-                        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                    });
-                    e.ConfigureConsumer<StartRouteConsumer>(context);
-                });
-            });
+            if (messageBroker.UsedRabbitMQ())
+                UsingRabbitMq(x, messageBroker, queueConfiguration);
         });
 
         services.Configure<MassTransitHostOptions>(options =>
@@ -117,21 +45,99 @@ public static class ConfigureServices
             options.StopTimeout = TimeSpan.FromMinutes(1);
         });
 
-        var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
+        if (messageBroker.UsedRabbitMQ())
         {
-            cfg.Host(config.RabbitMqHostUrl, config.VirtualHost, h =>
+            var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                h.Username(config.Username);
-                h.Password(config.Password);
+                cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
+                {
+                    h.Username(messageBroker.RabbitMQ.UserName);
+                    h.Password(messageBroker.RabbitMQ.Password);
+                });
             });
-        });
 
-        services.AddSingleton<IPublishEndpoint>(bus);
-        services.AddSingleton<ISendEndpointProvider>(bus);
-        services.AddSingleton<IBus>(bus);
-        services.AddSingleton<IBusControl>(bus);
+            services.AddSingleton<IPublishEndpoint>(bus);
+            services.AddSingleton<ISendEndpointProvider>(bus);
+            services.AddSingleton<IBus>(bus);
+            services.AddSingleton<IBusControl>(bus);
+        }
 
         return services;
 
+    }
+
+    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    {
+        var config = messageBroker.RabbitMQ;
+        x.UsingRabbitMq((context, cfg) =>
+        {
+            var mediator = context.GetRequiredService<IMediator>();
+            cfg.Host(config.HostName, config.VirtualHost, h =>
+            {
+                h.Username(config.UserName);
+                h.Password(config.Password);
+            });
+
+            cfg.UseJsonSerializer();
+            cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
+            cfg.ConfigureEndpoints(context);
+
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.RouteConfirmed], e =>
+            {
+                e.PrefetchCount = 1;
+                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                e.UseCircuitBreaker(cb =>
+                {
+                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                    cb.TripThreshold = config.TripThreshold;
+                    cb.ActiveThreshold = config.ActiveThreshold;
+                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                });
+                e.ConfigureConsumer<RouteConfirmedConsumer>(context);
+            });
+
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.ManuelRoute], e =>
+            {
+                e.PrefetchCount = 1;
+                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                e.UseCircuitBreaker(cb =>
+                {
+                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                    cb.TripThreshold = config.TripThreshold;
+                    cb.ActiveThreshold = config.ActiveThreshold;
+                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                });
+                e.ConfigureConsumer<ManuelRouteConsumer>(context);
+            });
+
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.AutoRoute], e =>
+            {
+                e.PrefetchCount = 1;
+                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                e.UseCircuitBreaker(cb =>
+                {
+                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                    cb.TripThreshold = config.TripThreshold;
+                    cb.ActiveThreshold = config.ActiveThreshold;
+                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                });
+                e.ConfigureConsumer<AutoRouteConsumer>(context);
+            });
+
+
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.StartRoute], e =>
+            {
+                e.PrefetchCount = 1;
+                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                e.UseCircuitBreaker(cb =>
+                {
+                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                    cb.TripThreshold = config.TripThreshold;
+                    cb.ActiveThreshold = config.ActiveThreshold;
+                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                });
+                e.ConfigureConsumer<StartRouteConsumer>(context);
+            });
+        });
     }
 }
