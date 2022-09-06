@@ -1,5 +1,4 @@
 ﻿using Enums;
-using MassTransit;
 
 namespace Delivery.Application.Deliveries.CreateDeliveries;
 
@@ -11,23 +10,21 @@ public class CreateDeliveryCommand : IRequest<GenericResponse<CreateDeliveryResp
 }
 public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryCommand, GenericResponse<CreateDeliveryResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<ICreateDelivery> _createDelivery;
 
-    public CreateDeliveryCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public CreateDeliveryCommandHandler(IMessageSender<ICreateDelivery> createDelivery)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _createDelivery = createDelivery;
     }
 
     public async Task<GenericResponse<CreateDeliveryResponse>> Handle(CreateDeliveryCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<ICreateDelivery>(new
+        await _createDelivery.SendAsync(new CreateDelivery
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId,
             PaymentType = request.PaymentType
-        }, cancellationToken);
+        }, null, cancellationToken);
         return GenericResponse<CreateDeliveryResponse>.Success(new CreateDeliveryResponse { CargoId = request.CargoId, CorrelationId = request.CorrelationId }, 200);
     }
 }

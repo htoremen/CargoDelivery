@@ -9,22 +9,20 @@ public class AutoRouteCommand : IRequest<GenericResponse<AutoRouteResponse>>
 }
 public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, GenericResponse<AutoRouteResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<IAutoRoute> _autoRoute;
 
-    public AutoRouteCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public AutoRouteCommandHandler(IMessageSender<IAutoRoute> autoRoute)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _autoRoute = autoRoute;
     }
 
     public async Task<GenericResponse<AutoRouteResponse>> Handle(AutoRouteCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IAutoRoute>(new
+        await _autoRoute.SendAsync(new AutoRoute
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
-        }, cancellationToken);
+        }, null, cancellationToken);
         return GenericResponse<AutoRouteResponse>.Success(new AutoRouteResponse { CargoId = request.CargoId }, 200);
     }
 }

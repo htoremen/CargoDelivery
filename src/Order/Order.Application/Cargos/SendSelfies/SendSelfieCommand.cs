@@ -10,22 +10,20 @@ public class SendSelfieCommand : IRequest<GenericResponse<SendSelfieResponse>>
 
 public class SendSelfieCommandHandler : IRequestHandler<SendSelfieCommand, GenericResponse<SendSelfieResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<ISendSelfie> _sendSelfie;
 
-    public SendSelfieCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public SendSelfieCommandHandler(IMessageSender<ISendSelfie> sendSelfie)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _sendSelfie = sendSelfie;
     }
 
     public async Task<GenericResponse<SendSelfieResponse>> Handle(SendSelfieCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<ISendSelfie>(new
+        await _sendSelfie.SendAsync(new SendSelfie
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
-        }, cancellationToken);
+        }, null, cancellationToken);
         var response = new SendSelfieResponse { Id = request.CargoId };
 
         return GenericResponse<SendSelfieResponse>.Success(response, 200);

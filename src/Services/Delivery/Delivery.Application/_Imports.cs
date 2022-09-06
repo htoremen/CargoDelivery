@@ -7,3 +7,4 @@ global using Core.Domain.Models;
 global using Routes;
 global using Deliveries;
 global using Core.Domain.Enums;
+global using Core.Domain.MessageBrokers;

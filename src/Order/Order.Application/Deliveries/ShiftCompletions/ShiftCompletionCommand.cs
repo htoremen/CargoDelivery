@@ -1,7 +1,4 @@
-﻿
-using MassTransit;
-
-namespace Delivery.Application.Deliveries.ShiftCompletions;
+﻿namespace Delivery.Application.Deliveries.ShiftCompletions;
 
 public class ShiftCompletionCommand : IRequest<GenericResponse<ShiftCompletionResponse>>
 {
@@ -9,25 +6,22 @@ public class ShiftCompletionCommand : IRequest<GenericResponse<ShiftCompletionRe
     public Guid CorrelationId { get; set; }
 }
 
-
 public class ShiftCompletionCommandHandler : IRequestHandler<ShiftCompletionCommand, GenericResponse<ShiftCompletionResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<IShiftCompletion> _shiftCompletion;
 
-    public ShiftCompletionCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public ShiftCompletionCommandHandler(IMessageSender<IShiftCompletion> shiftCompletion)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _shiftCompletion = shiftCompletion;
     }
 
     public async Task<GenericResponse<ShiftCompletionResponse>> Handle(ShiftCompletionCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IShiftCompletion>(new
+        await _shiftCompletion.SendAsync(new ShiftCompletion
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
-        }, cancellationToken);
+        }, null, cancellationToken);
         return GenericResponse<ShiftCompletionResponse>.Success(new ShiftCompletionResponse { CargoId = request.CargoId }, 200);
     }
 }

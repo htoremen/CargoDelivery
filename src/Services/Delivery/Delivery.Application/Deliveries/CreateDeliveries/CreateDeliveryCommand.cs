@@ -1,4 +1,5 @@
-﻿using Enums;
+﻿
+using Enums;
 using Payments;
 
 namespace Delivery.Application.Deliveries.CreateDeliveries;
@@ -11,53 +12,55 @@ public class CreateDeliveryCommand : IRequest<GenericResponse<CreateDeliveryResp
 }
 public class CreateDeliveryCommandHandler : IRequestHandler<CreateDeliveryCommand, GenericResponse<CreateDeliveryResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<ICardPayment> _cardPayment;
+    private readonly IMessageSender<IPayAtDoor> _payAtDoor;
+    private readonly IMessageSender<IFreeDelivery> _freeDelivery;
 
-    public CreateDeliveryCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public CreateDeliveryCommandHandler(IMessageSender<ICardPayment> cardPayment, IMessageSender<IPayAtDoor> payAtDoor, IMessageSender<IFreeDelivery> freeDelivery)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _cardPayment = cardPayment;
+        _payAtDoor = payAtDoor;
+        _freeDelivery = freeDelivery;
     }
 
     public async Task<GenericResponse<CreateDeliveryResponse>> Handle(CreateDeliveryCommand request, CancellationToken cancellationToken)
     {
         if (request.PaymentType == PaymentType.CardPayment)
         {
-            await _sendEndpoint.Send<ICardPayment>(new
+            await _cardPayment.SendAsync(new CardPayment
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId,
                 PaymentType = request.PaymentType
-            }, cancellationToken);
+            }, null, cancellationToken);
         }
         else if (request.PaymentType == PaymentType.PayAtDoor)
         {
-            await _sendEndpoint.Send<IPayAtDoor>(new
+            await _payAtDoor.SendAsync(new PayAtDoor
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId,
                 PaymentType = request.PaymentType
-            }, cancellationToken);
+            }, null, cancellationToken);
         }
         else if (request.PaymentType == PaymentType.FreeDelivery)
         {
-            await _sendEndpoint.Send<IFreeDelivery>(new
+            await _freeDelivery.SendAsync(new FreeDelivery
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId,
                 PaymentType = request.PaymentType
-            }, cancellationToken);
+            }, null, cancellationToken);
         }
         else
         {
             request.PaymentType = PaymentType.CardPayment;
-            await _sendEndpoint.Send<ICardPayment>(new
+            await _cardPayment.SendAsync(new CardPayment
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId,
                 PaymentType = request.PaymentType
-            }, cancellationToken);
+            }, null, cancellationToken);
         }
         return GenericResponse<CreateDeliveryResponse>.Success(new CreateDeliveryResponse { }, 200);
     }

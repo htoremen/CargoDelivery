@@ -10,22 +10,20 @@ public class ManuelRouteCommand : IRequest<GenericResponse<ManuelRouteResponse>>
 
 public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, GenericResponse<ManuelRouteResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<IManuelRoute> _manuelRoute;
 
-    public ManuelRouteCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public ManuelRouteCommandHandler(IMessageSender<IManuelRoute> manuelRoute)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _manuelRoute = manuelRoute;
     }
 
     public async Task<GenericResponse<ManuelRouteResponse>> Handle(ManuelRouteCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IManuelRoute>(new
+        await _manuelRoute.SendAsync(new ManuelRoute
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
-        }, cancellationToken);
+        }, null, cancellationToken);
         return GenericResponse<ManuelRouteResponse>.Success(new ManuelRouteResponse { CargoId = request.CargoId }, 200);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Routes;
+﻿namespace Deliveries;
 
 public interface IStartDelivery
 {

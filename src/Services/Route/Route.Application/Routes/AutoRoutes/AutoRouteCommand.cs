@@ -1,4 +1,6 @@
-﻿namespace Route.Application.Routes.AutoRoutes;
+﻿using Deliveries;
+
+namespace Route.Application.Routes.AutoRoutes;
 
 public class AutoRouteCommand : IRequest<GenericResponse<AutoRouteResponse>>
 {

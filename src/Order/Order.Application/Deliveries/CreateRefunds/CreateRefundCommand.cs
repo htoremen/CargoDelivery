@@ -1,7 +1,4 @@
-﻿using Deliveries;
-using MassTransit;
-
-namespace Delivery.Application.Deliveries.CreateRefunds;
+﻿namespace Delivery.Application.Deliveries.CreateRefunds;
 
 public class CreateRefundCommand : IRequest<GenericResponse<CreateRefundResponse>>
 {
@@ -11,22 +8,20 @@ public class CreateRefundCommand : IRequest<GenericResponse<CreateRefundResponse
 
 public class CreateRefundCommandHandler : IRequestHandler<CreateRefundCommand, GenericResponse<CreateRefundResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<ICreateRefund> _createRefund;
 
-    public CreateRefundCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public CreateRefundCommandHandler(IMessageSender<ICreateRefund> createRefund)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _createRefund = createRefund;
     }
 
     public async Task<GenericResponse<CreateRefundResponse>> Handle(CreateRefundCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<ICreateRefund>(new
+        await _createRefund.SendAsync(new CreateRefund
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
-        }, cancellationToken);
+        }, null, cancellationToken);
         return GenericResponse<CreateRefundResponse>.Success(new CreateRefundResponse { CargoId = request.CargoId }, 200);
 
     }

@@ -10,22 +10,20 @@ public class RouteConfirmedCommand : IRequest<GenericResponse<RouteConfirmedResp
 
 public class RouteConfirmedCommandHandler : IRequestHandler<RouteConfirmedCommand, GenericResponse<RouteConfirmedResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<IRouteConfirmed> _routeConfirmed;
 
-    public RouteConfirmedCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public RouteConfirmedCommandHandler(IMessageSender<IRouteConfirmed> routeConfirmed)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _routeConfirmed = routeConfirmed;
     }
 
     public async Task<GenericResponse<RouteConfirmedResponse>> Handle(RouteConfirmedCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IRouteConfirmed>(new
+        await _routeConfirmed.SendAsync(new RouteConfirmed
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
-        }, cancellationToken);
+        }, null, cancellationToken);
         return GenericResponse<RouteConfirmedResponse>.Success(new RouteConfirmedResponse { CargoId = request.CargoId }, 200);
     }
 }

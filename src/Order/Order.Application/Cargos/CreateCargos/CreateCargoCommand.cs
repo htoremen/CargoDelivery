@@ -1,7 +1,4 @@
-﻿
-using MassTransit;
-
-namespace Cargo.Application.Cargos.CreateOrders;
+﻿namespace Cargo.Application.Cargos.CreateOrders;
 
 public class CreateCargoCommand : IRequest<CreateCargoResponse>
 {
@@ -13,23 +10,21 @@ public class CreateCargoCommand : IRequest<CreateCargoResponse>
 
 public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, CreateCargoResponse>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<ICreateCargo> _createCargo;
 
-    public CreateCargoCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public CreateCargoCommandHandler(IMessageSender<ICreateCargo> createCargo)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _createCargo = createCargo;
     }
 
     public async Task<CreateCargoResponse> Handle(CreateCargoCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<ICreateCargo>(new
+        await _createCargo.SendAsync(new CreateCargo
         {
             CustomerId = request.CustomerId,
             CargoId = request.CargoId,
             ProductId = request.ProductId
-        }, cancellationToken);
+        }, null, cancellationToken);
         return new CreateCargoResponse { Id = request.Id, CargoId = request.CargoId };
     }
 }
