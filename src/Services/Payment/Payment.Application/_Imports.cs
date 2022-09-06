@@ -6,3 +6,4 @@ global using Payments;
 global using Routes;
 global using Core.Domain.Enums;
 global using Core.Domain.Models;
+global using Core.Domain.MessageBrokers;

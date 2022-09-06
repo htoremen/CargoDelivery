@@ -1,4 +1,5 @@
-﻿using Deliveries;
+﻿
+using Deliveries;
 using MassTransit;
 
 namespace Payment.Application.Payments.CardPayments;
@@ -11,23 +12,21 @@ public class CardPaymentCommand : IRequest<GenericResponse<CardPaymentResponse>>
 
 public class CardPaymentCommandHandler : IRequestHandler<CardPaymentCommand, GenericResponse<CardPaymentResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
 
-    public CardPaymentCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public CardPaymentCommandHandler(IMessageSender<IDeliveryCompleted> deliveryCompleted)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _deliveryCompleted = deliveryCompleted;
     }
 
     public async Task<GenericResponse<CardPaymentResponse>> Handle(CardPaymentCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IDeliveryCompleted>(new
+        await _deliveryCompleted.SendAsync(new DeliveryCompleted
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
 
-        }, cancellationToken);
+        }, null, cancellationToken);
         return GenericResponse<CardPaymentResponse>.Success(new CardPaymentResponse { }, 200);
 
     }

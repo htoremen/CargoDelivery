@@ -1,11 +1,5 @@
-﻿using Cargos;
-using Core.Domain.Enums;
+﻿using Core.Domain.MessageBrokers;
 using Deliveries;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Route.Application.Routes.ManuelRoutes;
 
@@ -16,13 +10,13 @@ public class ManuelRouteCommand : IRequest<GenericResponse<ManuelRouteResponse>>
 }
 public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, GenericResponse<ManuelRouteResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<ICargoApproval> _cargoApproval;
+    private readonly IMessageSender<IStartDelivery> _startDelivery;
 
-    public ManuelRouteCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public ManuelRouteCommandHandler(IMessageSender<ICargoApproval> cargoApproval, IMessageSender<IStartDelivery> startDelivery)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _cargoApproval = cargoApproval;
+        _startDelivery = startDelivery;
     }
 
     public async Task<GenericResponse<ManuelRouteResponse>> Handle(ManuelRouteCommand request, CancellationToken cancellationToken)
@@ -30,20 +24,20 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
         var rnd = new Random();
         if (rnd.Next(1, 1000) % 2 == 0)
         {
-            await _sendEndpoint.Send<ICargoApproval>(new
+            await _cargoApproval.SendAsync(new CargoApproval
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId
 
-            }, cancellationToken);
+            }, null, cancellationToken);
         }
         else
         {
-            await _sendEndpoint.Send<IStartDelivery>(new
+            await _startDelivery.SendAsync(new StartDelivery
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId
-            }, cancellationToken);
+            }, null, cancellationToken);
         }
 
         return GenericResponse<ManuelRouteResponse>.Success(new ManuelRouteResponse { }, 200);

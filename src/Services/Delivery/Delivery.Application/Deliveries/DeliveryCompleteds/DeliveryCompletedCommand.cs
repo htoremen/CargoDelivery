@@ -10,13 +10,11 @@ public class DeliveryCompletedCommand : IRequest<GenericResponse<DeliveryComplet
 
 public class DeliveryCompletedCommandHandler : IRequestHandler<DeliveryCompletedCommand, GenericResponse<DeliveryCompletedResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<IStartDelivery> _startDelivery;
 
-    public DeliveryCompletedCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public DeliveryCompletedCommandHandler(IMessageSender<IStartDelivery> startDelivery)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _startDelivery = startDelivery;
     }
 
     public async Task<GenericResponse<DeliveryCompletedResponse>> Handle(DeliveryCompletedCommand request, CancellationToken cancellationToken)
@@ -24,12 +22,12 @@ public class DeliveryCompletedCommandHandler : IRequestHandler<DeliveryCompleted
         var rnd = new Random();
         if (rnd.Next(1, 1000) % 2 == 0)
         {
-            await _sendEndpoint.Send<IStartDelivery>(new
+            await _startDelivery.SendAsync(new StartDelivery
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId
 
-            }, cancellationToken);
+            }, null, cancellationToken);
         }
         return GenericResponse<DeliveryCompletedResponse>.Success(new DeliveryCompletedResponse { }, 200);
     }

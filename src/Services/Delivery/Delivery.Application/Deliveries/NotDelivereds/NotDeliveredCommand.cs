@@ -8,23 +8,21 @@ public class NotDeliveredCommand : IRequest<GenericResponse<NotDeliveredResponse
 
 public class NotDeliveredCommandHandler : IRequestHandler<NotDeliveredCommand, GenericResponse<NotDeliveredResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
 
-    public NotDeliveredCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public NotDeliveredCommandHandler(IMessageSender<IDeliveryCompleted> deliveryCompleted)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _deliveryCompleted = deliveryCompleted;
     }
 
     public async Task<GenericResponse<NotDeliveredResponse>> Handle(NotDeliveredCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IDeliveryCompleted>(new
+        await _deliveryCompleted.SendAsync(new DeliveryCompleted
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
 
-        }, cancellationToken);
+        }, null, cancellationToken);
         return GenericResponse<NotDeliveredResponse>.Success(new NotDeliveredResponse { }, 200);
     }
 }

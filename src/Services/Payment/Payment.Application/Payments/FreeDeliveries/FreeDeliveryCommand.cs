@@ -10,23 +10,20 @@ public class FreeDeliveryCommand : IRequest<GenericResponse<FreeDeliveryResponse
 }
 public class FreeDeliveryCommandHandler : IRequestHandler<FreeDeliveryCommand, GenericResponse<FreeDeliveryResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
 
-    public FreeDeliveryCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public FreeDeliveryCommandHandler(IMessageSender<IDeliveryCompleted> deliveryCompleted)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _deliveryCompleted = deliveryCompleted;
     }
-
     public async Task<GenericResponse<FreeDeliveryResponse>> Handle(FreeDeliveryCommand request, CancellationToken cancellationToken)
     {
-        await _sendEndpoint.Send<IDeliveryCompleted>(new
+        await _deliveryCompleted.SendAsync(new DeliveryCompleted
         {
             CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
 
-        }, cancellationToken);
+        }, null, cancellationToken);
         return GenericResponse<FreeDeliveryResponse>.Success(new FreeDeliveryResponse { }, 200);
     }
 }

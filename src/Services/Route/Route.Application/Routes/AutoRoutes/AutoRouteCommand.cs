@@ -1,4 +1,5 @@
-﻿using Deliveries;
+﻿using Core.Domain.MessageBrokers;
+using Deliveries;
 
 namespace Route.Application.Routes.AutoRoutes;
 
@@ -10,13 +11,13 @@ public class AutoRouteCommand : IRequest<GenericResponse<AutoRouteResponse>>
 
 public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, GenericResponse<AutoRouteResponse>>
 {
-    private readonly ISendEndpoint _sendEndpoint;
-    private readonly IQueueConfiguration _queueConfiguration;
+    private readonly IMessageSender<IStartDelivery> _startDelivery;
+    private readonly IMessageSender<ICargoApproval> _cargoApproval;
 
-    public AutoRouteCommandHandler(ISendEndpointProvider sendEndpointProvider, IQueueConfiguration queueConfiguration)
+    public AutoRouteCommandHandler(IMessageSender<IStartDelivery> startDelivery, IMessageSender<ICargoApproval> cargoApproval)
     {
-        _queueConfiguration = queueConfiguration;
-        _sendEndpoint = sendEndpointProvider.GetSendEndpoint(new($"queue:{_queueConfiguration.Names[QueueName.CargoSaga]}")).Result;
+        _startDelivery = startDelivery;
+        _cargoApproval = cargoApproval;
     }
 
     public async Task<GenericResponse<AutoRouteResponse>> Handle(AutoRouteCommand request, CancellationToken cancellationToken)
@@ -30,19 +31,19 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
             //    CorrelationId = request.CorrelationId
 
             //}, cancellationToken);
-            await _sendEndpoint.Send<IStartDelivery>(new
-            {
+            await _startDelivery.SendAsync(new StartDelivery
+            { 
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId
-            }, cancellationToken);
+            }, null, cancellationToken);
         }
         else
         {
-            await _sendEndpoint.Send<IStartDelivery>(new
+            await _startDelivery.SendAsync(new StartDelivery
             {
                 CargoId = request.CargoId,
                 CorrelationId = request.CorrelationId
-            }, cancellationToken);
+            }, null, cancellationToken);
         }
 
         return GenericResponse<AutoRouteResponse>.Success(new AutoRouteResponse { }, 200);
