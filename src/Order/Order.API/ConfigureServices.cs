@@ -6,6 +6,7 @@ using Core.Infrastructure.MessageBrokers;
 using MassTransit;
 using MediatR;
 using Order.API.Services;
+using System.Reflection;
 
 namespace Order.API;
 
@@ -24,7 +25,6 @@ public static class ConfigureServices
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
         var messageBroker = appSettings.MessageBroker;
-
         services.AddMassTransit<IEventBus>(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
@@ -34,8 +34,16 @@ public static class ConfigureServices
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
             }
 
-            x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie?bind=true"));
+            //x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
         });
+
+        services.AddMediator(cfg =>
+        {
+            cfg.AddConsumers(Assembly.GetExecutingAssembly());
+            cfg.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
+        });
+
+
 
 
         services.Configure<MassTransitHostOptions>(options =>
@@ -44,8 +52,6 @@ public static class ConfigureServices
             options.StartTimeout = TimeSpan.FromSeconds(30);
             options.StopTimeout = TimeSpan.FromMinutes(1);
         });
-
-        //services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
         if (messageBroker.UsedRabbitMQ())
         {

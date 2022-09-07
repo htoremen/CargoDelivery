@@ -15,6 +15,8 @@ namespace Saga.Service.StateMachines;
 
 public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 {
+    #region States
+
     public State CreateCargo { get; set; }
     public State SendSelfie { get; set; }
     public State CargoApproval { get; set; }
@@ -38,6 +40,9 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public State DeliveryCompleted { get; set; }
     public State ShiftCompletion { get; set; }
 
+    #endregion
+
+    #region Events
 
     public Event<ICreateCargo> CreateCargoEvent { get; private set; }
     public Event<ISendSelfie> SendSelfieEvent { get; private set; }
@@ -61,6 +66,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public Event<IDeliveryCompleted> DeliveryCompletedEvent { get; private set; }
     public Event<IShiftCompletion> ShiftCompletionEvent { get; private set; }
 
+    #endregion
 
     [Obsolete]
     public CargoStateMachine()
@@ -68,16 +74,18 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         QueueConfigurationExtensions.AddQueueConfiguration(null, out IQueueConfiguration queueConfiguration);
         InstanceState(instance => instance.CurrentState);
 
+        #region Event
+
         Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CargoId, context => context.Message.CargoId).SelectId(s => Guid.NewGuid()));
         Event(() => SendSelfieEvent, instance => { instance.CorrelateById(selector => selector.Message.CorrelationId); instance.ReadOnly = true; });
         Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-       
+
         Event(() => StartRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => RouteConfirmedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => AutoRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => ManuelRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        
+
         Event(() => StartDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CardPaymentEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => FreeDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
@@ -89,6 +97,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         Event(() => DeliveryCompletedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => ShiftCompletionEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+
+        #endregion
 
         Initially(
             When(CreateCargoEvent)
@@ -333,7 +343,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                {
                    CargoId = context.Instance.CargoId,
                    CorrelationId = context.Instance.CorrelationId
-               })
+               }).Finalize()
           );
 
         #endregion

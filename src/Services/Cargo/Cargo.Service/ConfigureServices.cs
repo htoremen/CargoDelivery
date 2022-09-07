@@ -6,6 +6,7 @@ using Cargo.Service.Services;
 using Core.Domain.Enums;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
+using Cargos;
 
 namespace Cargo.Service;
 
@@ -32,6 +33,8 @@ public static class ConfigureServices
             x.AddConsumer<SendSelfieConsumer>();
             x.AddConsumer<CargoApprovalConsumer>();
             x.AddConsumer<CargoRejectedConsumer>();
+
+            x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
             x.SetKebabCaseEndpointNameFormatter();
 
             if(messageBroker.UsedRabbitMQ())
