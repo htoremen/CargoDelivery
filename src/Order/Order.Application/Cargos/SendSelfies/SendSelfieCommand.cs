@@ -11,14 +11,18 @@ public class SendSelfieCommand : IRequest<GenericResponse<SendSelfieResponse>>
 public class SendSelfieCommandHandler : IRequestHandler<SendSelfieCommand, GenericResponse<SendSelfieResponse>>
 {
     private readonly IMessageSender<ISendSelfie> _sendSelfie;
+    private readonly IRequestClient<ISendSelfie> _sendSelfieClient;
 
-    public SendSelfieCommandHandler(IMessageSender<ISendSelfie> sendSelfie)
+    public SendSelfieCommandHandler(IMessageSender<ISendSelfie> sendSelfie, IRequestClient<ISendSelfie> sendSelfieClient)
     {
         _sendSelfie = sendSelfie;
+        _sendSelfieClient = sendSelfieClient;
     }
 
     public async Task<GenericResponse<SendSelfieResponse>> Handle(SendSelfieCommand request, CancellationToken cancellationToken)
     {
+        //var data = await _sendSelfieClient.GetResponse<ISendSelfie>(new { CorrelationId = request.CorrelationId });
+
         await _sendSelfie.SendAsync(new SendSelfie
         {
             CargoId = request.CargoId,

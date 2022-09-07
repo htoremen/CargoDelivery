@@ -1,6 +1,8 @@
 ﻿using Cargo.Application.Cargos.CargoApprovals;
 using Cargo.Application.Cargos.CreateOrders;
 using Cargo.Application.Cargos.SendSelfies;
+using Cargos;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Order.API.Controllers

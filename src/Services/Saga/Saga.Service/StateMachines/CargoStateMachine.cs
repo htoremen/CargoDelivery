@@ -69,7 +69,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         InstanceState(instance => instance.CurrentState);
 
         Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CargoId, context => context.Message.CargoId).SelectId(s => Guid.NewGuid()));
-        Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => SendSelfieEvent, instance => { instance.CorrelateById(selector => selector.Message.CorrelationId); instance.ReadOnly = true; });
         Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
        

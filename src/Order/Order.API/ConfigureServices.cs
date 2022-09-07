@@ -1,12 +1,11 @@
-﻿using Core.Domain;
+﻿using Cargos;
+using Core.Domain;
 using Core.Domain.Bus;
-using Core.Domain.Enums;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using MassTransit;
 using MediatR;
 using Order.API.Services;
-using Order.Application.FaultConsumer;
 
 namespace Order.API;
 
@@ -31,7 +30,11 @@ public static class ConfigureServices
             x.SetKebabCaseEndpointNameFormatter();
 
             if (messageBroker.UsedRabbitMQ())
+            {
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
+            }
+
+            x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie?bind=true"));
         });
 
 
