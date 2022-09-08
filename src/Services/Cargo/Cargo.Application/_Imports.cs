@@ -5,3 +5,5 @@ global using MediatR;
 global using Cargos;
 global using MassTransit;
 global using Core.Domain.Models;
+global using Cargo.Application.Common.Interfaces;
+global using Cargo.Domain.Entities;

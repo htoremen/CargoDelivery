@@ -77,7 +77,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.Application", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.Infrastructure", "src\Services\Payment\Payment.Infrastructure\Payment.Infrastructure.csproj", "{1C68F6D6-01B7-4959-A1FB-23674C3D4992}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Infrastructure", "src\Core\Core.Infrastructure\Core.Infrastructure.csproj", "{BCCED789-2088-468C-91F5-AB46261BFFD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Infrastructure", "src\Core\Core.Infrastructure\Core.Infrastructure.csproj", "{BCCED789-2088-468C-91F5-AB46261BFFD6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F553AEF6-C67F-4AC7-BC54-4F207CC9D49F}"
+	ProjectSection(SolutionItems) = preProject
+		Content.txt = Content.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

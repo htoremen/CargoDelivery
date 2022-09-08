@@ -2,10 +2,8 @@
 
 public class CreateCargoCommand : IRequest<CreateCargoResponse>
 {
-    public Guid Id { get; set; }
-    public Guid CargoId { get; set; }
-    public Guid CustomerId { get; set; }
-    public Guid ProductId { get; set; }
+    public Guid DebitId { get; set; }
+    public Guid CourierId { get; set; }
 }
 
 public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, CreateCargoResponse>
@@ -21,10 +19,9 @@ public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, Cre
     {
         await _createCargo.SendAsync(new CreateCargo
         {
-            CustomerId = request.CustomerId,
-            CargoId = request.CargoId,
-            ProductId = request.ProductId
+            DebitId = request.DebitId,
+            CourierId = request.CourierId
         }, null, cancellationToken);
-        return new CreateCargoResponse { Id = request.Id, CargoId = request.CargoId };
+        return new CreateCargoResponse { DebitId = request.DebitId, CourierId = request.CourierId };
     }
 }

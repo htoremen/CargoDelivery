@@ -30,21 +30,8 @@ public static class ConfigureServices
             x.SetKebabCaseEndpointNameFormatter();
 
             if (messageBroker.UsedRabbitMQ())
-            {
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
-            }
-
-            //x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
         });
-
-        services.AddMediator(cfg =>
-        {
-            cfg.AddConsumers(Assembly.GetExecutingAssembly());
-            cfg.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
-        });
-
-
-
 
         services.Configure<MassTransitHostOptions>(options =>
         {

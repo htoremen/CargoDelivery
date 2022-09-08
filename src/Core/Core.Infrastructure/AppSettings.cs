@@ -5,6 +5,7 @@ namespace Core.Infrastructure;
 public class AppSettings
 {
     public MessageBrokerOptions MessageBroker { get; set; }
+    public ConnectionStrings ConnectionStrings { get; set; }
 }
 
 

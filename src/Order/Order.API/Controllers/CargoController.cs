@@ -1,8 +1,6 @@
 ﻿using Cargo.Application.Cargos.CargoApprovals;
 using Cargo.Application.Cargos.CreateOrders;
 using Cargo.Application.Cargos.SendSelfies;
-using Cargos;
-using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Order.API.Controllers
@@ -17,10 +15,8 @@ namespace Order.API.Controllers
         {
             var response = await Mediator.Send(new CreateCargoCommand
             {
-                CargoId = Guid.NewGuid(),   
-                Id = Guid.NewGuid(),
-                CustomerId = Guid.NewGuid(),
-                ProductId= Guid.NewGuid(),
+                CourierId = Guid.NewGuid(),   
+                DebitId = Guid.NewGuid()
             });
             return Ok(response);
         }

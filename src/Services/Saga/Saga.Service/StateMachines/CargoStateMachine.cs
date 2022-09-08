@@ -76,7 +76,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         #region Event
 
-        Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CargoId, context => context.Message.CargoId).SelectId(s => Guid.NewGuid()));
+        Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CargoId, context => context.Message.DebitId).SelectId(s => Guid.NewGuid()));
         Event(() => SendSelfieEvent, instance => { instance.CorrelateById(selector => selector.Message.CorrelationId); instance.ReadOnly = true; });
         Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
@@ -104,15 +104,15 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
             When(CreateCargoEvent)
                 .Then(context =>
                 {
-                    context.Instance.UserId = context.Data.UserId;
-                    context.Instance.CargoId = context.Data.CargoId;
+                    context.Instance.UserId = context.Data.CourierId;
+                    context.Instance.CargoId = context.Data.DebitId;
                     context.Instance.CreatedOn = DateTime.Now;
                 })
                 .TransitionTo(CreateCargo)
                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateCargo]}"), context => new CreateCargoCommand(context.Instance.CorrelationId)
                 {
-                    CargoId = context.Data.CargoId,
-                    UserId = context.Data.UserId,
+                    DebitId = context.Data.DebitId,
+                    CourierId = context.Data.CourierId,
                 }));
 
         #region Cargo
