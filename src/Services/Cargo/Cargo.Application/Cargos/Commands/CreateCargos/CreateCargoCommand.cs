@@ -7,7 +7,7 @@ public class CreateCargoCommand : IRequest<GenericResponse<CreateCargoResponse>>
     public Guid CorrelationId { get; set; }
     public Guid DebitId { get; set; }
     public Guid CourierId { get; set; }
-    public List<CargoItemRequest> CargoItems { get; set; }
+    public List<CargoDetay> Cargos { get; set; }
 }
 
 public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, GenericResponse<CreateCargoResponse>>
@@ -22,7 +22,7 @@ public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, Gen
     public async Task<GenericResponse<CreateCargoResponse>> Handle(CreateCargoCommand request, CancellationToken cancellationToken)
     {
         var debit = await _context.Debits.FirstOrDefaultAsync(x => x.DistributionDate != DateTime.Now && x.CorrelationId == request.CorrelationId.ToString() && x.IsCompleted == false);
-        if(debit == null)
+        if (debit == null)
         {
             debit = _context.Debits.Add(new Debit
             {
@@ -36,6 +36,25 @@ public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, Gen
             }).Entity;
             await _context.SaveChangesAsync(cancellationToken);
         }
-        return GenericResponse<CreateCargoResponse>.Success(new CreateCargoResponse { DebitId = Guid.Parse(debit.DebitId), CorrelationId = Guid.Parse(debit.CorrelationId)  }, 200);
+
+       
+
+        //var cargo = _context.Cargos.Add(new Domain.Entities.Cargo
+        //{
+        //    Address = request.Cargos.Address,
+        //    DebitId = debit.DebitId
+        //}).Entity;
+
+        //foreach (var item in request.Cargos.CargoItems)
+        //{
+        //    var cargoItem = await _context.CargoItems.FirstOrDefaultAsync(x => x.Cargo.DebitId == debit.DebitId);
+        //    if (cargoItem == null)
+        //    {
+
+        //    }
+        //}
+
+
+        return GenericResponse<CreateCargoResponse>.Success(new CreateCargoResponse { DebitId = Guid.Parse(debit.DebitId), CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
     }
 }

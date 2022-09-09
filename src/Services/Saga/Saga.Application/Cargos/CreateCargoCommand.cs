@@ -10,4 +10,5 @@ public class CreateCargoCommand : ICreateCargo
 
     public Guid DebitId { get; set; }
     public Guid CourierId { get; set; }
+    public List<CargoDetay> Cargos { get; set; }
 }

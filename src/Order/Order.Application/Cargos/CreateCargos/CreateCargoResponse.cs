@@ -1,4 +1,4 @@
-﻿namespace Cargo.Application.Cargos.CreateOrders;
+﻿namespace Cargo.Application.Cargos.CreateCargos;
 public class CreateCargoResponse
 {
     public Guid DebitId { get; set; }

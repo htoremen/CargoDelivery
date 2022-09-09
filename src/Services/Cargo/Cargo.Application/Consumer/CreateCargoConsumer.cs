@@ -19,6 +19,7 @@ public class CreateCargoConsumer : IConsumer<ICreateCargo>
             CorrelationId = command.CorrelationId,
             DebitId = command.DebitId,
             CourierId = command.CourierId,
+            Cargos = command.Cargos
         });
 
         //await context.Publish<OrderSubmitted>(new
