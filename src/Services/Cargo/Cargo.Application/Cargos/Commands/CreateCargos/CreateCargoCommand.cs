@@ -21,9 +21,34 @@ public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, Gen
 
     public async Task<GenericResponse<CreateCargoResponse>> Handle(CreateCargoCommand request, CancellationToken cancellationToken)
     {
-        var debit = await _context.Debits.FirstOrDefaultAsync(x => x.DistributionDate != DateTime.Now && x.CorrelationId == request.CorrelationId.ToString() && x.IsCompleted == false);
+        var debit = await _context.Debits.FirstOrDefaultAsync(x => x.DistributionDate != DateTime.Now && x.CourierId == request.CourierId.ToString());
         if (debit == null)
         {
+            var cargos = new List<Domain.Entities.Cargo>();
+            foreach (var cargo in request.Cargos)
+            {
+                var cargoItems = new List<Domain.Entities.CargoItem>();
+                foreach (var cargoItem in cargo.CargoItems)
+                {
+                    cargoItems.Add(new CargoItem
+                    {
+                        CargoItemId = Guid.NewGuid().ToString(),
+                        Address = cargoItem.Address,
+                        Barcode = cargoItem.Barcode,
+                        Description = cargoItem.Description,
+                        Desi = cargoItem.Desi,
+                        Kg = cargoItem.Kg,
+                        WaybillNumber = cargoItem.WaybillNumber,
+                    });
+                }
+                cargos.Add(new Domain.Entities.Cargo
+                {
+                    CargoId = Guid.NewGuid().ToString(),
+                    Address = cargo.Address,
+                    CargoItems = cargoItems
+                });
+            }
+
             debit = _context.Debits.Add(new Debit
             {
                 DebitId = request.DebitId.ToString(),
@@ -32,7 +57,8 @@ public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, Gen
                 DistributionDate = DateTime.Now.Date,
                 StartingDate = DateTime.Now,
                 IsApproval = false,
-                IsCompleted = false
+                IsCompleted = false,
+                Cargos = cargos
             }).Entity;
             await _context.SaveChangesAsync(cancellationToken);
         }
