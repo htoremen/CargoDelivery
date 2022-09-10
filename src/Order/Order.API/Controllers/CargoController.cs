@@ -14,13 +14,27 @@ namespace Order.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCargo()
         {
-            var response = await Mediator.Send(new CreateCargoCommand
+            for (int i = 0; i < 40000; i++)
             {
-                CourierId = Guid.NewGuid(),   
-                DebitId = Guid.NewGuid(),
-                Cargos = GetCargos()
-            });
-            return Ok(response);
+                var response = await Mediator.Send(new CreateCargoCommand
+                {
+                    CourierId = Guid.NewGuid(),
+                    DebitId = Guid.NewGuid(),
+                    Cargos = GetCargos()
+                });
+            }
+            // return Ok(response);
+            return Ok();
+
+
+            //var response = await Mediator.Send(new CreateCargoCommand
+            //{
+            //    CourierId = Guid.NewGuid(),
+            //    DebitId = Guid.NewGuid(),
+            //    Cargos = GetCargos()
+            //});
+
+            //return Ok(response);
         }
 
         private List<CargoDetay> GetCargos()

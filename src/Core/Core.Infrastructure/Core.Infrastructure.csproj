@@ -11,7 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\NoSQLs\NoSQLMongo\NoSQLMongo.Infrastructure\NoSQLMongo.Infrastructure.csproj" />
     <ProjectReference Include="..\Core.Application\Core.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NoSQLOptions\" />
   </ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@ using Order.Application.Common.Behaviours;
 using FluentValidation;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

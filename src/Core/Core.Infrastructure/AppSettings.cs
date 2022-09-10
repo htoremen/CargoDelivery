@@ -1,4 +1,5 @@
 ﻿using Core.Infrastructure.MessageBrokers;
+using NoSQLMongo.Infrastructure.Settings;
 
 namespace Core.Infrastructure;
 
@@ -6,6 +7,7 @@ public class AppSettings
 {
     public MessageBrokerOptions MessageBroker { get; set; }
     public ConnectionStrings ConnectionStrings { get; set; }
+    public MongoDbSettings MongoDbSettings { get; set; }
 }
 
 

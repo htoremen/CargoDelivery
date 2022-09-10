@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NoSQLMongo.Application.Common.Interfaces;
+using NoSQLMongo.Domain.Entities;
 
 namespace Cargo.Application.Cargos.CreateCargos;
 
@@ -13,13 +15,59 @@ public class CreateCargoCommand : IRequest<GenericResponse<CreateCargoResponse>>
 public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, GenericResponse<CreateCargoResponse>>
 {
     private IApplicationDbContext _context;
+    private IMongoRepository<DebitBson> _debitRepository;
 
-    public CreateCargoCommandHandler(IApplicationDbContext context)
+    public CreateCargoCommandHandler(IApplicationDbContext context, IMongoRepository<DebitBson> debitRepository)
     {
         _context = context;
+        _debitRepository = debitRepository;
     }
 
     public async Task<GenericResponse<CreateCargoResponse>> Handle(CreateCargoCommand request, CancellationToken cancellationToken)
+    {
+        var cargos = new List<CargoBson>();
+        foreach (var cargo in request.Cargos)
+        {
+            var cargoItems = new List<CargoItemBson>();
+            foreach (var cargoItem in cargo.CargoItems)
+            {
+                cargoItems.Add(new CargoItemBson
+                {
+                    CargoItemId = Guid.NewGuid().ToString(),
+                    Address = cargoItem.Address,
+                    Barcode = cargoItem.Barcode,
+                    Description = cargoItem.Description,
+                    Desi = cargoItem.Desi,
+                    Kg = cargoItem.Kg,
+                    WaybillNumber = cargoItem.WaybillNumber,
+                });
+            }
+            cargos.Add(new CargoBson
+            {
+                CargoId = Guid.NewGuid().ToString(),
+                Address = cargo.Address,
+                CargoItems = cargoItems
+            });
+        }
+
+        var debit = new DebitBson
+        {
+            DebitId = request.DebitId.ToString(),
+            CorrelationId = request.CorrelationId.ToString(),
+            CourierId = request.CourierId.ToString(),
+            DistributionDate = DateTime.Now.Date,
+            StartingDate = DateTime.Now,
+            IsApproval = false,
+            IsCompleted = false,
+            Cargos = cargos
+        };
+
+        await _debitRepository.InsertOneAsync(debit);
+
+        return GenericResponse<CreateCargoResponse>.Success(new CreateCargoResponse { DebitId = Guid.Parse(debit.DebitId), CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
+    }
+
+    public async Task<GenericResponse<CreateCargoResponse>> _Handle(CreateCargoCommand request, CancellationToken cancellationToken)
     {
         var debit = await _context.Debits.FirstOrDefaultAsync(x => x.DistributionDate != DateTime.Now && x.CourierId == request.CourierId.ToString());
         if (debit == null)
@@ -62,25 +110,6 @@ public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, Gen
             }).Entity;
             await _context.SaveChangesAsync(cancellationToken);
         }
-
-       
-
-        //var cargo = _context.Cargos.Add(new Domain.Entities.Cargo
-        //{
-        //    Address = request.Cargos.Address,
-        //    DebitId = debit.DebitId
-        //}).Entity;
-
-        //foreach (var item in request.Cargos.CargoItems)
-        //{
-        //    var cargoItem = await _context.CargoItems.FirstOrDefaultAsync(x => x.Cargo.DebitId == debit.DebitId);
-        //    if (cargoItem == null)
-        //    {
-
-        //    }
-        //}
-
-
         return GenericResponse<CreateCargoResponse>.Success(new CreateCargoResponse { DebitId = Guid.Parse(debit.DebitId), CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
     }
 }
