@@ -18,6 +18,7 @@ public class CargoApprovalConsumer : IConsumer<ICargoApproval>
         await _mediator.Send(new CargoApprovalCommand
         {
             CorrelationId = command.CorrelationId,
+            CurrentState = command.CurrentState,
         });
     }
 }

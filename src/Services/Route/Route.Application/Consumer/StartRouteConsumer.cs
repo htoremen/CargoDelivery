@@ -17,7 +17,7 @@ public class StartRouteConsumer : IConsumer<IStartRoute>
         await _mediator.Send(new StartRouteCommand
         {
             CorrelationId = command.CorrelationId,
-            CargoId = command.CargoId,
+            CurrentState = command.CurrentState,
         });
     }
 }

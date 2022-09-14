@@ -77,7 +77,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         #region Event
 
         Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CargoId, context => context.Message.DebitId).SelectId(s => Guid.NewGuid()));
-        Event(() => SendSelfieEvent, instance => { instance.CorrelateById(selector => selector.Message.CorrelationId); instance.ReadOnly = true; });
+        Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
@@ -125,8 +125,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                  .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.SendSelfie]}"), context => new SendSelfieCommand(context.Data.CorrelationId)
                  {
                      CargoId = context.Instance.CargoId,
-                     CorrelationId = context.Instance.CorrelationId,
-                     CurrentState = context.Instance.CurrentState
+                     CorrelationId = context.Instance.CorrelationId
                  }));
 
         During(SendSelfie,
@@ -145,7 +144,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoApproval]}"), context => new CargoApprovalCommand(context.Data.CorrelationId)
                {
                    CargoId = context.Instance.CargoId,
-                   CorrelationId = context.Instance.CorrelationId
+                   CorrelationId = context.Instance.CorrelationId,
+                   CurrentState = context.Instance.CurrentState
                }));
 
         During(CargoApproval,
@@ -153,7 +153,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                 .TransitionTo(StartRoute)
                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartRoute]}"), context => new StartRouteCommand(context.Data.CorrelationId)
                 {
-                    CargoId = context.Instance.CargoId,
+                    CurrentState = context.Instance.CurrentState,
                     CorrelationId = context.Instance.CorrelationId
                 }),
             When(CargoRejectedEvent)

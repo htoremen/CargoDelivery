@@ -12,8 +12,8 @@ using Saga.Infrastructure.Persistence;
 namespace Saga.Infrastructure.Migrations
 {
     [DbContext(typeof(CargoStateDbContext))]
-    [Migration("20220904063244_i2")]
-    partial class i2
+    [Migration("20220914161506_i1")]
+    partial class i1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
