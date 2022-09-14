@@ -8,5 +8,6 @@ public interface IApplicationDbContext
     DbSet<Domain.Entities.Cargo> Cargos { get; }
     DbSet<CargoItem> CargoItems { get; }
     DbSet<Debit> Debits { get; }
+    DbSet<DebitHistory> DebitHistories { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

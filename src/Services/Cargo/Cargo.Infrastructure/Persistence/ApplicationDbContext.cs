@@ -17,6 +17,7 @@ namespace Cargo.Infrastructure.Persistence
         public virtual DbSet<Domain.Entities.Cargo> Cargos { get; set; }
         public virtual DbSet<CargoItem> CargoItems { get; set; }
         public virtual DbSet<Debit> Debits { get; set; }
+        public virtual DbSet<DebitHistory> DebitHistories { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -113,7 +113,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                 {
                     DebitId = context.Data.DebitId,
                     CourierId = context.Data.CourierId,
-                    Cargos = context.Data.Cargos
+                    Cargos = context.Data.Cargos,
+                    CurrentState = context.Instance.CurrentState
                 }));
 
         #region Cargo

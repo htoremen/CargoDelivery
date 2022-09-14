@@ -1,7 +1,5 @@
 ﻿using Core.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using NoSQLMongo.Application.Common.Interfaces;
-using NoSQLMongo.Domain.Entities;
 
 namespace Cargo.Application.Cargos.CreateCargos;
 
@@ -10,6 +8,7 @@ public class CreateCargoCommand : IRequest<GenericResponse<CreateCargoResponse>>
     public Guid CorrelationId { get; set; }
     public Guid DebitId { get; set; }
     public Guid CourierId { get; set; }
+    public string CurrentState { get; set; }
     public List<CargoDetay> Cargos { get; set; }
 }
 
@@ -80,6 +79,7 @@ public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, Gen
                 StartingDate = DateTime.Now,
                 IsApproval = false,
                 IsCompleted = false,
+                CurrentState = request.CurrentState,
                 Cargos = cargos
             }).Entity;
             await _context.SaveChangesAsync(cancellationToken);

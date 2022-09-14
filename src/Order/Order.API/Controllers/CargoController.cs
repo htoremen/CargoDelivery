@@ -22,6 +22,7 @@ namespace Order.API.Controllers
                     DebitId = Guid.NewGuid(),
                     Cargos = GetCargos()
                 });
+                break;
             }
             // return Ok(response);
             return Ok();

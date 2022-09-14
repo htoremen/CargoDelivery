@@ -10,11 +10,11 @@ namespace Cargo.Domain.Entities
             CargoItems = new HashSet<CargoItem>();
         }
 
-        public string CargoId { get; set; }
-        public string DebitId { get; set; }
-        public string Address { get; set; }
+        public string CargoId { get; set; } = null!;
+        public string? DebitId { get; set; }
+        public string? Address { get; set; }
 
-        public virtual Debit Debit { get; set; }
+        public virtual Debit? Debit { get; set; }
         public virtual ICollection<CargoItem> CargoItems { get; set; }
     }
 }

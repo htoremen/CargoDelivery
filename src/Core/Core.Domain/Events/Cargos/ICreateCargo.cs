@@ -5,6 +5,7 @@ public interface ICreateCargo //: IEvent
     public Guid CorrelationId { get; }
     public Guid DebitId { get; set; }
     public Guid CourierId { get; set; }
+    public string CurrentState { get; set; }
     public List<CargoDetay> Cargos { get; set; }
 }
 
@@ -13,6 +14,7 @@ public class CreateCargo : ICreateCargo
     public Guid CorrelationId { get; private set; }
     public Guid DebitId { get; set; }
     public Guid CourierId { get; set; }
+    public string CurrentState { get; set; }
     public List<CargoDetay> Cargos { get; set; }
 }
 
