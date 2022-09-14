@@ -125,7 +125,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                  .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.SendSelfie]}"), context => new SendSelfieCommand(context.Data.CorrelationId)
                  {
                      CargoId = context.Instance.CargoId,
-                     CorrelationId = context.Instance.CorrelationId
+                     CorrelationId = context.Instance.CorrelationId,
+                     CurrentState = context.Instance.CurrentState
                  }));
 
         During(SendSelfie,
@@ -134,7 +135,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.SendSelfie]}"), context => new SendSelfieCommand(context.Data.CorrelationId)
              {
                  CargoId = context.Instance.CargoId,
-                 CorrelationId = context.Instance.CorrelationId
+                 CorrelationId = context.Instance.CorrelationId,
+                 CurrentState = context.Instance.CurrentState
              }));
 
         During(SendSelfie,

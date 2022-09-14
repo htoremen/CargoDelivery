@@ -1,23 +1,33 @@
-﻿namespace Cargo.Application.Cargos.SendSelfie;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Cargo.Application.Cargos.SendSelfie;
 
 public class SendSelfieCommand : IRequest<GenericResponse<SendSelfieResponse>>
 {
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
 }
 
 public class SendSelfieCommandHandler : IRequestHandler<SendSelfieCommand, GenericResponse<SendSelfieResponse>>
 {
     private IApplicationDbContext _context;
-    private IMongoRepository<DebitBson> _debitRepository;
 
-    public SendSelfieCommandHandler(IApplicationDbContext context, IMongoRepository<DebitBson> debitRepository)
+    public SendSelfieCommandHandler(IApplicationDbContext context)
     {
         _context = context;
-        _debitRepository = debitRepository;
     }
     public async Task<GenericResponse<SendSelfieResponse>> Handle(SendSelfieCommand request, CancellationToken cancellationToken)
     {
-        return GenericResponse<SendSelfieResponse>.Success(new SendSelfieResponse { }, 200);
+        var debit = await _context.Debits.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString());
+        if(debit != null)
+        {
+            debit.Selfie = "";
+            debit.CurrentState = request.CurrentState;
+            debit = _context.Debits.Update(debit).Entity;
+            await _context.SaveChangesAsync(cancellationToken);
+            return GenericResponse<SendSelfieResponse>.Success(new SendSelfieResponse { CorrelationId = request.CorrelationId, CurrentState = debit.CurrentState }, 200);
+        }
+        return GenericResponse<SendSelfieResponse>.NotFoundException("", 404);
     }
 }

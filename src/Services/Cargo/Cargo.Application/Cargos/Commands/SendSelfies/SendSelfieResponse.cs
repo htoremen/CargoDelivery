@@ -2,5 +2,6 @@
 
 public class SendSelfieResponse
 {
-    public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
+    public string CurrentState { get; set; }
 }

@@ -13,10 +13,12 @@ public class SendSelfieConsumer : IConsumer<ISendSelfie>
     public async Task Consume(ConsumeContext<ISendSelfie> context)
     {
         var command = context.Message;
+
         await _mediator.Send(new SendSelfieCommand
         {
             CorrelationId = command.CorrelationId,
             CargoId = command.CargoId,
+            CurrentState = command.CurrentState,
         });
     }
 }
