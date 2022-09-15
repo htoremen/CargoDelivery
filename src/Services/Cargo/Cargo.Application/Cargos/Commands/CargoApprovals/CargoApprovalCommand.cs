@@ -27,7 +27,7 @@ public class CargoApprovalCommandHandler : IRequestHandler<CargoApprovalCommand,
         await _startRoute.SendAsync(new StartRoute
         {
             CurrentState = request.CurrentState,
-            CorrelationId = request.CorrelationId
+            CorrelationId = request.CorrelationId,
         }, null, cancellationToken);
 
         var debit = await _context.Debits.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString());
