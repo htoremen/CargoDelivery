@@ -11,6 +11,7 @@ public class RouteConfirmedCommand : IRouteConfirmed
 
     public Guid CargoId { get; set; }
     public Guid UserId { get; set; }
+    public string CurrentState { get; set; }
 
     public DateTime? SubmitDate { get; set; }
     public DateTime? AcceptDate { get; set; }

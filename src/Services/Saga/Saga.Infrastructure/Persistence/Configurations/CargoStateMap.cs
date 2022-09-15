@@ -11,6 +11,5 @@ public class CargoStateMap : SagaClassMap<CargoStateInstance>
     {
         entity.Property(p => p.CurrentState);
         entity.Property(p => p.UserId).IsRequired();
-        entity.Property(p => p.CargoId).IsRequired();
     }
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Route.Domain.Entities;
+﻿using Route.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Route.Application.Common.Interfaces;
 

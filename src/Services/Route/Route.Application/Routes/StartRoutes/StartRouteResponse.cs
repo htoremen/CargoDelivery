@@ -2,6 +2,6 @@
 
 public class StartRouteResponse
 {
-    public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
 }
 

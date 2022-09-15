@@ -23,6 +23,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Cargos\Queries\" />
+	  <Folder Include="Profiles\" />
 	</ItemGroup>
 
 </Project>

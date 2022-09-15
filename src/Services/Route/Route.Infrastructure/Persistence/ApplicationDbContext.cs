@@ -26,13 +26,16 @@ public partial class ApplicationDbContext : DbContext, IApplicationDbContext
             optionsBuilder.UseSqlServer("Server=DESKTOP-CHB8USB;Database=CargoRoute;Trusted_Connection=True;");
         }
     }
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        var result = await base.SaveChangesAsync(cancellationToken);
+        return result;
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CargoRoute>(entity =>
         {
-            entity.HasNoKey();
-
             entity.ToTable("CargoRoute");
 
             entity.HasIndex(e => e.CorrelationId, "IX_Route");

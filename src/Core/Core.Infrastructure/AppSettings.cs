@@ -15,5 +15,6 @@ public class ConnectionStrings
 {
     public string SagaConnectionString { get; set; }
     public string CargoConnectionString { get; set; }
+    public string RouteConnectionString { get; set; }
     public string DeliveryConnectionString { get; set; }
 }

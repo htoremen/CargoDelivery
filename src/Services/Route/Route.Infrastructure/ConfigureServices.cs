@@ -19,7 +19,7 @@ public static class ConfigureServices
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
-                appSettings.ConnectionStrings.CargoConnectionString,
+                appSettings.ConnectionStrings.RouteConnectionString,
                 configure =>
                 {
                     configure.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);

@@ -1,4 +1,6 @@
-﻿using Core.Domain.MessageBrokers;
+﻿using AutoMapper;
+using Core.Domain.Instances;
+using Core.Domain.MessageBrokers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cargo.Application.Cargos.CargoApprovals;
@@ -14,20 +16,26 @@ public class CargoApprovalCommandHandler : IRequestHandler<CargoApprovalCommand,
     private readonly IMessageSender<IStartRoute> _startRoute;
     private readonly IMessageSender<ICargoRejected> _cargoRejected;
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public CargoApprovalCommandHandler(IMessageSender<IStartRoute> startRoute, IMessageSender<ICargoRejected> cargoRejected, IApplicationDbContext context)
+    public CargoApprovalCommandHandler(IMessageSender<IStartRoute> startRoute, IMessageSender<ICargoRejected> cargoRejected, IApplicationDbContext context, IMapper mapper)
     {
         _startRoute = startRoute;
         _cargoRejected = cargoRejected;
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<GenericResponse<CargoApprovalResponse>> Handle(CargoApprovalCommand request, CancellationToken cancellationToken)
     {
+        var cargos = await _context.Cargos.Where(x => x.Debit.CorrelationId == request.CorrelationId.ToString()).ToListAsync();
+        var cargoRoutes = _mapper.Map<List<Domain.Entities.Cargo>, List<CargoRouteInstance>>(cargos);
+
         await _startRoute.SendAsync(new StartRoute
         {
             CurrentState = request.CurrentState,
             CorrelationId = request.CorrelationId,
+            CargoRoutes = cargoRoutes
         }, null, cancellationToken);
 
         var debit = await _context.Debits.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString());

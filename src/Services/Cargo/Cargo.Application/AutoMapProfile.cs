@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Cargo.Application.Cargos.CreateCargos;
 using Cargo.Application.Cargos.SendSelfie;
+using Core.Domain.Instances;
 
-namespace Cargo.Application.Profiles;
+namespace Cargo.Application;
 
 public class AutoMapProfile : Profile
 {
@@ -10,5 +11,7 @@ public class AutoMapProfile : Profile
     {
         CreateMap<ISendSelfie, SendSelfieCommand>();
         CreateMap<ICreateCargo, CreateCargoCommand>();
+
+        CreateMap<Domain.Entities.Cargo, CargoRouteInstance > ();
     }
 }
