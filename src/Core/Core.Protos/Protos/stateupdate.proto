@@ -1,9 +1,9 @@
 ﻿syntax = "proto3";
 
-option csharp_namespace = "Cargo.GRPC";
+option csharp_namespace = "Cargo.GRPC.Server";
 
 service DebitGrpc {
-  rpc UpdateState(StateUpdateRequest) returns(StateUpdateResponse);
+  rpc UpdateState(StateUpdateRequest) returns(StateUpdateResponse){}
 }
 
 message StateUpdateRequest {

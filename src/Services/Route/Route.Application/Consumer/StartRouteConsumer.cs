@@ -22,11 +22,11 @@ public class StartRouteConsumer : IConsumer<IStartRoute>
 
         await _mediator.Send(model);
 
-        await _mediator.Send(new StateUpdateCommand
-        {
-            CorrelationId = model.CorrelationId.ToString(),
-            CurrentState = model.CurrentState,
-        });
+        //await _mediator.Send(new StateUpdateCommand
+        //{
+        //    CorrelationId = model.CorrelationId.ToString(),
+        //    CurrentState = model.CurrentState,
+        //});
        
     }
 }
