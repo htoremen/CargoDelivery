@@ -23,7 +23,6 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public State CargoRejected { get; set; }
 
     public State StartRoute { get; set; }
-    public State RouteConfirmed { get; set; }
     public State AutoRoute { get; set; }
     public State ManuelRoute { get; set; }
 
@@ -50,7 +49,6 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public Event<ICargoRejected> CargoRejectedEvent { get; private set; }
 
     public Event<IStartRoute> StartRouteEvent { get; private set; }
-    public Event<IRouteConfirmed> RouteConfirmedEvent { get; private set; }
     public Event<IAutoRoute> AutoRouteEvent { get; private set; }
     public Event<IManuelRoute> ManuelRouteEvent { get; private set; }
 
@@ -82,7 +80,6 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
         Event(() => StartRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => RouteConfirmedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => AutoRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => ManuelRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
@@ -171,16 +168,6 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         #region Start Route
 
         During(StartRoute,
-            When(RouteConfirmedEvent)
-                .TransitionTo(RouteConfirmed)
-                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.RouteConfirmed]}"), context => new RouteConfirmedCommand(context.Data.CorrelationId)
-                 {
-                     CorrelationId = context.Instance.CorrelationId,
-                     CurrentState = context.Instance.CurrentState
-                 })
-            );
-
-        During(RouteConfirmed,
             When(AutoRouteEvent)
                 .TransitionTo(AutoRoute)
                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.AutoRoute]}"), context => new AutoRouteCommand(context.Data.CorrelationId)

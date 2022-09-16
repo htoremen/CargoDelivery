@@ -26,7 +26,6 @@ public static class ConfigureServices
             .AddMessageBusSender<ICargoRejected>(appSettings.MessageBroker)
 
             .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker)
-            .AddMessageBusSender<IRouteConfirmed>(appSettings.MessageBroker)
             .AddMessageBusSender<IManuelRoute>(appSettings.MessageBroker)
             .AddMessageBusSender<IAutoRoute>(appSettings.MessageBroker)
 

@@ -19,7 +19,6 @@ public static class QueueConfigurationExtensions
 
         // Route
         queueConfiguration.Names.Add(QueueName.StartRoute, "Route." + QueueName.StartRoute.ToString());
-        queueConfiguration.Names.Add(QueueName.RouteConfirmed, "Route." + QueueName.RouteConfirmed.ToString());
         queueConfiguration.Names.Add(QueueName.AutoRoute, "Route." + QueueName.AutoRoute.ToString());
         queueConfiguration.Names.Add(QueueName.ManuelRoute, "Route." + QueueName.ManuelRoute.ToString());
 

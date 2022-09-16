@@ -27,7 +27,6 @@ public static class ConfigureServices
 
         services.AddMassTransit<IEventBus>(x =>
         {
-            x.AddConsumer<RouteConfirmedConsumer>();
             x.AddConsumer<ManuelRouteConsumer>();
             x.AddConsumer<AutoRouteConsumer>();
             x.AddConsumer<StartRouteConsumer>();
@@ -81,20 +80,6 @@ public static class ConfigureServices
             cfg.UseJsonSerializer();
             cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
             cfg.ConfigureEndpoints(context);
-
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.RouteConfirmed], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<RouteConfirmedConsumer>(context);
-            });
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.ManuelRoute], e =>
             {

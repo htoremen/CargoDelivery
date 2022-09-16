@@ -13,9 +13,8 @@ public enum QueueName
 
     // Güzergah Oluştur
     StartRoute = 200,
-    RouteConfirmed = 201,
-    AutoRoute = 202,
-    ManuelRoute = 203,
+    AutoRoute = 201,
+    ManuelRoute = 202,
 
     // Kargo İşlemleri
     StartDelivery = 300,

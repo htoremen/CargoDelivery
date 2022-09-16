@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cargo.API\Cargo.GRPC\Cargo.GRPC.csproj" />
+    <ProjectReference Include="..\Cargo.API\Cargo.GRPC\Cargo.GRPC.Server.csproj" />
   </ItemGroup>
 
 </Project>
