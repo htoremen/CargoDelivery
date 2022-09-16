@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Route.GRPC\Route.GRPC.csproj" />
     <ProjectReference Include="..\Route.Infrastructure\Route.Infrastructure.csproj" />
   </ItemGroup>
 

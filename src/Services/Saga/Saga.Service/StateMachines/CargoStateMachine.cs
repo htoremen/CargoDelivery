@@ -148,16 +148,16 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         During(CargoApproval,
             When(StartRouteEvent)
-               .Then(context =>
-               {
-                   context.Instance.CargoRoutes = context.Data.CargoRoutes;
-               })
+               //.Then(context =>
+               //{
+               //    context.Instance.CargoRoutes = context.Data.CargoRoutes;
+               //})
                .TransitionTo(StartRoute)
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartRoute]}"), context => new StartRouteCommand(context.Data.CorrelationId)
                {
                     CurrentState = context.Instance.CurrentState,
                     CorrelationId = context.Instance.CorrelationId,
-                    CargoRoutes = context.Instance.CargoRoutes
+                    CargoRoutes = context.Data.CargoRoutes
                }),
             When(CargoRejectedEvent)
                 .TransitionTo(CargoRejected)

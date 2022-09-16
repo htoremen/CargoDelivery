@@ -12,39 +12,17 @@ using Saga.Infrastructure.Persistence;
 namespace Saga.Infrastructure.Migrations
 {
     [DbContext(typeof(CargoStateDbContext))]
-    [Migration("20220915095635_i1")]
-    partial class i1
+    [Migration("20220916082448_i")]
+    partial class i
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
+                .HasAnnotation("ProductVersion", "6.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("Core.Domain.Instances.CargoRouteInstance", b =>
-                {
-                    b.Property<Guid>("CargoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("CargoStateInstanceCorrelationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Route")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CargoId");
-
-                    b.HasIndex("CargoStateInstanceCorrelationId");
-
-                    b.ToTable("CargoRouteInstance");
-                });
 
             modelBuilder.Entity("Saga.Domain.Instances.CargoStateInstance", b =>
                 {
@@ -66,18 +44,6 @@ namespace Saga.Infrastructure.Migrations
                     b.HasKey("CorrelationId");
 
                     b.ToTable("CargoStateInstance");
-                });
-
-            modelBuilder.Entity("Core.Domain.Instances.CargoRouteInstance", b =>
-                {
-                    b.HasOne("Saga.Domain.Instances.CargoStateInstance", null)
-                        .WithMany("CargoRoutes")
-                        .HasForeignKey("CargoStateInstanceCorrelationId");
-                });
-
-            modelBuilder.Entity("Saga.Domain.Instances.CargoStateInstance", b =>
-                {
-                    b.Navigation("CargoRoutes");
                 });
 #pragma warning restore 612, 618
         }
