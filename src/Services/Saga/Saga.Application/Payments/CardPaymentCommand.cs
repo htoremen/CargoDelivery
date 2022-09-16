@@ -13,5 +13,6 @@ public class CardPaymentCommand : ICardPayment
 
     public Guid CorrelationId { get; set; }
     public PaymentType PaymentType { get; set; }
+    public string CurrentState { get; set; }
 }
 
