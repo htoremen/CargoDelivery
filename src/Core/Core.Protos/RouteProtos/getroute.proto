@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Route.GRPC.Server";
+
+service RouteGrpc {
+  rpc GetRoute(GetRouteRequest) returns(GetRouteResponse){}
+}
+
+message GetRouteRequest {
+  string CorrelationId = 1;
+}
+
+message GetRouteResponse{
+  string CargoId = 1;
+  string Address = 2;
+  string Route = 3;
+
+}
