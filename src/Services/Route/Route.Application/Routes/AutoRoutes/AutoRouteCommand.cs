@@ -5,7 +5,7 @@ namespace Route.Application.Routes.AutoRoutes;
 
 public class AutoRouteCommand : IRequest<GenericResponse<AutoRouteResponse>>
 {
-    public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
     public Guid CorrelationId { get; set; }
 }
 
@@ -33,7 +33,7 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
             //}, cancellationToken);
             await _startDelivery.SendAsync(new StartDelivery
             { 
-                CargoId = request.CargoId,
+                CurrentState = request.CurrentState,
                 CorrelationId = request.CorrelationId
             }, null, cancellationToken);
         }
@@ -41,7 +41,7 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
         {
             await _startDelivery.SendAsync(new StartDelivery
             {
-                CargoId = request.CargoId,
+                CurrentState = request.CurrentState,
                 CorrelationId = request.CorrelationId
             }, null, cancellationToken);
         }

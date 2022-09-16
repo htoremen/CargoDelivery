@@ -5,7 +5,7 @@ namespace Route.Application.Routes.ManuelRoutes;
 
 public class ManuelRouteCommand : IRequest<GenericResponse<ManuelRouteResponse>>
 {
-    public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
     public Guid CorrelationId { get; set; }
 }
 public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, GenericResponse<ManuelRouteResponse>>
@@ -26,7 +26,7 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
         {
             await _cargoApproval.SendAsync(new CargoApproval
             {
-                CargoId = request.CargoId,
+                CurrentState = request.CurrentState,
                 CorrelationId = request.CorrelationId
 
             }, null, cancellationToken);
@@ -35,7 +35,7 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
         {
             await _startDelivery.SendAsync(new StartDelivery
             {
-                CargoId = request.CargoId,
+                CurrentState = request.CurrentState,
                 CorrelationId = request.CorrelationId
             }, null, cancellationToken);
         }

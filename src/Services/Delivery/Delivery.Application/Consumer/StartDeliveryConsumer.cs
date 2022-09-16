@@ -16,7 +16,7 @@ public class StartDeliveryConsumer : IConsumer<IStartDelivery>
 
         await _mediator.Send(new StartDeliveryCommand
         {
-            CargoId = command.CargoId,
+            CurrentState = command.CurrentState,
             CorrelationId = command.CorrelationId,
         });
     }

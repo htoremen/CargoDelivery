@@ -6,8 +6,9 @@ namespace Payment.Application.Payments.CardPayments;
 
 public class CardPaymentCommand : IRequest<GenericResponse<CardPaymentResponse>>
 {
-    public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
     public Guid CorrelationId { get; set; }
+    public Guid CargoId { get; set; }
 }
 
 public class CardPaymentCommandHandler : IRequestHandler<CardPaymentCommand, GenericResponse<CardPaymentResponse>>
@@ -23,8 +24,9 @@ public class CardPaymentCommandHandler : IRequestHandler<CardPaymentCommand, Gen
     {
         await _deliveryCompleted.SendAsync(new DeliveryCompleted
         {
-            CargoId = request.CargoId,
-            CorrelationId = request.CorrelationId
+            CurrentState = request.CurrentState,
+            CorrelationId = request.CorrelationId,
+
 
         }, null, cancellationToken);
         return GenericResponse<CardPaymentResponse>.Success(new CardPaymentResponse { }, 200);

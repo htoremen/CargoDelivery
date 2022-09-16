@@ -16,7 +16,7 @@ public class DeliveryCompletedConsumer : IConsumer<IDeliveryCompleted>
         await _mediator.Send(new DeliveryCompletedCommand
         {
             CorrelationId = command.CorrelationId,
-            CargoId = command.CargoId,
+            CurrentState = command.CurrentState,
         });
     }
 }

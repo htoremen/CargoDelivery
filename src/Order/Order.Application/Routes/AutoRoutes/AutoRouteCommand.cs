@@ -1,11 +1,9 @@
-﻿using MassTransit;
-
-namespace Order.Application.Routes.AutoRoutes;
+﻿namespace Order.Application.Routes.AutoRoutes;
 
 public class AutoRouteCommand : IRequest<GenericResponse<AutoRouteResponse>>
 {
-    public Guid CargoId { get; set; }
     public Guid CorrelationId { get; set; }
+    public string CurrentState { get; set; }
 }
 public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, GenericResponse<AutoRouteResponse>>
 {
@@ -20,9 +18,9 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
     {
         await _autoRoute.SendAsync(new AutoRoute
         {
-            CargoId = request.CargoId,
+            CurrentState = request.CurrentState,
             CorrelationId = request.CorrelationId
         }, null, cancellationToken);
-        return GenericResponse<AutoRouteResponse>.Success(new AutoRouteResponse { CargoId = request.CargoId }, 200);
+        return GenericResponse<AutoRouteResponse>.Success(new AutoRouteResponse { CurrentState = request.CurrentState }, 200);
     }
 }

@@ -4,6 +4,7 @@ public class NotDeliveredCommand : IRequest<GenericResponse<NotDeliveredResponse
 {
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
 }
 
 public class NotDeliveredCommandHandler : IRequestHandler<NotDeliveredCommand, GenericResponse<NotDeliveredResponse>>
@@ -19,8 +20,9 @@ public class NotDeliveredCommandHandler : IRequestHandler<NotDeliveredCommand, G
     {
         await _deliveryCompleted.SendAsync(new DeliveryCompleted
         {
-            CargoId = request.CargoId,
-            CorrelationId = request.CorrelationId
+            CurrentState = request.CurrentState,
+            CorrelationId = request.CorrelationId,
+            CargoId = request.CargoId
 
         }, null, cancellationToken);
         return GenericResponse<NotDeliveredResponse>.Success(new NotDeliveredResponse { }, 200);

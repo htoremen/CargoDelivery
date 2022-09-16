@@ -4,8 +4,9 @@ namespace Payment.Application.Payments.PayAtDoors;
 
 public class PayAtDoorCommand : IRequest<GenericResponse<PayAtDoorResponse>>
 {
-    public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
     public Guid CorrelationId { get; set; }
+    public Guid CargoId { get; set; }
 }
 
 public class PayAtDoorCommandHandler : IRequestHandler<PayAtDoorCommand, GenericResponse<PayAtDoorResponse>>
@@ -20,9 +21,9 @@ public class PayAtDoorCommandHandler : IRequestHandler<PayAtDoorCommand, Generic
     {
         await _deliveryCompleted.SendAsync(new DeliveryCompleted
         {
+            CurrentState = request.CurrentState,
+            CorrelationId = request.CorrelationId,
             CargoId = request.CargoId,
-            CorrelationId = request.CorrelationId
-
         }, null, cancellationToken);
         return GenericResponse<PayAtDoorResponse>.Success(new PayAtDoorResponse { }, 200);
     }

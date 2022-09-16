@@ -1,10 +1,8 @@
-﻿using MassTransit;
-
-namespace Order.Application.Routes.ManuelRoutes;
+﻿namespace Order.Application.Routes.ManuelRoutes;
 
 public class ManuelRouteCommand : IRequest<GenericResponse<ManuelRouteResponse>>
 {
-    public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
     public Guid CorrelationId { get; set; }
 }
 
@@ -21,9 +19,9 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
     {
         await _manuelRoute.SendAsync(new ManuelRoute
         {
-            CargoId = request.CargoId,
+            CurrentState = request.CurrentState,
             CorrelationId = request.CorrelationId
         }, null, cancellationToken);
-        return GenericResponse<ManuelRouteResponse>.Success(new ManuelRouteResponse { CargoId = request.CargoId }, 200);
+        return GenericResponse<ManuelRouteResponse>.Success(new ManuelRouteResponse { CurrentState = request.CurrentState }, 200);
     }
 }

@@ -7,7 +7,6 @@ public class CargoRejectedCommand : ICargoRejected
         CorrelationId = correlationId;
     }
 
-    public Guid CargoId { get; set; }
-
     public Guid CorrelationId { get; set; }
+    public string CurrentState { get; set; }
 }

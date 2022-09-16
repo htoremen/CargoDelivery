@@ -14,7 +14,6 @@ public class RouteController : ApiControllerBase
     {
         var response = await Mediator.Send(new AutoRouteCommand
         {
-            CargoId = Guid.NewGuid(),
             CorrelationId = correlationId
 
         });
@@ -27,7 +26,6 @@ public class RouteController : ApiControllerBase
     {
         var response = await Mediator.Send(new ManuelRouteCommand
         {
-            CargoId = Guid.NewGuid(),
             CorrelationId = correlationId
 
         });

@@ -160,7 +160,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                 .TransitionTo(CargoRejected)
                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoRejected]}"), context => new CargoRejectedCommand(context.Data.CorrelationId)
                 {
-                    CorrelationId = context.Instance.CorrelationId
+                    CorrelationId = context.Instance.CorrelationId,
+                    CurrentState = context.Instance.CurrentState
                 }));
 
         #endregion
@@ -172,13 +173,16 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                 .TransitionTo(AutoRoute)
                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.AutoRoute]}"), context => new AutoRouteCommand(context.Data.CorrelationId)
                 {
-                    CorrelationId = context.Instance.CorrelationId
+                    CorrelationId = context.Instance.CorrelationId,
+                    CurrentState = context.Instance.CurrentState
+
                 }),
             When(ManuelRouteEvent)
                 .TransitionTo(ManuelRoute)
                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ManuelRoute]}"), context => new ManuelRouteCommand(context.Data.CorrelationId)
                 {
-                    CorrelationId = context.Instance.CorrelationId
+                    CorrelationId = context.Instance.CorrelationId,
+                    CurrentState = context.Instance.CurrentState
                 })
             );
 
@@ -187,7 +191,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
              .TransitionTo(StartDelivery)
              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartDelivery]}"), context => new StartDeliveryCommand(context.Data.CorrelationId)
              {
-                 CorrelationId = context.Instance.CorrelationId
+                 CorrelationId = context.Instance.CorrelationId,
+                 CurrentState = context.Instance.CurrentState
              }));
 
         During(ManuelRoute,
@@ -195,7 +200,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
              .TransitionTo(StartDelivery)
              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartDelivery]}"), context => new StartDeliveryCommand(context.Data.CorrelationId)
              {
-                 CorrelationId = context.Instance.CorrelationId
+                 CorrelationId = context.Instance.CorrelationId,
+                 CurrentState = context.Instance.CurrentState
              }));
 
         #endregion

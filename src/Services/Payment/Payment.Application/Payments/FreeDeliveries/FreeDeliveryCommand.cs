@@ -5,8 +5,9 @@ namespace Payment.Application.Payments.FreeDeliveries;
 
 public class FreeDeliveryCommand : IRequest<GenericResponse<FreeDeliveryResponse>>
 {
-    public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
     public Guid CorrelationId { get; set; }
+    public Guid CargoId { get; set; }
 }
 public class FreeDeliveryCommandHandler : IRequestHandler<FreeDeliveryCommand, GenericResponse<FreeDeliveryResponse>>
 {
@@ -20,9 +21,9 @@ public class FreeDeliveryCommandHandler : IRequestHandler<FreeDeliveryCommand, G
     {
         await _deliveryCompleted.SendAsync(new DeliveryCompleted
         {
-            CargoId = request.CargoId,
-            CorrelationId = request.CorrelationId
-
+            CurrentState = request.CurrentState,
+            CorrelationId = request.CorrelationId,
+            CargoId = request.CargoId            
         }, null, cancellationToken);
         return GenericResponse<FreeDeliveryResponse>.Success(new FreeDeliveryResponse { }, 200);
     }

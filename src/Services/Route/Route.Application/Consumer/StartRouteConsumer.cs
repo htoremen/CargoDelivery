@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Grpc.Net.Client;
 using Route.Application.Routes.StartRoutes;
 using Route.Application.Routes.StateUpdates;
 
@@ -18,15 +17,11 @@ public class StartRouteConsumer : IConsumer<IStartRoute>
     public async Task Consume(ConsumeContext<IStartRoute> context)
     {
         var command = context.Message;
-        var model = _mapper.Map<StartRouteCommand>(command);
 
+        var model = _mapper.Map<StartRouteCommand>(command);
         await _mediator.Send(model);
 
-        await _mediator.Send(new StateUpdateCommand
-        {
-            CorrelationId = model.CorrelationId.ToString(),
-            CurrentState = model.CurrentState,
-        });
-
+        var state = _mapper.Map<StateUpdateCommand>(command);
+        await _mediator.Send(state);
     }
 }

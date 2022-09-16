@@ -5,7 +5,7 @@ namespace Delivery.Application.Deliveries.DeliveryCompleteds;
 public class DeliveryCompletedCommand : IRequest<GenericResponse<DeliveryCompletedResponse>>
 {
     public Guid CorrelationId { get; set; }
-    public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
 }
 
 public class DeliveryCompletedCommandHandler : IRequestHandler<DeliveryCompletedCommand, GenericResponse<DeliveryCompletedResponse>>
@@ -24,7 +24,7 @@ public class DeliveryCompletedCommandHandler : IRequestHandler<DeliveryCompleted
         {
             await _startDelivery.SendAsync(new StartDelivery
             {
-                CargoId = request.CargoId,
+                CurrentState = request.CurrentState,
                 CorrelationId = request.CorrelationId
 
             }, null, cancellationToken);

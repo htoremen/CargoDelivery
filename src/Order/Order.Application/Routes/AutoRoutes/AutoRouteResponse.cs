@@ -2,5 +2,5 @@
 
 public class AutoRouteResponse
 {
-    public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
 }

@@ -5,7 +5,7 @@ namespace Delivery.Application.Deliveries.CreateRefunds;
 public class CreateRefundCommand : IRequest<GenericResponse<CreateRefundResponse>>
 {
     public Guid CorrelationId { get; set; }
-    public Guid CargoId { get; set; }
+    public string CurrentState { get; set; }
 }
 
 public class CreateRefundCommandHandler : IRequestHandler<CreateRefundCommand, GenericResponse<CreateRefundResponse>>
@@ -21,7 +21,7 @@ public class CreateRefundCommandHandler : IRequestHandler<CreateRefundCommand, G
     {
         await _deliveryCompleted.SendAsync(new DeliveryCompleted
         {
-            CargoId = request.CargoId,
+            CurrentState = request.CurrentState,
             CorrelationId = request.CorrelationId
 
         }, null, cancellationToken);
