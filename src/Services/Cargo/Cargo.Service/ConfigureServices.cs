@@ -7,6 +7,7 @@ using Core.Domain.Enums;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Cargos;
+using Cargo.GRPC.Services;
 
 namespace Cargo.Service;
 
@@ -21,6 +22,11 @@ public static class ConfigureServices
         return services;
     }
 
+    public static WebApplication MapGrpcServices(this WebApplication app)
+    {
+        app.MapGrpcService<DebitService>();
+        return app;
+    }
 
     public static IServiceCollection AddEventBus(this IServiceCollection services, AppSettings appSettings)
     {

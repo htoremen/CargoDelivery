@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Cargo.GRPC";
+
+service DebitGrpc {
+  rpc UpdateState(StateUpdateRequest) returns(StateUpdateResponse);
+}
+
+message StateUpdateRequest {
+  string CurrentState = 1;
+  string CorrelationId = 2;
+}
+
+message StateUpdateResponse{
+
+}

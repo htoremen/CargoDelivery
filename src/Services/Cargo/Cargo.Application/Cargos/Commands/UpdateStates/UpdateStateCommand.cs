@@ -4,7 +4,7 @@ namespace Cargo.Application.Cargos.Commands.UpdateStates;
 
 public class UpdateStateCommand : IRequest<GenericResponse<UpdateStateResponse>>
 {
-    public Guid CorrelationId { get; set; }
+    public string CorrelationId { get; set; }
     public string CurrentState { get; set; }
 }
 

@@ -1,3 +1,4 @@
+using Cargo.GRPC.Services;
 using Core.Infrastructure;
 using NoSQLMongo.Infrastructure.Settings;
 
@@ -15,11 +16,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddApplicationServices(appSettings, builder.Configuration);
+builder.Services.AddGrpcServices(appSettings, builder.Configuration);
 builder.Services.AddInfrastructureServices(appSettings);
 builder.Services.AddWebUIServices();
 builder.Services.AddEventBus(appSettings);
 
 var app = builder.Build();
+
+app.MapGrpcServices();
 
 app.UseHttpsRedirection();
 

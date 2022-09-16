@@ -39,7 +39,6 @@ public class StartRouteCommandCommandHandler : IRequestHandler<StartRouteCommand
                     IsRoute = true,
                 });
                 await _context.SaveChangesAsync(cancellationToken);
-
             }
         }
         return GenericResponse<StartRouteResponse>.Success(new StartRouteResponse { CorrelationId = request.CorrelationId }, 200);
