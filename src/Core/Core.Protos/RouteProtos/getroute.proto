@@ -10,9 +10,11 @@ message GetRouteRequest {
   string CorrelationId = 1;
 }
 
-message GetRouteResponse{
-  string CargoId = 1;
-  string Address = 2;
-  string Route = 3;
-
+message GetRouteResponse{  
+    repeated GetRouteDataResponse Data = 1; 
 }
+message GetRouteDataResponse{	
+	string CargoId = 1;
+	string Address = 2;
+	string Route = 3;
+  }

@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\..\..\Core\Core.Protos\Protos\stateupdate.proto" GrpcServices="Both">
+    <Protobuf Include="..\..\..\Core\Core.Protos\CargoProtos\stateupdate.proto" GrpcServices="Both">
       <Link>Protos\stateupdate.proto</Link>
     </Protobuf>
   </ItemGroup>

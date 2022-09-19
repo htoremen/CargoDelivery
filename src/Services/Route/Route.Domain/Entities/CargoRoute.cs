@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Route.Domain.Entities;
+﻿namespace Route.Domain.Entities;
 
 public partial class CargoRoute
 {
