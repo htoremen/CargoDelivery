@@ -18,6 +18,7 @@ namespace Delivery.Infrastructure.Persistence
         public virtual DbSet<CargoItem> CargoItems { get; set; } = null!;
         public virtual DbSet<Domain.Entities.Delivery> Deliveries { get; set; } = null!;
 
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
