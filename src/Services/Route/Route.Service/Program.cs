@@ -13,10 +13,13 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddApplicationServices(appSettings);
 builder.Services.AddInfrastructureServices(appSettings);
+builder.Services.AddGrpcServices(appSettings, builder.Configuration);
 builder.Services.AddWebUIServices();
 builder.Services.AddEventBus(appSettings);
 
 var app = builder.Build();
+app.MapGrpcServices();
+
 
 app.UseHttpsRedirection();
 

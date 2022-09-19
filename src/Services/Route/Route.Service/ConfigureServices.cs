@@ -5,6 +5,7 @@ using MediatR;
 using Core.Domain.Enums;
 using Route.Service.Services;
 using Core.Infrastructure;
+using Route.GRPC.Server.Services;
 
 namespace Cargo.Service;
 
@@ -19,7 +20,11 @@ public static class ConfigureServices
         return services;
     }
 
-
+    public static WebApplication MapGrpcServices(this WebApplication app)
+    {
+        app.MapGrpcService<RouteService>();
+        return app;
+    }
     public static IServiceCollection AddEventBus(this IServiceCollection services, AppSettings appSettings)
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);

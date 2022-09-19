@@ -1,5 +1,6 @@
-﻿using Core.Domain.MessageBrokers;
+﻿using AutoMapper;
 using Deliveries;
+using Microsoft.EntityFrameworkCore;
 
 namespace Route.Application.Routes.ManuelRoutes;
 
@@ -12,15 +13,22 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
 {
     private readonly IMessageSender<ICargoApproval> _cargoApproval;
     private readonly IMessageSender<IStartDelivery> _startDelivery;
+    private readonly IMapper _mapper;
+    private readonly IApplicationDbContext _context;
 
-    public ManuelRouteCommandHandler(IMessageSender<ICargoApproval> cargoApproval, IMessageSender<IStartDelivery> startDelivery)
+    public ManuelRouteCommandHandler(IMessageSender<ICargoApproval> cargoApproval, IMessageSender<IStartDelivery> startDelivery, IMapper mapper, IApplicationDbContext context)
     {
         _cargoApproval = cargoApproval;
         _startDelivery = startDelivery;
+        _mapper = mapper;
+        _context = context;
     }
 
     public async Task<GenericResponse<ManuelRouteResponse>> Handle(ManuelRouteCommand request, CancellationToken cancellationToken)
     {
+        var cargoRoutes = await _context.CargoRoutes.Where(x => x.CorrelationId == request.CorrelationId.ToString()).ToListAsync();
+        var routes = _mapper.Map<List<ManuelAutoRouteInstance>>(cargoRoutes);
+
         var rnd = new Random();
         if (rnd.Next(1, 1000) % 2 == 0)
         {
@@ -28,7 +36,6 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
             {
                 CurrentState = request.CurrentState,
                 CorrelationId = request.CorrelationId
-
             }, null, cancellationToken);
         }
         else
@@ -36,7 +43,8 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
             await _startDelivery.SendAsync(new StartDelivery
             {
                 CurrentState = request.CurrentState,
-                CorrelationId = request.CorrelationId
+                CorrelationId = request.CorrelationId,
+                Routes = routes
             }, null, cancellationToken);
         }
 

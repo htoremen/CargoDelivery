@@ -1,5 +1,9 @@
-﻿using Core.Domain.MessageBrokers;
+﻿using AutoMapper;
+using Core.Domain.MessageBrokers;
+using Core.Domain.SagaInstances;
 using Deliveries;
+using Microsoft.EntityFrameworkCore;
+using Route.Application.Common.Interfaces;
 
 namespace Route.Application.Routes.AutoRoutes;
 
@@ -13,28 +17,30 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
 {
     private readonly IMessageSender<IStartDelivery> _startDelivery;
     private readonly IMessageSender<ICargoApproval> _cargoApproval;
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public AutoRouteCommandHandler(IMessageSender<IStartDelivery> startDelivery, IMessageSender<ICargoApproval> cargoApproval)
+    public AutoRouteCommandHandler(IMessageSender<IStartDelivery> startDelivery, IMessageSender<ICargoApproval> cargoApproval, IApplicationDbContext context, IMapper mapper)
     {
         _startDelivery = startDelivery;
         _cargoApproval = cargoApproval;
+        _context = context;
+        _mapper = mapper;
     }
 
     public async Task<GenericResponse<AutoRouteResponse>> Handle(AutoRouteCommand request, CancellationToken cancellationToken)
     {
+        var cargoRoutes = await _context.CargoRoutes.Where(x => x.CorrelationId == request.CorrelationId.ToString()).ToListAsync();
+        var routes = _mapper.Map<List<ManuelAutoRouteInstance>>(cargoRoutes);
+        
         var rnd = new Random();
         if (rnd.Next(1, 1000) % 2 == 0)
         {
-            //await _sendEndpoint.Send<ICargoApproval>(new
-            //{
-            //    CargoId = request.CargoId,
-            //    CorrelationId = request.CorrelationId
-
-            //}, cancellationToken);
             await _startDelivery.SendAsync(new StartDelivery
             { 
                 CurrentState = request.CurrentState,
-                CorrelationId = request.CorrelationId
+                CorrelationId = request.CorrelationId,
+                Routes = routes
             }, null, cancellationToken);
         }
         else
@@ -42,7 +48,8 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
             await _startDelivery.SendAsync(new StartDelivery
             {
                 CurrentState = request.CurrentState,
-                CorrelationId = request.CorrelationId
+                CorrelationId = request.CorrelationId,
+                Routes = routes
             }, null, cancellationToken);
         }
 

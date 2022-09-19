@@ -18,5 +18,7 @@ public class AutoMapProfile : Profile
 
         CreateMap<IManuelRoute, ManuelRouteCommand>();
         CreateMap<IManuelRoute, StateUpdateCommand>();
+
+        CreateMap<Domain.Entities.CargoRoute, ManuelAutoRouteInstance>();
     }
 }
