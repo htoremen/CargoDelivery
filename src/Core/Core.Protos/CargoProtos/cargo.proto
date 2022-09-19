@@ -1,0 +1,30 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Cargo.GRPC.Server";
+
+service CargoGrpc {
+  rpc GetCargoAll(GetCargosRequest) returns(GetCargosResponse){}
+}
+
+message GetCargosRequest{
+  string CorrelationId = 1;
+}
+message GetCargosResponse{
+	repeated GetCargos Cargos = 1;
+}
+message GetCargos{
+	string CargoId=1;
+	string DebitId=2;
+	string Address=3;
+	repeated GetCargoItems CargoItems = 4;
+}
+message GetCargoItems{
+	string CargoItemId = 1;
+	string CargoId = 2;
+	string Barcode = 3;
+	string WaybillNumber = 4;
+	string Kg = 5;
+	string Desi = 6;
+	string Description = 7;
+	string Address = 8;
+}

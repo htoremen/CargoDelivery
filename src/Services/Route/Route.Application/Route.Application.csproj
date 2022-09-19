@@ -20,4 +20,9 @@
     <ProjectReference Include="..\Route.GRPC.Client\Route.GRPC.Client.csproj" />
   </ItemGroup>
 
+
+	<ItemGroup>
+	  <Folder Include="Cargos\Queries\" />
+	</ItemGroup>
+
 </Project>

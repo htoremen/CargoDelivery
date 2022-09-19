@@ -7,6 +7,6 @@ public interface IApplicationDbContext
 {
     DbSet<Domain.Entities.Delivery> Deliveries { get; }
     DbSet<CargoItem> CargoItems { get; }
-    DbSet<Cargo> Cargos { get; }
+    DbSet<Domain.Entities.Cargo> Cargos { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

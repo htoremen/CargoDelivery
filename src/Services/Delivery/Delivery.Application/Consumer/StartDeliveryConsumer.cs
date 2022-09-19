@@ -1,4 +1,5 @@
-﻿using Delivery.Application.Deliveries.StartDeliveries;
+﻿using Delivery.Application.Cargos.Queries.GetCargoAlls;
+using Delivery.Application.Deliveries.StartDeliveries;
 
 namespace Delivery.Application.Consumer;
 
@@ -13,6 +14,8 @@ public class StartDeliveryConsumer : IConsumer<IStartDelivery>
     public async Task Consume(ConsumeContext<IStartDelivery> context)
     {
         var command = context.Message;
+
+        var cargos = await _mediator.Send(new GetCargoAllQuery { CorrelationId = command.CorrelationId.ToString() });
 
         await _mediator.Send(new StartDeliveryCommand
         {

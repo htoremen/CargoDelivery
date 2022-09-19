@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CargoProtos\cargo.proto" />
     <None Remove="CargoProtos\stateupdate.proto" />
   </ItemGroup>
 
@@ -20,6 +21,7 @@
     </PackageReference>
   </ItemGroup>
 	<ItemGroup>
+	  <Protobuf Include="CargoProtos\cargo.proto" GrpcServices="Both" />
 	  <Protobuf Include="CargoProtos\stateupdate.proto" GrpcServices="Both" />
 	</ItemGroup>
 

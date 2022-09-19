@@ -14,7 +14,7 @@ namespace Delivery.Infrastructure.Persistence
         {
         }
 
-        public virtual DbSet<Cargo> Cargos { get; set; } = null!;
+        public virtual DbSet<Domain.Entities.Cargo> Cargos { get; set; } = null!;
         public virtual DbSet<CargoItem> CargoItems { get; set; } = null!;
         public virtual DbSet<Domain.Entities.Delivery> Deliveries { get; set; } = null!;
 
@@ -36,18 +36,17 @@ namespace Delivery.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Cargo>(entity =>
+            modelBuilder.Entity<Domain.Entities.Cargo>(entity =>
             {
                 entity.ToTable("Cargo");
 
                 entity.Property(e => e.CargoId).HasMaxLength(50);
 
-                entity.Property(e => e.DeliveryId).HasMaxLength(50);
+                entity.Property(e => e.Address).HasMaxLength(50);
 
-                entity.HasOne(d => d.Delivery)
-                    .WithMany(p => p.Cargos)
-                    .HasForeignKey(d => d.DeliveryId)
-                    .HasConstraintName("FK_Cargo_Delivery");
+                entity.Property(e => e.DebitId).HasMaxLength(50);
+
+                entity.Property(e => e.Route).HasMaxLength(4000);
             });
 
             modelBuilder.Entity<CargoItem>(entity =>
@@ -56,11 +55,24 @@ namespace Delivery.Infrastructure.Persistence
 
                 entity.Property(e => e.CargoItemId).HasMaxLength(50);
 
+                entity.Property(e => e.Address).HasMaxLength(250);
+
+                entity.Property(e => e.Barcode).HasMaxLength(50);
+
                 entity.Property(e => e.CargoId).HasMaxLength(50);
+
+                entity.Property(e => e.Description).HasMaxLength(250);
+
+                entity.Property(e => e.Desi).HasMaxLength(50);
+
+                entity.Property(e => e.Kg).HasMaxLength(50);
+
+                entity.Property(e => e.WaybillNumber).HasMaxLength(50);
 
                 entity.HasOne(d => d.Cargo)
                     .WithMany(p => p.CargoItems)
                     .HasForeignKey(d => d.CargoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CargoItem_Cargo");
             });
 
@@ -70,16 +82,22 @@ namespace Delivery.Infrastructure.Persistence
 
                 entity.Property(e => e.DeliveryId).HasMaxLength(50);
 
+                entity.Property(e => e.CargoId).HasMaxLength(50);
+
                 entity.Property(e => e.CorrelationId).HasMaxLength(50);
 
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
 
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Cargo)
+                    .WithMany(p => p.Deliveries)
+                    .HasForeignKey(d => d.CargoId)
+                    .HasConstraintName("FK_Delivery_Cargo");
             });
 
             OnModelCreatingPartial(modelBuilder);
         }
-
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

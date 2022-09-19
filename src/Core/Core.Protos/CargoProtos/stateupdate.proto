@@ -10,7 +10,6 @@ message StateUpdateRequest {
   string CurrentState = 1;
   string CorrelationId = 2;
 }
-
 message StateUpdateResponse{
 
 }

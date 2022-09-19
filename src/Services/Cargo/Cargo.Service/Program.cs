@@ -1,4 +1,3 @@
-using Cargo.GRPC.Services;
 using Core.Infrastructure;
 using NoSQLMongo.Infrastructure.Settings;
 

@@ -3,7 +3,7 @@ using Cargo.GRPC.Server;
 using Grpc.Core;
 using MediatR;
 
-namespace Cargo.GRPC.Services;
+namespace Cargo.GRPC.Server.Services;
 
 public class DebitService : DebitGrpc.DebitGrpcBase
 {
