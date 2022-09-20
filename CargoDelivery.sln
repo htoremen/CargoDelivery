@@ -98,7 +98,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cargo.GRPC.Server", "src\Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Route.GRPC.Client", "src\Services\Route\Route.GRPC.Client\Route.GRPC.Client.csproj", "{28E6DDB0-6432-4487-B436-FA54E7CD6BE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Route.GRPC.Server", "src\Services\Route\Route.GRPC.Server\Route.GRPC.Server.csproj", "{05E80786-3112-4992-A192-403899E289B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Route.GRPC.Server", "src\Services\Route\Route.GRPC.Server\Route.GRPC.Server.csproj", "{05E80786-3112-4992-A192-403899E289B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delivery.GRPC.Server", "src\Services\Delivery\Delivery.GRPC.Server\Delivery.GRPC.Server.csproj", "{2AB7B1BD-EE46-48EA-8D8E-3EE74D013B99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delivery.GRPC.Client", "src\Services\Delivery\Delivery.GRPC.Client\Delivery.GRPC.Client.csproj", "{00EA38B0-5B4D-4B7E-8A27-462678CA2B73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -242,6 +246,14 @@ Global
 		{05E80786-3112-4992-A192-403899E289B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05E80786-3112-4992-A192-403899E289B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05E80786-3112-4992-A192-403899E289B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AB7B1BD-EE46-48EA-8D8E-3EE74D013B99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AB7B1BD-EE46-48EA-8D8E-3EE74D013B99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AB7B1BD-EE46-48EA-8D8E-3EE74D013B99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AB7B1BD-EE46-48EA-8D8E-3EE74D013B99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00EA38B0-5B4D-4B7E-8A27-462678CA2B73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00EA38B0-5B4D-4B7E-8A27-462678CA2B73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00EA38B0-5B4D-4B7E-8A27-462678CA2B73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00EA38B0-5B4D-4B7E-8A27-462678CA2B73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -290,6 +302,8 @@ Global
 		{AE3AAF1F-9D58-4E48-A355-5B28328229B2} = {4A9520A2-217B-4F2C-BAAB-D496BC448759}
 		{28E6DDB0-6432-4487-B436-FA54E7CD6BE8} = {BD9CFCFB-E175-418B-974C-727512DDB969}
 		{05E80786-3112-4992-A192-403899E289B7} = {BD9CFCFB-E175-418B-974C-727512DDB969}
+		{2AB7B1BD-EE46-48EA-8D8E-3EE74D013B99} = {3BD1931D-8682-4220-B552-6B10B4B926B8}
+		{00EA38B0-5B4D-4B7E-8A27-462678CA2B73} = {3BD1931D-8682-4220-B552-6B10B4B926B8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7A97444-E857-443B-AF2E-1BC3AAE4D6BA}

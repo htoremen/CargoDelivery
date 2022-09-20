@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\..\Core\Core.Infrastructure\Core.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\Core\Core.Protos\Core.Protos.csproj" />
     <ProjectReference Include="..\Delivery.Domain\Delivery.Domain.csproj" />
+    <ProjectReference Include="..\Delivery.GRPC.Client\Delivery.GRPC.Client.csproj" />
   </ItemGroup>
 
 
