@@ -2,7 +2,11 @@
 using Grpc.Net.Client;
 using static Cargo.GRPC.Server.DebitGrpc;
 
-namespace Route.Infrastructure.Services;
+namespace Route.GRPC.Client.Services;
+public interface IDebitService
+{
+    Task<StateUpdateResponse> UpdateStateAsync(string correlationId, string currentState);
+}
 
 public class DebitService : IDebitService
 {

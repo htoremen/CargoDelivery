@@ -1,5 +1,6 @@
 ﻿using Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Route.GRPC.Client.Services;
 using Route.Infrastructure.Persistence;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,6 @@ public static class ConfigureServices
         services.AddDbContext(appSettings);
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddScoped<IIdentityService, IdentityService>();
-        services.AddSingleton<IDebitService, DebitService>();
 
         return services;
     }

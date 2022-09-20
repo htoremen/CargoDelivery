@@ -10,3 +10,4 @@ global using Core.Domain.Enums;
 global using Core.Domain.MessageBrokers;
 global using Route.Application.Common.Interfaces;
 global using Core.Domain.SagaInstances;
+global using Route.GRPC.Client.Services;

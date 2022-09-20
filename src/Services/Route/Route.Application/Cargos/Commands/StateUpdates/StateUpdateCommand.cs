@@ -1,7 +1,4 @@
-﻿using Cargo.GRPC.Server;
-using Grpc.Net.Client;
-
-namespace Route.Application.Routes.StateUpdates;
+﻿namespace Route.Application.Routes.StateUpdates;
 
 public class StateUpdateCommand : IRequest<GenericResponse<StateUpdateResponse>>
 {

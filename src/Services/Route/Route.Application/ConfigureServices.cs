@@ -24,6 +24,7 @@ public static class ConfigureServices
            .AddMessageBusSender<IStartDelivery>(appSettings.MessageBroker)
            .AddMessageBusSender<ICargoApproval>(appSettings.MessageBroker);
 
+        services.AddGrpcServices();
         return services;
     }
 }
