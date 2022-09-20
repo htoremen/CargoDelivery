@@ -11,6 +11,7 @@ public static class ConfigureServices
         services.AddDbContext(appSettings);
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddScoped<IIdentityService, IdentityService>();
+        services.AddSingleton<IDebitService, DebitService>();
 
         return services;
     }

@@ -12,7 +12,7 @@ public class CargoService : ICargoService
     public CargoService()
     {
         Channel = GrpcChannel.ForAddress("https://localhost:5011");
-        Client = new CargoGrpc.CargoGrpcClient(Channel);
+        Client = new CargoGrpcClient(Channel);
     }
 
     public async Task<GetCargosResponse> GetCargoAllAsync(string correlationId)
