@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.Infrastructure.Persistence
 {
-    public partial class ApplicationDbContext : DbContext
+    public partial class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         public ApplicationDbContext()
         {

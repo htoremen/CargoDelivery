@@ -28,4 +28,3 @@ public class GetCargoAllQueryHandler : IRequestHandler<GetCargoAllQuery, Generic
         return GenericResponse<GetCargosResponse>.Success(200);
     }
 }
-

@@ -19,16 +19,32 @@ public class CargoService : CargoGrpc.CargoGrpcBase
     public override async Task<GetCargosResponse> GetCargoAll(GetCargosRequest request, ServerCallContext context)
     {
         var data = await _mediator.Send(new GetCargoQuery { CorrelationId = request.CorrelationId });
-        var cargos = data.Data.Select(x => new GetCargosResponse
+        var response = new GetCargosResponse();
+        foreach (var item in data.Data)
         {
+            var cargoItems = new List<GetCargoItems>();
+            foreach (var cargoItem in item.CargoItems)
+            {
+                cargoItems.Add(new GetCargoItems
+                {
+                    Barcode = cargoItem.Barcode,
+                    CargoItemId = cargoItem.CargoItemId,
+                    Description = cargoItem.Description,
+                    Desi = cargoItem.Desi,
+                    Kg = cargoItem.Kg,
+                    WaybillNumber = cargoItem.WaybillNumber,
+                });
+            }
 
-        });
+            response.Cargos.Add(new GetCargos
+            {
+                Address = item.Address,
+                CargoId = item.CargoId,
+                DebitId = item.DebitId,
+                CargoItems = { cargoItems }
+            });
+        }
 
-        //var response = new GetCargosResponse
-        //{
-        //    Cargos = cargos
-        //};
-       // var cargos = _mapper.Map<GetCargosResponse>(data);
-        return new GetCargosResponse();
+        return response;
     }
 }
