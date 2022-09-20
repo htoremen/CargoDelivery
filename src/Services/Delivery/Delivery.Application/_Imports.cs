@@ -8,3 +8,4 @@ global using Routes;
 global using Deliveries;
 global using Core.Domain.Enums;
 global using Core.Domain.MessageBrokers;
+global using Delivery.Application.Common.Interfaces;
