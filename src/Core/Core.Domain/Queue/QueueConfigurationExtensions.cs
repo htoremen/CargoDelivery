@@ -22,21 +22,20 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueName.AutoRoute, "Route." + QueueName.AutoRoute.ToString());
         queueConfiguration.Names.Add(QueueName.ManuelRoute, "Route." + QueueName.ManuelRoute.ToString());
 
+        // Delivery
         queueConfiguration.Names.Add(QueueName.StartDelivery, "Delivery." + QueueName.StartDelivery.ToString());
+        queueConfiguration.Names.Add(QueueName.StartDelivery, "Delivery." + QueueName.NewDelivery.ToString());
         queueConfiguration.Names.Add(QueueName.NotDelivered, "Delivery." + QueueName.NotDelivered.ToString());
-
-
         queueConfiguration.Names.Add(QueueName.CreateRefund, "Delivery." + QueueName.CreateRefund.ToString());
-
-        // Delivery Process
         queueConfiguration.Names.Add(QueueName.CreateDelivery, "Delivery." + QueueName.CreateDelivery.ToString());
 
+        // Payment
         queueConfiguration.Names.Add(QueueName.CardPayment, "Payment." + QueueName.CardPayment.ToString());       
         queueConfiguration.Names.Add(QueueName.PayAtDoor, "Payment." + QueueName.PayAtDoor.ToString());        
         queueConfiguration.Names.Add(QueueName.FreeDelivery, "Payment." + QueueName.FreeDelivery.ToString());
-        
+
+        // Delivery
         queueConfiguration.Names.Add(QueueName.DeliveryCompleted, "Delivery." + QueueName.DeliveryCompleted.ToString());
-      
         queueConfiguration.Names.Add(QueueName.ShiftCompletion, "Delivery." + QueueName.ShiftCompletion.ToString());
 
         if(services != null)

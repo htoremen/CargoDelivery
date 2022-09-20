@@ -20,9 +20,6 @@ public class StateUpdateCommandHandler : IRequestHandler<StateUpdateCommand, Gen
 
     public async Task<GenericResponse<StateUpdateResponse>> Handle(StateUpdateCommand request, CancellationToken cancellationToken)
     {
-        var channel = GrpcChannel.ForAddress("https://localhost:5011");
-        var client = new DebitGrpc.DebitGrpcClient(channel);
-
         await _debitService.UpdateStateAsync(request.CurrentState, request.CorrelationId);
 
         return GenericResponse<StateUpdateResponse>.Success(200);

@@ -1,5 +1,4 @@
 ﻿using Delivery.Application.Cargos.Queries.GetCargoAlls;
-using Delivery.Application.Common.Interfaces;
 using Delivery.Application.Deliveries.StartDeliveries;
 
 namespace Delivery.Application.Consumer;
@@ -23,6 +22,12 @@ public class StartDeliveryConsumer : IConsumer<IStartDelivery>
             CorrelationId = command.CorrelationId,
             Routes = command.Routes,
             Cargos = result.Data.Cargos.ToList()
+        });
+
+        await context.Publish<INewDelivery>(new NewDelivery
+        {
+            CorrelationId = command.CorrelationId,
+            CurrentState = command.CurrentState
         });
     }
 }

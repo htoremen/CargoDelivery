@@ -18,17 +18,16 @@ public enum QueueName
 
     // Kargo İşlemleri
     StartDelivery = 300,
-    NotDelivered = 301,
-    CreateRefund = 311,
+    NewDelivery = 301,
+
+    NotDelivered = 310,
+    CreateRefund = 320,
 
     // Teslimat Oluştur
-    CreateDelivery = 321,
-    // Kredi Kartı
+    CreateDelivery = 330,
     CardPayment = 331,
-    // Manuel Ödeme
-    PayAtDoor = 341,
-    // Teslimat İptal
-    FreeDelivery = 351,
+    PayAtDoor = 332,
+    FreeDelivery = 333,
 
     // Kargo İşlemleri Ortak
     DeliveryCompleted = 361,

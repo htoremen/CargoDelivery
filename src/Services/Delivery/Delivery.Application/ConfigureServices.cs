@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Core.Domain.Events.Deliveries;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Delivery.Application.Common.Behaviours;
@@ -21,6 +22,7 @@ public static class ConfigureServices
 
         services
             .AddMessageBusSender<IStartDelivery>(appSettings.MessageBroker)
+            .AddMessageBusSender<INewDelivery>(appSettings.MessageBroker)
             .AddMessageBusSender<ICardPayment>(appSettings.MessageBroker)
             .AddMessageBusSender<IPayAtDoor>(appSettings.MessageBroker)
             .AddMessageBusSender<IFreeDelivery>(appSettings.MessageBroker)

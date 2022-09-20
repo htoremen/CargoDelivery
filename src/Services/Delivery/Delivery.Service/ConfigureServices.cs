@@ -29,6 +29,7 @@ public static class ConfigureServices
         services.AddMassTransit<IEventBus>(x =>
         {
             x.AddConsumer<StartDeliveryConsumer>();
+            x.AddConsumer<NewDeliveryConsumer>();
             x.AddConsumer<CreateDeliveryConsumer>();
             x.AddConsumer<NotDeliveredConsumer>();
             x.AddConsumer<CreateRefundConsumer>();
@@ -97,6 +98,20 @@ public static class ConfigureServices
                     cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                 });
                 e.ConfigureConsumer<StartDeliveryConsumer>(context);
+            });
+
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.NewDelivery], e =>
+            {
+                e.PrefetchCount = 1;
+                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                e.UseCircuitBreaker(cb =>
+                {
+                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                    cb.TripThreshold = config.TripThreshold;
+                    cb.ActiveThreshold = config.ActiveThreshold;
+                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                });
+                e.ConfigureConsumer<NewDeliveryConsumer>(context);
             });
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDelivery], e =>
