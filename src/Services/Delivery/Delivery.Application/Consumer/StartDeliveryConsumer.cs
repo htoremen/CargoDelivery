@@ -20,7 +20,7 @@ public class StartDeliveryConsumer : IConsumer<IStartDelivery>
         {
             CurrentState = command.CurrentState,
             CorrelationId = command.CorrelationId,
-            Routes = command.Routes,
+           // Routes = command.Routes,
             Cargos = result.Data.Cargos.ToList()
         });
 

@@ -29,18 +29,14 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
     }
 
     public async Task<GenericResponse<AutoRouteResponse>> Handle(AutoRouteCommand request, CancellationToken cancellationToken)
-    {
-        var cargoRoutes = await _context.CargoRoutes.Where(x => x.CorrelationId == request.CorrelationId.ToString()).ToListAsync();
-        var routes = _mapper.Map<List<ManuelAutoRouteInstance>>(cargoRoutes);
-        
+    {        
         var rnd = new Random();
         if (rnd.Next(1, 1000) % 2 == 0)
         {
             await _startDelivery.SendAsync(new StartDelivery
             { 
                 CurrentState = request.CurrentState,
-                CorrelationId = request.CorrelationId,
-                Routes = routes
+                CorrelationId = request.CorrelationId
             }, null, cancellationToken);
         }
         else
@@ -48,8 +44,7 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
             await _startDelivery.SendAsync(new StartDelivery
             {
                 CurrentState = request.CurrentState,
-                CorrelationId = request.CorrelationId,
-                Routes = routes
+                CorrelationId = request.CorrelationId
             }, null, cancellationToken);
         }
 

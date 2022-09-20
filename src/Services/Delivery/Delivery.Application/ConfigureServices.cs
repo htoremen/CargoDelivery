@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Core.Domain.Events.Deliveries;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Delivery.Application.Common.Behaviours;

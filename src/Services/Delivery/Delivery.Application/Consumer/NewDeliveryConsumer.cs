@@ -1,6 +1,4 @@
-﻿using Core.Domain.Events.Deliveries;
-
-namespace Delivery.Application.Consumer;
+﻿namespace Delivery.Application.Consumer;
 
 public class NewDeliveryConsumer : IConsumer<INewDelivery>
 {

@@ -196,8 +196,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartDelivery]}"), context => new StartDeliveryCommand(context.Data.CorrelationId)
              {
                  CorrelationId = context.Instance.CorrelationId,
-                 CurrentState = context.Instance.CurrentState,
-                 Routes = context.Data.Routes
+                 CurrentState = context.Instance.CurrentState
              }));
 
         During(ManuelRoute,
@@ -207,7 +206,6 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
              {
                  CorrelationId = context.Instance.CorrelationId,
                  CurrentState = context.Instance.CurrentState,
-                 Routes = context.Data.Routes
              }));
 
         #endregion
@@ -342,9 +340,9 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         #endregion
 
         During(DeliveryCompleted,
-           When(StartDeliveryEvent)
-               .TransitionTo(StartDelivery)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartDelivery]}"), context => new StartDeliveryCommand(context.Data.CorrelationId)
+           When(NewDeliveryEvent)
+               .TransitionTo(NewDelivery)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.NewDelivery]}"), context => new NewDeliveryCommand(context.Data.CorrelationId)
                 {
                     CorrelationId = context.Instance.CorrelationId,
                     CurrentState = context.Instance.CurrentState,

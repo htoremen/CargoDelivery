@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Deliveries;
 using Route.Application.Routes.ManuelRoutes;
 using Route.Application.Routes.StateUpdates;
 
@@ -24,6 +25,12 @@ public class ManuelRouteConsumer : IConsumer<IManuelRoute>
 
         var state = _mapper.Map<StateUpdateCommand>(command);
         await _mediator.Send(state);
+
+        await context.Publish<IStartDelivery>(new StartDelivery
+        {
+            CorrelationId = command.CorrelationId,
+            CurrentState = command.CurrentState
+        });
     }
 }
 

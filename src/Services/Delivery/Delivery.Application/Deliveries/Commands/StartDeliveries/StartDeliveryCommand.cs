@@ -9,7 +9,6 @@ public class StartDeliveryCommand  : IRequest<GenericResponse<StartDeliveryRespo
 {
     public string CurrentState { get; set; }
     public Guid CorrelationId { get; set; }
-    public List<ManuelAutoRouteInstance> Routes { get; set; }
     public List<GetCargos> Cargos { get; internal set; }
 }
 
@@ -26,15 +25,15 @@ public class StartDeliveryCommandHandler : IRequestHandler<StartDeliveryCommand,
     {
         foreach (var cargo in request.Cargos)
         {
-            var route = request.Routes.FirstOrDefault(x => x.CargoId == cargo.CargoId);
-            if(route == null) continue;
+           // var route = request.Routes.FirstOrDefault(x => x.CargoId == cargo.CargoId);
+            //if(route == null) continue;
 
             _context.Cargos.Add(new Domain.Entities.Cargo
             {
                 Address = cargo.Address,
                 CargoId = cargo.CargoId,
                 DebitId = cargo.DebitId,
-                Route = route.Route,
+               // Route = route.Route,
                 CargoItems = cargo.CargoItems.Select(y => new Domain.Entities.CargoItem
                 {
                     Barcode = y.Barcode,

@@ -26,27 +26,27 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
 
     public async Task<GenericResponse<ManuelRouteResponse>> Handle(ManuelRouteCommand request, CancellationToken cancellationToken)
     {
-        var cargoRoutes = await _context.CargoRoutes.Where(x => x.CorrelationId == request.CorrelationId.ToString()).ToListAsync();
-        var routes = _mapper.Map<List<ManuelAutoRouteInstance>>(cargoRoutes);
+        //var cargoRoutes = await _context.CargoRoutes.Where(x => x.CorrelationId == request.CorrelationId.ToString()).ToListAsync();
+        //var routes = _mapper.Map<List<ManuelAutoRouteInstance>>(cargoRoutes);
 
-        var rnd = new Random();
-        if (rnd.Next(1, 1000) % 2 == 0)
-        {
-            await _cargoApproval.SendAsync(new CargoApproval
-            {
-                CurrentState = request.CurrentState,
-                CorrelationId = request.CorrelationId
-            }, null, cancellationToken);
-        }
-        else
-        {
-            await _startDelivery.SendAsync(new StartDelivery
-            {
-                CurrentState = request.CurrentState,
-                CorrelationId = request.CorrelationId,
-                Routes = routes
-            }, null, cancellationToken);
-        }
+        //var rnd = new Random();
+        //if (rnd.Next(1, 1000) % 2 == 0)
+        //{
+        //    await _cargoApproval.SendAsync(new CargoApproval
+        //    {
+        //        CurrentState = request.CurrentState,
+        //        CorrelationId = request.CorrelationId
+        //    }, null, cancellationToken);
+        //}
+        //else
+        //{
+        //    await _startDelivery.SendAsync(new StartDelivery
+        //    {
+        //        CurrentState = request.CurrentState,
+        //        CorrelationId = request.CorrelationId,
+        //        Routes = routes
+        //    }, null, cancellationToken);
+        //}
 
         return GenericResponse<ManuelRouteResponse>.Success(new ManuelRouteResponse { }, 200);
     }
