@@ -24,4 +24,3 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
         return GenericResponse<AutoRouteResponse>.Success(new AutoRouteResponse { }, 200);
     }
 }
-
