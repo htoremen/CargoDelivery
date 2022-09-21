@@ -23,4 +23,3 @@ public class CreateDeliveryConsumer : IConsumer<ICreateDelivery>
         });
     }
 }
-
