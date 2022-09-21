@@ -11,7 +11,7 @@ message GetRouteRequest {
 }
 
 message GetRouteResponse{  
-    repeated GetRouteDataResponse Data = 1; 
+    repeated GetRouteDataResponse Routes = 1; 
 }
 message GetRouteDataResponse{	
 	string CargoId = 1;

@@ -41,4 +41,5 @@ message GetCargoListItem{
 	string CargoId=1;
 	string DebitId=2;
 	string Address=3;
+	string Route=4;
 }

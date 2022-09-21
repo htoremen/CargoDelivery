@@ -18,9 +18,17 @@ public class RouteService : RouteGrpc.RouteGrpcBase
 
     public override async Task<GetRouteResponse> GetRoute(GetRouteRequest request, ServerCallContext context)
     {
-        var response = await _mediator.Send(new GetRouteQuery { CorrelationId = request.CorrelationId });
-        var data = _mapper.Map<GetRouteResponse>(response.Data);
-
-        return data;
+        var routes = await _mediator.Send(new GetRouteQuery { CorrelationId = request.CorrelationId });
+        var response = new GetRouteResponse();
+        foreach (var item in routes.Data)
+        {
+            response.Routes.Add(new GetRouteDataResponse
+            {
+                CargoId = item.CargoId,
+                Address = item.Address,
+                Route = item.Route
+            });
+        }
+        return response;
     }
 }

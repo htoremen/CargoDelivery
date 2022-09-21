@@ -9,3 +9,6 @@ global using Deliveries;
 global using Core.Domain.Enums;
 global using Core.Domain.MessageBrokers;
 global using Delivery.Application.Common.Interfaces;
+global using Delivery.GRPC.Client.Services;
+global using Route.GRPC.Server;
+global using Cargo.GRPC.Server;

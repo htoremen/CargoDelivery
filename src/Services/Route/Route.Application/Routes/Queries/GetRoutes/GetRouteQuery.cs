@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Route.Application.Common.Interfaces;
 
 namespace Route.Application.Routes.Queries.GetRoutes;
 
@@ -19,7 +18,7 @@ public class GetRouteQueryHandler : IRequestHandler<GetRouteQuery, GenericRespon
 
     public async Task<GenericResponse<List<GetRouteResponse>>> Handle(GetRouteQuery request, CancellationToken cancellationToken)
     {
-        var result = await _context.CargoRoutes
+        var response = await _context.CargoRoutes
             .Where(x => x.CorrelationId == request.CorrelationId)
             .Select(x => new GetRouteResponse
             {
@@ -27,6 +26,7 @@ public class GetRouteQueryHandler : IRequestHandler<GetRouteQuery, GenericRespon
                 CargoId = x.CargoId,
                 Route = x.Route,
             }).ToListAsync();
-        return GenericResponse<List<GetRouteResponse>>.Success(result, 200);
+
+        return GenericResponse<List<GetRouteResponse>>.Success(response, 200);
     }
 }
