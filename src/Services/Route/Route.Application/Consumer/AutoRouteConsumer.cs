@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Deliveries;
 using Route.Application.Routes.AutoRoutes;
 using Route.Application.Routes.StateUpdates;
 
@@ -24,6 +25,12 @@ public class AutoRouteConsumer : IConsumer<IAutoRoute>
 
         var state = _mapper.Map<StateUpdateCommand>(command);
         await _mediator.Send(state);
+
+        await context.Publish<IStartDelivery>(new StartDelivery
+        {
+            CorrelationId = command.CorrelationId,
+            CurrentState = command.CurrentState
+        });
     }
 }
 

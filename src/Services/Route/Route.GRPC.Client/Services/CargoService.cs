@@ -6,6 +6,7 @@ namespace Route.GRPC.Client.Services;
 public interface ICargoService
 {
     Task<GetCargosResponse> GetCargoAllAsync(string correlationId);
+    Task<GetCargoListResponse> GetCargoListAsync(string correlationId);
 }
 
 public class CargoService : ICargoService
@@ -22,6 +23,12 @@ public class CargoService : ICargoService
     public async Task<GetCargosResponse> GetCargoAllAsync(string correlationId)
     {
         var response = await Client.GetCargoAllAsync(new GetCargosRequest { CorrelationId = correlationId });
+        return response;
+    }
+
+    public async Task<GetCargoListResponse> GetCargoListAsync(string correlationId)
+    {
+        var response = await Client.GetCargoListAsync(new GetCargoListRequest { CorrelationId = correlationId });
         return response;
     }
 }

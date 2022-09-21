@@ -1,6 +1,5 @@
-﻿using Core.Domain.Instances;
+﻿using Cargo.GRPC.Server;
 using Microsoft.EntityFrameworkCore;
-using Route.Application.Common.Interfaces;
 using Route.Domain.Entities;
 
 namespace Route.Application.Routes.StartRoutes;
@@ -9,7 +8,7 @@ public class StartRouteCommand : IRequest<GenericResponse<StartRouteResponse>>
 {
     public Guid CorrelationId { get; set; }
     public string CurrentState { get; set; }
-    public List<CargoRouteInstance> CargoRoutes { get; set; }
+    public GetCargoListResponse CargoList { get; set; }
 }
 
 public class StartRouteCommandCommandHandler : IRequestHandler<StartRouteCommand, GenericResponse<StartRouteResponse>>
@@ -23,7 +22,7 @@ public class StartRouteCommandCommandHandler : IRequestHandler<StartRouteCommand
 
     public async Task<GenericResponse<StartRouteResponse>> Handle(StartRouteCommand request, CancellationToken cancellationToken)
     {
-        foreach (var item in request.CargoRoutes)
+        foreach (var item in request.CargoList.Cargos)
         {
             var cargoRoute = await _context.CargoRoutes.FirstOrDefaultAsync(x => x.CargoId == item.CargoId.ToString() && x.CorrelationId == request.CorrelationId.ToString());
             if (cargoRoute == null)

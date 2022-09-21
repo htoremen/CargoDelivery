@@ -7,11 +7,13 @@ public class StartRouteConsumer : IConsumer<IStartRoute>
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
+    private readonly ICargoService _cargoService;
 
-    public StartRouteConsumer(IMediator mediator, IMapper mapper)
+    public StartRouteConsumer(IMediator mediator, IMapper mapper, ICargoService cargoService)
     {
         _mediator = mediator;
         _mapper = mapper;
+        _cargoService = cargoService;
     }
 
     public async Task Consume(ConsumeContext<IStartRoute> context)
@@ -19,6 +21,8 @@ public class StartRouteConsumer : IConsumer<IStartRoute>
         var command = context.Message;
 
         var model = _mapper.Map<StartRouteCommand>(command);
+        var cargoList = await _cargoService.GetCargoListAsync(command.CorrelationId.ToString());
+        model.CargoList = cargoList;
         await _mediator.Send(model);
 
         var state = _mapper.Map<StateUpdateCommand>(command);
