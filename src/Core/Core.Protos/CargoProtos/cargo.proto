@@ -4,6 +4,7 @@ option csharp_namespace = "Cargo.GRPC.Server";
 
 service CargoGrpc {
   rpc GetCargoAll(GetCargosRequest) returns(GetCargosResponse){}
+  rpc GetCargoList(GetCargoListRequest) returns(GetCargoListResponse){}
 }
 
 message GetCargosRequest{
@@ -27,4 +28,17 @@ message GetCargoItems{
 	string Desi = 6;
 	string Description = 7;
 	string Address = 8;
+}
+
+
+message GetCargoListRequest{
+  string CorrelationId = 1;
+}
+message GetCargoListResponse{
+	repeated GetCargos Cargos = 1;
+}
+message GetCargoListItem{
+	string CargoId=1;
+	string DebitId=2;
+	string Address=3;
 }

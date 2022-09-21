@@ -28,14 +28,10 @@ public class CargoApprovalCommandHandler : IRequestHandler<CargoApprovalCommand,
 
     public async Task<GenericResponse<CargoApprovalResponse>> Handle(CargoApprovalCommand request, CancellationToken cancellationToken)
     {
-        var cargos = await _context.Cargos.Where(x => x.Debit.CorrelationId == request.CorrelationId.ToString()).ToListAsync();
-        var cargoRoutes = _mapper.Map<List<Domain.Entities.Cargo>, List<CargoRouteInstance>>(cargos);
-
         await _startRoute.SendAsync(new StartRoute
         {
             CurrentState = request.CurrentState,
-            CorrelationId = request.CorrelationId,
-            CargoRoutes = cargoRoutes
+            CorrelationId = request.CorrelationId
         }, null, cancellationToken);
 
         var debit = await _context.Debits.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString());

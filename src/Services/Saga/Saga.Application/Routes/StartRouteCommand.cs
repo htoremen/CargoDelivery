@@ -10,5 +10,4 @@ public class StartRouteCommand : IStartRoute
     }
     public Guid CorrelationId { get; set; }
     public string CurrentState { get; set; }
-    public List<CargoRouteInstance> CargoRoutes { get; set; }
 }

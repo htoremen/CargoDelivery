@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Cargo.Application.Cargos.Queries.GetCargoLists;
 using Cargo.Application.Cargos.Queries.GetCargos;
 using Grpc.Core;
 using MediatR;
@@ -45,6 +46,23 @@ public class CargoService : CargoGrpc.CargoGrpcBase
             });
         }
 
+        return response;
+    }
+
+    public override async Task<GetCargoListResponse> GetCargoList(GetCargoListRequest request, ServerCallContext context)
+    {
+        var cargos = await _mediator.Send(new GetCargoListQuery { CorrelationId = request.CorrelationId }); 
+
+        var response = new GetCargoListResponse();
+        foreach (var item in cargos.Data)
+        {
+            response.Cargos.Add(new GetCargos
+            {
+                Address = item.Address,
+                CargoId = item.CargoId,
+                DebitId = item.DebitId,
+            });
+        }
         return response;
     }
 }

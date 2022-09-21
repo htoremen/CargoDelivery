@@ -9,3 +9,4 @@ global using Cargo.Application.Common.Interfaces;
 global using Cargo.Domain.Entities;
 global using NoSQLMongo.Application.Common.Interfaces;
 global using NoSQLMongo.Domain.Entities;
+global using Microsoft.EntityFrameworkCore;

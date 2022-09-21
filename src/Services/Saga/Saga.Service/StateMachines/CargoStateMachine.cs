@@ -157,8 +157,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartRoute]}"), context => new StartRouteCommand(context.Data.CorrelationId)
                {
                     CurrentState = context.Instance.CurrentState,
-                    CorrelationId = context.Instance.CorrelationId,
-                    CargoRoutes = context.Data.CargoRoutes
+                    CorrelationId = context.Instance.CorrelationId
                }),
             When(CargoRejectedEvent)
                 .TransitionTo(CargoRejected)
