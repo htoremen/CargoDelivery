@@ -1,5 +1,4 @@
 ﻿using Cargo.Application.Cargos.Commands.UpdateStates;
-using Cargo.GRPC.Server;
 using Grpc.Core;
 using MediatR;
 

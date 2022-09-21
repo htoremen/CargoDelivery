@@ -2,7 +2,12 @@
 using Grpc.Net.Client;
 using static Cargo.GRPC.Server.CargoGrpc;
 
-namespace Delivery.Infrastructure.Services;
+namespace Delivery.GRPC.Client;
+public interface ICargoService
+{
+    Task<GetCargosResponse> GetCargoAllAsync(string correlationId);
+}
+
 
 public class CargoService : ICargoService
 {

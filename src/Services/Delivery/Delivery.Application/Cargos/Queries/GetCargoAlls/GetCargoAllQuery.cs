@@ -1,4 +1,4 @@
-﻿using Cargo.GRPC.Server;
+﻿using Delivery.GRPC.Client;
 
 namespace Delivery.Application.Cargos.Queries.GetCargoAlls;
 

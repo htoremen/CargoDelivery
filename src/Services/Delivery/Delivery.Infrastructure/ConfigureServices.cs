@@ -1,4 +1,5 @@
 ﻿using Core.Infrastructure;
+using Delivery.GRPC.Client.Services;
 using Delivery.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,6 @@ public static class ConfigureServices
         services.AddDbContext(appSettings);
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddScoped<IIdentityService, IdentityService>();
-        services.AddSingleton<ICargoService, CargoService>();
 
         return services;
     }

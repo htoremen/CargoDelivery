@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Core.Protos\Core.Protos.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Protobuf Include="..\..\..\Core\Core.Protos\RouteProtos\getroute.proto" GrpcServices="Both">
       <Link>Protos\getroute.proto</Link>
     </Protobuf>

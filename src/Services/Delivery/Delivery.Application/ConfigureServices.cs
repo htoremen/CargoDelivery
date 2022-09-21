@@ -27,6 +27,8 @@ public static class ConfigureServices
             .AddMessageBusSender<IFreeDelivery>(appSettings.MessageBroker)
             .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker)
             .AddMessageBusSender<IShiftCompletion>(appSettings.MessageBroker);
+
+        services.AddGrpcServices();
         return services;
     }
 }
