@@ -6,6 +6,7 @@ public class NotDeliveredCommand : IRequest<GenericResponse<NotDeliveredResponse
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
     public string CurrentState { get; set; }
+    public DeliveryType DeliveryType { get; set; }
 }
 
 public class NotDeliveredCommandHandler : IRequestHandler<NotDeliveredCommand, GenericResponse<NotDeliveredResponse>>
@@ -23,7 +24,7 @@ public class NotDeliveredCommandHandler : IRequestHandler<NotDeliveredCommand, G
         if(cargo == null)
             return null;
 
-        var deliveryType = (int)DeliveryType.NotDelivered;
+        var deliveryType = (int)request.DeliveryType;
 
         var delivery = await _context.Deliveries.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString() && x.CargoId == request.CargoId.ToString());
         if(delivery == null)

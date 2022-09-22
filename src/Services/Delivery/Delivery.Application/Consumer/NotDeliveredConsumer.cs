@@ -18,6 +18,8 @@ public class NotDeliveredConsumer : IConsumer<INotDelivered>
         {
             CorrelationId = command.CorrelationId,
             CargoId = command.CargoId,
+            CurrentState = command.CurrentState,
+            DeliveryType = DeliveryType.NotDelivered
         });
 
         await context.Publish<IDeliveryCompleted>(new DeliveryCompleted
