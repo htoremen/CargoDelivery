@@ -2,6 +2,5 @@
 
 public class DeliveryCompletedResponse
 {
-    public Guid CorrelationId { get; set; }
-    public Guid CargoId { get; set; }
+    public bool IsDeliveryCompleted { get; set; }
 }

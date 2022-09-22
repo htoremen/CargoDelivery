@@ -13,10 +13,19 @@ public class DeliveryCompletedConsumer : IConsumer<IDeliveryCompleted>
     {
         var command = context.Message;
 
-        await _mediator.Send(new DeliveryCompletedCommand
+        var response = await _mediator.Send(new DeliveryCompletedCommand
         {
             CorrelationId = command.CorrelationId,
             CurrentState = command.CurrentState,
         });
+
+        if(response.Data.IsDeliveryCompleted == false)
+        {
+            await context.Publish<INewDelivery>(new NewDelivery
+            {
+                CorrelationId = command.CorrelationId,
+                CurrentState = command.CurrentState
+            });
+        }
     }
 }

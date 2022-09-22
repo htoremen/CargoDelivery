@@ -1,6 +1,4 @@
-﻿using Core.Domain.Enums;
-
-namespace Delivery.Application.Deliveries.DeliveryCompleteds;
+﻿namespace Delivery.Application.Deliveries.DeliveryCompleteds;
 
 public class DeliveryCompletedCommand : IRequest<GenericResponse<DeliveryCompletedResponse>>
 {
@@ -10,25 +8,16 @@ public class DeliveryCompletedCommand : IRequest<GenericResponse<DeliveryComplet
 
 public class DeliveryCompletedCommandHandler : IRequestHandler<DeliveryCompletedCommand, GenericResponse<DeliveryCompletedResponse>>
 {
-    private readonly IMessageSender<IStartDelivery> _startDelivery;
+    private readonly IApplicationDbContext _context;
 
-    public DeliveryCompletedCommandHandler(IMessageSender<IStartDelivery> startDelivery)
+    public DeliveryCompletedCommandHandler(IApplicationDbContext context)
     {
-        _startDelivery = startDelivery;
+        _context = context;
     }
 
     public async Task<GenericResponse<DeliveryCompletedResponse>> Handle(DeliveryCompletedCommand request, CancellationToken cancellationToken)
     {
-        var rnd = new Random();
-        if (rnd.Next(1, 1000) % 2 == 0)
-        {
-            await _startDelivery.SendAsync(new StartDelivery
-            {
-                CurrentState = request.CurrentState,
-                CorrelationId = request.CorrelationId
-
-            }, null, cancellationToken);
-        }
-        return GenericResponse<DeliveryCompletedResponse>.Success(new DeliveryCompletedResponse { }, 200);
+        var isDeliveryCompleted = await _context.Cargos.AnyAsync(x => !x.Deliveries.Any());
+        return GenericResponse<DeliveryCompletedResponse>.Success(new DeliveryCompletedResponse { IsDeliveryCompleted = isDeliveryCompleted }, 200);
     }
 }
