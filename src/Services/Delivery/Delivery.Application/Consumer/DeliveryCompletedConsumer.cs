@@ -4,10 +4,12 @@ namespace Delivery.Application.Consumer;
 public class DeliveryCompletedConsumer : IConsumer<IDeliveryCompleted>
 {
     private readonly IMediator _mediator;
+    private readonly IMessageSender<INewDelivery> _newDelivery;
 
-    public DeliveryCompletedConsumer(IMediator mediator)
+    public DeliveryCompletedConsumer(IMediator mediator, IMessageSender<INewDelivery> newDelivery)
     {
         _mediator = mediator;
+        _newDelivery = newDelivery;
     }
     public async Task Consume(ConsumeContext<IDeliveryCompleted> context)
     {
@@ -18,14 +20,14 @@ public class DeliveryCompletedConsumer : IConsumer<IDeliveryCompleted>
             CorrelationId = command.CorrelationId,
             CurrentState = command.CurrentState,
         });
-
-        if(response.Data.IsDeliveryCompleted == false)
+        
+        if (response.Data.IsDeliveryCompleted == false)
         {
-            await context.Publish<INewDelivery>(new NewDelivery
+            await _newDelivery.SendAsync(new NewDelivery
             {
                 CorrelationId = command.CorrelationId,
                 CurrentState = command.CurrentState
-            });
+            }, null);
         }
     }
 }

@@ -230,6 +230,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                {
                    CorrelationId = context.Instance.CorrelationId,
                    CurrentState = context.Instance.CurrentState,
+                   CargoId = context.Data.CargoId,
                    PaymentType = context.Instance.PaymentType
                }),
            When(NotDeliveredEvent)
@@ -238,6 +239,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                {
                    CorrelationId = context.Instance.CorrelationId,
                    CurrentState = context.Instance.CurrentState,
+                   CargoId = context.Data.CargoId
                }),
            When(CreateRefundEvent)
                .TransitionTo(CreateRefund)
@@ -245,6 +247,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                {
                    CorrelationId = context.Instance.CorrelationId,
                    CurrentState = context.Instance.CurrentState,
+                   CargoId = context.Data.CargoId
                })
            );
 

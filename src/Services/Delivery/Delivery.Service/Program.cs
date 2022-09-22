@@ -11,7 +11,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddApplicationServices(appSettings); 
-builder.Services.AddGrpcServices();
 builder.Services.AddInfrastructureServices(appSettings);
 builder.Services.AddWebUIServices();
 builder.Services.AddEventBus(appSettings);

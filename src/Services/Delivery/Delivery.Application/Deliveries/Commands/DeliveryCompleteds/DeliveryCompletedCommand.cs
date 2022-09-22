@@ -17,7 +17,7 @@ public class DeliveryCompletedCommandHandler : IRequestHandler<DeliveryCompleted
 
     public async Task<GenericResponse<DeliveryCompletedResponse>> Handle(DeliveryCompletedCommand request, CancellationToken cancellationToken)
     {
-        var isDeliveryCompleted = await _context.Cargos.AnyAsync(x => !x.Deliveries.Any());
-        return GenericResponse<DeliveryCompletedResponse>.Success(new DeliveryCompletedResponse { IsDeliveryCompleted = isDeliveryCompleted }, 200);
+        var isDeliveryCompleted = await _context.Cargos.AnyAsync(x => x.CorrelationId == request.CorrelationId.ToString() && x.IsCompleted == null);
+        return GenericResponse<DeliveryCompletedResponse>.Success(new DeliveryCompletedResponse { IsDeliveryCompleted = !isDeliveryCompleted }, 200);
     }
 }

@@ -9,11 +9,14 @@ public class AutoRouteConsumer : IConsumer<IAutoRoute>
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
+    private readonly IMessageSender<IStartDelivery> _startDelivery;
 
-    public AutoRouteConsumer(IMediator mediator, IMapper mapper)
+
+    public AutoRouteConsumer(IMediator mediator, IMapper mapper, IMessageSender<IStartDelivery> startDelivery)
     {
         _mediator = mediator;
         _mapper = mapper;
+        _startDelivery = startDelivery;
     }
 
     public async Task Consume(ConsumeContext<IAutoRoute> context)
@@ -26,11 +29,11 @@ public class AutoRouteConsumer : IConsumer<IAutoRoute>
         var state = _mapper.Map<StateUpdateCommand>(command);
         await _mediator.Send(state);
 
-        await context.Publish<IStartDelivery>(new StartDelivery
+        await _startDelivery.SendAsync(new StartDelivery
         {
-            CorrelationId = command.CorrelationId,
-            CurrentState = command.CurrentState
-        });
+            CurrentState = command.CurrentState,
+            CorrelationId = command.CorrelationId
+        }, null);
     }
 }
 

@@ -13,6 +13,7 @@
         public string? DebitId { get; set; }
         public string? Address { get; set; }
         public string? Route { get; set; }
+        public bool? IsCompleted { get; set; }
 
         public virtual ICollection<CargoItem> CargoItems { get; set; }
         public virtual ICollection<Delivery> Deliveries { get; set; }

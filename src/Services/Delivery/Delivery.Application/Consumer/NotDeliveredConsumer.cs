@@ -5,10 +5,12 @@ namespace Delivery.Application.Consumer;
 public class NotDeliveredConsumer : IConsumer<INotDelivered>
 {
     private readonly IMediator _mediator;
+    private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
 
-    public NotDeliveredConsumer(IMediator mediator)
+    public NotDeliveredConsumer(IMediator mediator, IMessageSender<IDeliveryCompleted> deliveryCompleted)
     {
         _mediator = mediator;
+        _deliveryCompleted = deliveryCompleted;
     }
     public async Task Consume(ConsumeContext<INotDelivered> context)
     {
@@ -22,11 +24,11 @@ public class NotDeliveredConsumer : IConsumer<INotDelivered>
             DeliveryType = DeliveryType.NotDelivered
         });
 
-        await context.Publish<IDeliveryCompleted>(new DeliveryCompleted
+        await _deliveryCompleted.SendAsync(new DeliveryCompleted
         {
             CorrelationId = command.CorrelationId,
             CurrentState = command.CurrentState,
             CargoId = command.CargoId,
-        });
+        }, null);
     }
 }
