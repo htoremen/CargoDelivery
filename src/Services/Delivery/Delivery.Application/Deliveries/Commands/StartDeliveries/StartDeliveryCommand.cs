@@ -29,6 +29,7 @@ public class StartDeliveryCommandHandler : IRequestHandler<StartDeliveryCommand,
                 Address = cargo.Address,
                 CargoId = cargo.CargoId,
                 DebitId = cargo.DebitId,
+                CorrelationId = cargo.CorrelationId,
                 Route = route.Route,
                 CargoItems = cargo.CargoItems.Select(y => new Domain.Entities.CargoItem
                 {

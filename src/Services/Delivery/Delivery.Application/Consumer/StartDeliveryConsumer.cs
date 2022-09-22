@@ -1,5 +1,6 @@
 ﻿using Delivery.Application.Cargos.Queries.GetCargoAlls;
 using Delivery.Application.Cargos.Queries.GetRoutes.GetRouteQuery;
+using Delivery.Application.Deliveries.Commands.NewDeliveries;
 using Delivery.Application.Deliveries.StartDeliveries;
 
 namespace Delivery.Application.Consumer;
@@ -15,6 +16,9 @@ public class StartDeliveryConsumer : IConsumer<IStartDelivery>
     public async Task Consume(ConsumeContext<IStartDelivery> context)
     {
         var command = context.Message;
+
+        await _mediator.Send(new NewDeliveryCommand { CorrelationId = command.CorrelationId.ToString(), CurrentState = command.CurrentState });
+
         var result = await _mediator.Send(new GetCargoAllQuery { CorrelationId = command.CorrelationId.ToString() });
         var routes = await _mediator.Send(new GetRouteQuery { CorrelationId = command.CorrelationId.ToString() });
 

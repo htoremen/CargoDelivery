@@ -42,6 +42,7 @@ public class CargoService : CargoGrpc.CargoGrpcBase
                 Address = item.Address,
                 CargoId = item.CargoId,
                 DebitId = item.DebitId,
+                CorrelationId = request.CorrelationId,
                 CargoItems = { cargoItems }
             });
         }

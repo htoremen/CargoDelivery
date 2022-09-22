@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Delivery.Domain.Entities
+﻿namespace Delivery.Domain.Entities
 {
     public partial class Cargo
     {
@@ -12,6 +9,7 @@ namespace Delivery.Domain.Entities
         }
 
         public string CargoId { get; set; } = null!;
+        public string CorrelationId { get; set; }
         public string? DebitId { get; set; }
         public string? Address { get; set; }
         public string? Route { get; set; }

@@ -17,7 +17,8 @@ message GetCargos{
 	string CargoId=1;
 	string DebitId=2;
 	string Address=3;
-	repeated GetCargoItems CargoItems = 4;
+	string CorrelationId =4;
+	repeated GetCargoItems CargoItems = 5;
 }
 message GetCargoItems{
 	string CargoItemId = 1;

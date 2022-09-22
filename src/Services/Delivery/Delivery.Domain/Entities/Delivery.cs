@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Delivery.Domain.Entities
+﻿namespace Delivery.Domain.Entities
 {
     public partial class Delivery
     {
@@ -11,6 +8,7 @@ namespace Delivery.Domain.Entities
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool? IsCompleted { get; set; }
+        public int DeliveryType { get; set; }
 
         public virtual Cargo? Cargo { get; set; }
     }

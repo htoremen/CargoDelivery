@@ -19,5 +19,12 @@ public class NotDeliveredConsumer : IConsumer<INotDelivered>
             CorrelationId = command.CorrelationId,
             CargoId = command.CargoId,
         });
+
+        await context.Publish<IDeliveryCompleted>(new DeliveryCompleted
+        {
+            CorrelationId = command.CorrelationId,
+            CurrentState = command.CurrentState,
+            CargoId = command.CargoId,
+        });
     }
 }

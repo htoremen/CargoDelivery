@@ -1,4 +1,6 @@
-﻿namespace Delivery.Application.Consumer;
+﻿using Delivery.Application.Deliveries.Commands.NewDeliveries;
+
+namespace Delivery.Application.Consumer;
 
 public class NewDeliveryConsumer : IConsumer<INewDelivery>
 {
@@ -11,6 +13,6 @@ public class NewDeliveryConsumer : IConsumer<INewDelivery>
     public async Task Consume(ConsumeContext<INewDelivery> context)
     {
         var command = context.Message;
-
+        await _mediator.Send(new NewDeliveryCommand { CorrelationId = command.CorrelationId.ToString(), CurrentState = command.CurrentState });
     }
 }

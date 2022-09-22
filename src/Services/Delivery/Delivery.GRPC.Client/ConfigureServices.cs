@@ -9,6 +9,7 @@ public static class ConfigureServices
     {
         services.AddSingleton<IRouteService, RouteService>();
         services.AddSingleton<ICargoService, CargoService>();
+        services.AddSingleton<IDebitService, DebitService>();
         return services;
     }
 }
