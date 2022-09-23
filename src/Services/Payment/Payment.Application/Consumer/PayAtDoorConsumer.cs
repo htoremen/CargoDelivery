@@ -6,10 +6,12 @@ namespace Payment.Application.Consumer;
 public class PayAtDoorConsumer : IConsumer<IPayAtDoor>
 {
     private readonly IMediator _mediator;
+    private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
 
-    public PayAtDoorConsumer(IMediator mediator)
+    public PayAtDoorConsumer(IMediator mediator, IMessageSender<IDeliveryCompleted> deliveryCompleted)
     {
         _mediator = mediator;
+        _deliveryCompleted = deliveryCompleted;
     }
 
     public async Task Consume(ConsumeContext<IPayAtDoor> context)
@@ -21,5 +23,19 @@ public class PayAtDoorConsumer : IConsumer<IPayAtDoor>
             CorrelationId = command.CorrelationId,
             CargoId = command.CargoId,
         });
+
+        await _mediator.Send(new UpdatePaymentTypeCommand
+        {
+            CorrelationId = command.CorrelationId.ToString(),
+            CargoId = command.CargoId.ToString(),
+            PaymentType = (int)command.PaymentType
+        });
+
+        await _deliveryCompleted.SendAsync(new DeliveryCompleted
+        {
+            CurrentState = command.CurrentState,
+            CorrelationId = command.CorrelationId,
+            CargoId = command.CargoId
+        }, null);
     }
 }

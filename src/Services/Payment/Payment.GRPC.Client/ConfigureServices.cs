@@ -6,6 +6,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddGrpcServices(this IServiceCollection services)
     {
+        services.AddGrpc();
         services.AddSingleton<IDeliveryService, DeliveryService>();
         return services;
     }

@@ -9,7 +9,6 @@ public class CardPaymentConsumer : IConsumer<ICardPayment>
     private readonly IMediator _mediator;
     private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
 
-
     public CardPaymentConsumer(IMediator mediator, IMessageSender<IDeliveryCompleted> deliveryCompleted)
     {
         _mediator = mediator;

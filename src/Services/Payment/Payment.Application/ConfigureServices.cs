@@ -22,6 +22,7 @@ public static class ConfigureServices
         services
             .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker);
 
+        services.AddGrpcServices();
         return services;
     }
 }

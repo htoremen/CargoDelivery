@@ -25,12 +25,7 @@ public class UpdatePaymentTypeCommandHandler : IRequestHandler<UpdatePaymentType
 
     public async Task<GenericResponse<UpdatePaymentTypeResponse>> Handle(UpdatePaymentTypeCommand request, CancellationToken cancellationToken)
     {
-        var result = await _deliveryService.UpdatePaymentType(new Delivery.GRPC.Server.UpdatePaymentTypeRequest
-        {
-            CorrelationId = request.CorrelationId,
-            CargoId = request.CargoId,
-            PaymentType = request.PaymentType
-        });
+        var result = await _deliveryService.UpdatePaymentType(request.CorrelationId, request.CargoId, request.PaymentType);
 
         var response = new UpdatePaymentTypeResponse();
         return GenericResponse<UpdatePaymentTypeResponse>.Success(response, 200);

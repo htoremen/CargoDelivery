@@ -14,7 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplicationServices(appSettings);
-builder.Services.AddInfrastructureServices();
+builder.Services.AddInfrastructureServices(); 
 builder.Services.AddWebUIServices();
 builder.Services.AddEventBus(appSettings);
 
