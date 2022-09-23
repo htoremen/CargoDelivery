@@ -7,6 +7,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddGrpcServices(this IServiceCollection services)
     {
+        services.AddGrpc();
         services.AddSingleton<IRouteService, RouteService>();
         services.AddSingleton<ICargoService, CargoService>();
         services.AddSingleton<IDebitService, DebitService>();

@@ -17,8 +17,7 @@ public class ShiftCompletionConsumer : IConsumer<IShiftCompletion>
 
         await _mediator.Send(new ShiftCompletionCommand
         {
-            CorrelationId = command.CorrelationId,
-            CargoId = command.CargoId,
+            CorrelationId = command.CorrelationId
         });
     }
 }

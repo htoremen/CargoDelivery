@@ -9,14 +9,18 @@ public class DeliveryCompletedCommand : IRequest<GenericResponse<DeliveryComplet
 public class DeliveryCompletedCommandHandler : IRequestHandler<DeliveryCompletedCommand, GenericResponse<DeliveryCompletedResponse>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IDebitService _debitService;
 
-    public DeliveryCompletedCommandHandler(IApplicationDbContext context)
+    public DeliveryCompletedCommandHandler(IApplicationDbContext context, IDebitService debitService)
     {
         _context = context;
+        _debitService = debitService;
     }
 
     public async Task<GenericResponse<DeliveryCompletedResponse>> Handle(DeliveryCompletedCommand request, CancellationToken cancellationToken)
     {
+        await _debitService.UpdateStateAsync(request.CorrelationId.ToString(), request.CurrentState);
+
         var isDeliveryCompleted = await _context.Cargos.AnyAsync(x => x.CorrelationId == request.CorrelationId.ToString() && x.IsCompleted == null);
         return GenericResponse<DeliveryCompletedResponse>.Success(new DeliveryCompletedResponse { IsDeliveryCompleted = !isDeliveryCompleted }, 200);
     }
