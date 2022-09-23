@@ -13,3 +13,5 @@ global using Delivery.GRPC.Client.Services;
 global using Route.GRPC.Server;
 global using Cargo.GRPC.Server;
 global using Microsoft.EntityFrameworkCore;
+global using Enums;
+global using Payments;

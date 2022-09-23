@@ -8,7 +8,8 @@
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool? IsCompleted { get; set; }
-        public int DeliveryType { get; set; }
+        public int? DeliveryType { get; set; }
+        public int? PaymentType { get; set; }
 
         public virtual Cargo? Cargo { get; set; }
     }
