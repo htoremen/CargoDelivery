@@ -20,7 +20,6 @@ builder.Services.AddEventBus(appSettings);
 var app = builder.Build();
 app.MapGrpcServices();
 
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

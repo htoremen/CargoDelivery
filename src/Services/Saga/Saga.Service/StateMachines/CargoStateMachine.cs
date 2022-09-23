@@ -231,7 +231,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                    CorrelationId = context.Instance.CorrelationId,
                    CurrentState = context.Instance.CurrentState,
                    CargoId = context.Data.CargoId,
-                   PaymentType = context.Instance.PaymentType
+                   PaymentType = context.Data.PaymentType
                }),
            When(NotDeliveredEvent)
                .TransitionTo(NotDelivered)
@@ -261,6 +261,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CardPayment]}"), context => new CardPaymentCommand(context.Data.CorrelationId)
                {
                    CorrelationId = context.Instance.CorrelationId,
+                   CargoId = context.Data.CargoId,
                    CurrentState = context.Instance.CurrentState,
                    PaymentType = context.Data.PaymentType
                }),
@@ -269,6 +270,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.FreeDelivery]}"), context => new FreeDeliveryCommand(context.Data.CorrelationId)
                {
                    CorrelationId = context.Instance.CorrelationId,
+                   CargoId = context.Data.CargoId,
                    CurrentState = context.Instance.CurrentState,
                    PaymentType = context.Data.PaymentType
                }),
@@ -277,6 +279,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.PayAtDoor]}"), context => new PayAtDoorCommand(context.Data.CorrelationId)
                {
                    CorrelationId = context.Instance.CorrelationId,
+                   CargoId = context.Data.CargoId,
                    CurrentState = context.Instance.CurrentState,
                    PaymentType = context.Data.PaymentType
                })
