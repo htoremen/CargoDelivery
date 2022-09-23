@@ -1,4 +1,6 @@
-﻿namespace Route.Application.Routes.StateUpdates;
+﻿using Cargo.GRPC.Server;
+
+namespace Route.Application.Routes.StateUpdates;
 
 public class StateUpdateCommand : IRequest<GenericResponse<StateUpdateResponse>>
 {
@@ -17,7 +19,7 @@ public class StateUpdateCommandHandler : IRequestHandler<StateUpdateCommand, Gen
 
     public async Task<GenericResponse<StateUpdateResponse>> Handle(StateUpdateCommand request, CancellationToken cancellationToken)
     {
-        await _debitService.UpdateStateAsync(request.CurrentState, request.CorrelationId);
+        await _debitService.UpdateStateAsync(request.CorrelationId, request.CurrentState);
 
         return GenericResponse<StateUpdateResponse>.Success(200);
     }
