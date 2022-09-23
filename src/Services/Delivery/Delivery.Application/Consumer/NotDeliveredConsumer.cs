@@ -1,4 +1,5 @@
-﻿using Delivery.Application.Deliveries.NotDelivereds;
+﻿using Delivery.Application.Deliveries.Commands.InsertDeliveries;
+using Delivery.Application.Deliveries.NotDelivereds;
 
 namespace Delivery.Application.Consumer;
 
@@ -15,6 +16,14 @@ public class NotDeliveredConsumer : IConsumer<INotDelivered>
     public async Task Consume(ConsumeContext<INotDelivered> context)
     {
         var command = context.Message;
+
+        await _mediator.Send(new InsertDeliveryCommand
+        {
+            CorrelationId = command.CorrelationId,
+            CargoId = command.CargoId,
+            CurrentState = command.CurrentState,
+            DeliveryType = DeliveryType.NotDelivered
+        });
 
         await _mediator.Send(new NotDeliveredCommand
         {

@@ -1,4 +1,5 @@
-﻿using Delivery.Application.Deliveries.CreateDeliveries;
+﻿using Delivery.Application.Deliveries.Commands.InsertDeliveries;
+using Delivery.Application.Deliveries.CreateDeliveries;
 
 namespace Delivery.Application.Consumer;
 
@@ -14,6 +15,14 @@ public class CreateDeliveryConsumer : IConsumer<ICreateDelivery>
     public async Task Consume(ConsumeContext<ICreateDelivery> context)
     {
         var command = context.Message;
+
+        await _mediator.Send(new InsertDeliveryCommand
+        {
+            CorrelationId = command.CorrelationId,
+            CargoId = command.CargoId,
+            CurrentState = command.CurrentState,
+            DeliveryType = DeliveryType.CreateDelivery
+        });
 
         await _mediator.Send(new CreateDeliveryCommand
         {
