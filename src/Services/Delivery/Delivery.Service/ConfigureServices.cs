@@ -7,6 +7,7 @@ using Route.Service.Services;
 using Delivery.Application.Consumer;
 using Core.Infrastructure;
 using Delivery.GRPC.Client.Services;
+using Delivery.GRPC.Server.Services;
 
 namespace Delivery.Service;
 
@@ -22,6 +23,7 @@ public static class ConfigureServices
     }
     public static WebApplication MapGrpcServices(this WebApplication app)
     {
+        app.MapGrpcService<DeliveryService>();
         return app;
     }
 

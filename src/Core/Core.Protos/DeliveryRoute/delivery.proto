@@ -1,0 +1,17 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Delivery.GRPC.Server";
+
+service DeliveryGrpc{
+	rpc UpdatePaymentType(UpdatePamentTypeRequest) returns(UpdatePamentTypeResponse){}
+}
+
+message UpdatePamentTypeRequest{	
+  string CorrelationId = 1;
+  string CargoId = 2;
+  int32 PaymentType = 3;
+}
+
+message UpdatePamentTypeResponse{
+
+}

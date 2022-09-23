@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Delivery.Application\Delivery.Application.csproj" />
+    <ProjectReference Include="..\Delivery.GRPC.Server\Delivery.GRPC.Server.csproj" />
   </ItemGroup>
 
   <ItemGroup>
