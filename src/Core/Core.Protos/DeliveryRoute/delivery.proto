@@ -3,15 +3,15 @@
 option csharp_namespace = "Delivery.GRPC.Server";
 
 service DeliveryGrpc{
-	rpc UpdatePaymentType(UpdatePamentTypeRequest) returns(UpdatePamentTypeResponse){}
+	rpc UpdatePaymentType(UpdatePaymentTypeRequest) returns(UpdatePaymentTypeResponse){}
 }
 
-message UpdatePamentTypeRequest{	
+message UpdatePaymentTypeRequest{	
   string CorrelationId = 1;
   string CargoId = 2;
   int32 PaymentType = 3;
 }
 
-message UpdatePamentTypeResponse{
+message UpdatePaymentTypeResponse{
 
 }

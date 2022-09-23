@@ -11,7 +11,7 @@ public class DeliveryService : DeliveryGrpc.DeliveryGrpcBase
         _mediator = mediator;
     }
 
-    public override async Task<UpdatePamentTypeResponse> UpdatePaymentType(UpdatePamentTypeRequest request, ServerCallContext context)
+    public override async Task<UpdatePaymentTypeResponse> UpdatePaymentType(UpdatePaymentTypeRequest request, ServerCallContext context)
     {
         await _mediator.Send(new UpdatePaymentTypeCommand
         {
@@ -19,7 +19,7 @@ public class DeliveryService : DeliveryGrpc.DeliveryGrpcBase
             CargoId = request.CargoId,
             PaymentType = request.PaymentType
         });
-        var response = new UpdatePamentTypeResponse();
+        var response = new UpdatePaymentTypeResponse();
         return response;
     }
 }
