@@ -52,11 +52,10 @@ namespace Order.API.Controllers
 
         [Route("shift-completion")]
         [HttpPost]
-        public async Task<IActionResult> ShiftCompletion(Guid correlationId, Guid cargoId)
+        public async Task<IActionResult> ShiftCompletion(Guid correlationId)
         {
             var response = await Mediator.Send(new ShiftCompletionCommand
             {
-                CargoId = cargoId,
                 CorrelationId = correlationId
 
             });
