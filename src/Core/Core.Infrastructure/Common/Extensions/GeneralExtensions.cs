@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Order.Application.Common.Extensions;
+namespace Core.Infrastructure.Common.Extensions;
 
 public static class GeneralExtensions
 {

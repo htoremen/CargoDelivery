@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Order.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class CargoController : ApiControllerBase
     {
+        [HttpPost()]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
         [Route("create-cargo")]
-        [HttpPost]
         public async Task<IActionResult> CreateCargo()
         {
             for (int i = 0; i < 40000; i++)
@@ -74,9 +74,11 @@ namespace Order.API.Controllers
             return items;
         }
 
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [Route("send-selfie")]
-        [HttpPost]
-        public async Task<IActionResult> SendSelfie(Guid correlationId)
+        public async Task<IActionResult> SendSelfie([FromBody] Guid correlationId)
         {
             var response = await Mediator.Send(new SendSelfieCommand
             {
@@ -86,9 +88,11 @@ namespace Order.API.Controllers
             return Ok(response);
         }
 
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [Route("cargo-approval")]
-        [HttpPost]
-        public async Task<IActionResult> CargoApproval(Guid correlationId)
+        public async Task<IActionResult> CargoApproval([FromBody] Guid correlationId)
         {
             var response = await Mediator.Send(new CargoApprovalCommand
             {

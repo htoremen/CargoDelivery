@@ -18,12 +18,6 @@ public static class ConfigureServices
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
 
         var config = appSettings.MessageBroker.RabbitMQ;
-        // var rabbitMQConfig = new List<RabbitMqSettings>();
-        //var rabbitMqConfigurations = configuration.GetSection("RabbitMqSettings").Get<List<RabbitMqSettings>>();
-
-        //var config = rabbitMqConfigurations.FirstOrDefault(y => y.Name == "MainHost");
-        //if (config == null) throw new ArgumentNullException("MainHost section hasn't been found in the appsettings.");
-
 
         services.AddMassTransit<IEventBus>(x =>
         {
