@@ -1,5 +1,7 @@
 using Core.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 using Order.API;
+using Order.Application.Common.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,10 @@ builder.Services.AddApplicationServices(appSettings);
 builder.Services.AddInfrastructureServices();
 builder.Services.AddWebUIServices();
 builder.Services.AddEventBus(appSettings);
+
+builder.Services.AddHealthChecks()
+    .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
