@@ -1,4 +1,7 @@
 using Core.Infrastructure;
+using HealthChecks.UI.Client;
+using HealthChecks.UI.Configuration;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Order.API;
 using Order.Application.Common.Extensions;
@@ -36,6 +39,16 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseHealthChecks("/hc", new HealthCheckOptions
+{
+    Predicate = registration => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+app.UseHealthChecksUI(delegate (Options options)
+{
+    options.UIPath = "/hc-ui";
+});
 
 app.MapControllers();
 
