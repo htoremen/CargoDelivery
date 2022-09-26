@@ -1,8 +1,4 @@
 using Core.Infrastructure;
-using HealthChecks.UI.Client;
-using HealthChecks.UI.Configuration;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.DependencyInjection;
 using Order.API;
 using Order.Application.Common.Extensions;
 
@@ -12,6 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 var appSettings = new AppSettings();
 builder.Configuration.Bind(appSettings);
+
+builder.Services.AddHealthChecks()
+    .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
+
+//builder.Services.AddHealthChecksUI(opt =>
+//{
+//    opt.SetEvaluationTimeInSeconds(15); //time in seconds between check
+//    opt.MaximumHistoryEntriesPerEndpoint(60); //maximum history of checks
+//    opt.SetApiMaxActiveRequests(1); //api requests concurrency
+
+//    opt.AddHealthCheckEndpoint("Order-Api", "https://localhost:44316/health"); //map health check api
+
+//}).AddSqlServerStorage(appSettings.ConnectionStrings.Monitoring);
 
 
 builder.Services.AddControllers();
@@ -24,8 +33,8 @@ builder.Services.AddInfrastructureServices();
 builder.Services.AddWebUIServices();
 builder.Services.AddEventBus(appSettings);
 
-builder.Services.AddHealthChecks()
-    .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
+
+
 
 var app = builder.Build();
 
@@ -39,17 +48,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseHealthChecks("/health");
 
-app.UseHealthChecks("/hc", new HealthCheckOptions
-{
-    Predicate = registration => true,
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
-app.UseHealthChecksUI(delegate (Options options)
-{
-    options.UIPath = "/hc-ui";
-});
-
+//app.UseHealthChecks("/health-ui", new HealthCheckOptions
+//{
+//    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+//});
 app.MapControllers();
 
 app.Run();
