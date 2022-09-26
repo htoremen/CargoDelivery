@@ -12,9 +12,6 @@ internal class Program
         var appSettings = new AppSettings();
         builder.Configuration.Bind(appSettings);
 
-        builder.Services.AddHealthChecks()
-            .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
-
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -23,7 +20,7 @@ internal class Program
         builder.Services.AddInfrastructureServices();
         builder.Services.AddWebUIServices();
         builder.Services.AddEventBus(appSettings);
-
+        builder.Services.AddHealthChecksServices(appSettings);
 
         var app = builder.Build();
         if (app.Environment.IsDevelopment())

@@ -2,6 +2,7 @@
 using Core.Domain;
 using Core.Domain.Bus;
 using Core.Infrastructure;
+using Core.Infrastructure.Common.Extensions;
 using Core.Infrastructure.MessageBrokers;
 using MassTransit;
 using MediatR;
@@ -18,6 +19,17 @@ public static class ConfigureServices
 
         services.AddHttpContextAccessor();
 
+        return services;
+    }
+
+    public static IServiceCollection AddHealthChecksServices(this IServiceCollection services, AppSettings appSettings)
+    {
+        var messageBroker = appSettings.MessageBroker;
+        if (messageBroker.UsedRabbitMQ())
+        {
+            services.AddHealthChecks()
+                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
+        }
         return services;
     }
 
