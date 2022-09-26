@@ -12,9 +12,7 @@ builder.Configuration.Bind(appSettings);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddEventBus(builder.Configuration, appSettings);
-
-builder.Services.AddHealthChecks()
-    .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
+builder.Services.AddHealthChecksServices(appSettings);
 
 var app = builder.Build();
 
