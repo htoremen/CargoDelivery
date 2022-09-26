@@ -68,9 +68,7 @@ public static class ConfigureServices
             services.AddSingleton<IBus>(bus);
             services.AddSingleton<IBusControl>(bus);
         }
-
         return services;
-
     }
 
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
@@ -88,7 +86,6 @@ public static class ConfigureServices
             cfg.UseJsonSerializer();
             cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
             cfg.ConfigureEndpoints(context);
-
         });
     }
 }
