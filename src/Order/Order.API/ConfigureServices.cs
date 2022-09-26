@@ -6,6 +6,7 @@ using Core.Infrastructure.Common.Extensions;
 using Core.Infrastructure.MessageBrokers;
 using MassTransit;
 using MediatR;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Order.API.Services;
 using System.Reflection;
 
@@ -28,8 +29,13 @@ public static class ConfigureServices
         if (messageBroker.UsedRabbitMQ())
         {
             services.AddHealthChecks()
-                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
+                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings))
+                .AddUrlGroup(new Uri("https://localhost:5011"), "Cargo.Service", HealthStatus.Degraded)
+                .AddUrlGroup(new Uri("https://localhost:5012"), "Route.Service", HealthStatus.Degraded)
+                .AddUrlGroup(new Uri("https://localhost:5013"), "Delivery.Service", HealthStatus.Degraded)
+                .AddUrlGroup(new Uri("https://localhost:5014"), "Payment.Service", HealthStatus.Degraded);
         }
+
         return services;
     }
 
