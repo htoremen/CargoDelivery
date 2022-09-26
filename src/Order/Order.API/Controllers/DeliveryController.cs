@@ -7,12 +7,12 @@ using Enums;
 
 namespace Order.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class DeliveryController : ApiControllerBase
     {
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [Route("create-delivery")]
-        [HttpPost]
         public async Task<IActionResult> CreateDelivery(Guid correlationId, Guid cargoId, PaymentType paymentType)
         {
             var response = await Mediator.Send(new CreateDeliveryCommand
@@ -24,8 +24,10 @@ namespace Order.API.Controllers
             return Ok(response);
         }
 
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [Route("not-delivered")]
-        [HttpPost]
         public async Task<IActionResult> NotDelivered(Guid correlationId, Guid cargoId)
         {
             var response = await Mediator.Send(new NotDeliveredCommand
@@ -37,8 +39,11 @@ namespace Order.API.Controllers
             return Ok(response);
         }
 
+
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [Route("create-refund")]
-        [HttpPost]
         public async Task<IActionResult> CreateRefund(Guid correlationId, Guid cargoId)
         {
             var response = await Mediator.Send(new CreateRefundCommand
@@ -50,9 +55,12 @@ namespace Order.API.Controllers
             return Ok(response);
         }
 
+
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [Route("shift-completion")]
-        [HttpPost]
-        public async Task<IActionResult> ShiftCompletion(Guid correlationId)
+        public async Task<IActionResult> ShiftCompletion([FromBody] Guid correlationId)
         {
             var response = await Mediator.Send(new ShiftCompletionCommand
             {

@@ -4,13 +4,14 @@ using Order.Application.Routes.ManuelRoutes;
 
 namespace Order.API.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
 public class RouteController : ApiControllerBase
-{ 
+{
+    [HttpPost()]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
     [Route("auto-route")]
-    [HttpPost]
-    public async Task<IActionResult> AutoRoute(Guid correlationId)
+
+    public async Task<IActionResult> AutoRoute([FromBody] Guid correlationId)
     {
         var response = await Mediator.Send(new AutoRouteCommand
         {
@@ -20,9 +21,11 @@ public class RouteController : ApiControllerBase
         return Ok(response);
     }
 
+    [HttpPost()]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
     [Route("manuel-route")]
-    [HttpPost]
-    public async Task<IActionResult> ManuelRoute(Guid correlationId)
+    public async Task<IActionResult> ManuelRoute([FromBody] Guid correlationId)
     {
         var response = await Mediator.Send(new ManuelRouteCommand
         {

@@ -1,7 +1,9 @@
-﻿using Core.Application;
+﻿using Confluent.Kafka;
+using Core.Application;
 using Core.Domain;
 using Core.Domain.Bus;
 using Core.Domain.Enums;
+using Core.Infrastructure;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Saga.Domain.Instances;
@@ -11,16 +13,11 @@ using Saga.Service.StateMachines;
 namespace Saga.Service;
 public static class ConfigureServices
 {
-    public static IServiceCollection AddEventBus(this IServiceCollection services, IConfigurationRoot configuration)
+    public static IServiceCollection AddEventBus(this IServiceCollection services, IConfigurationRoot configuration, AppSettings appSettings)
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
 
-       // var rabbitMQConfig = new List<RabbitMqSettings>();
-        var rabbitMqConfigurations = configuration.GetSection("RabbitMqSettings").Get<List<RabbitMqSettings>>();
-
-        var config = rabbitMqConfigurations.FirstOrDefault(y => y.Name == "MainHost");
-        if (config == null) throw new ArgumentNullException("MainHost section hasn't been found in the appsettings.");
-
+        var config = appSettings.MessageBroker.RabbitMQ;
 
         services.AddMassTransit<IEventBus>(x =>
         {
@@ -28,7 +25,15 @@ public static class ConfigureServices
 
             x.AddBus(factory => MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
-                cfg.Host(config.RabbitMqHostUrl);
+                cfg.Host(config.HostName, config.VirtualHost, h =>
+                {
+                    h.Username(config.UserName);
+                    h.Password(config.Password);
+                });
+
+                cfg.UseJsonSerializer();
+                cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
+
                 cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSaga], e =>
                 {
                     e.ConfigureSaga<CargoStateInstance>(factory);
