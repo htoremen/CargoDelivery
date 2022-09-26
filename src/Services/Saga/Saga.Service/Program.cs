@@ -1,5 +1,7 @@
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Saga.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,8 +21,11 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
-app.UseHealthChecks("/health");
 
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();
 

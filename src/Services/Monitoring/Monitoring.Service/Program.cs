@@ -1,4 +1,5 @@
 using Core.Infrastructure;
+using HealthChecks.UI.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 

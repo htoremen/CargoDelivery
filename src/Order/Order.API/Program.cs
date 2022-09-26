@@ -1,5 +1,7 @@
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Order.API;
 
 internal class Program
@@ -32,7 +34,11 @@ internal class Program
 
         app.UseHttpsRedirection();
         app.UseAuthorization();
-        app.UseHealthChecks("/health");
+        app.UseHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+
 
         app.MapControllers();
 
