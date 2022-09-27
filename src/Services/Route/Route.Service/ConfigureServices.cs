@@ -6,6 +6,7 @@ using Core.Domain.Enums;
 using Route.Service.Services;
 using Core.Infrastructure;
 using Route.GRPC.Server.Services;
+using Core.Infrastructure.Common.Extensions;
 
 namespace Cargo.Service;
 
@@ -25,6 +26,19 @@ public static class ConfigureServices
         app.MapGrpcService<RouteService>();
         return app;
     }
+
+    public static IServiceCollection AddHealthChecksServices(this IServiceCollection services, AppSettings appSettings)
+    {
+        var messageBroker = appSettings.MessageBroker;
+        if (messageBroker.UsedRabbitMQ())
+        {
+            services.AddHealthChecks()
+                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
+        }
+        return services;
+    }
+
+
     public static IServiceCollection AddEventBus(this IServiceCollection services, AppSettings appSettings)
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);

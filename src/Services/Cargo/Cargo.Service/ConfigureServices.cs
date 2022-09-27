@@ -8,6 +8,7 @@ using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Cargos;
 using Cargo.GRPC.Server.Services;
+using Core.Infrastructure.Common.Extensions;
 
 namespace Cargo.Service;
 
@@ -27,6 +28,17 @@ public static class ConfigureServices
         app.MapGrpcService<DebitService>();
         app.MapGrpcService<CargoService>();
         return app;
+    }
+
+    public static IServiceCollection AddHealthChecksServices(this IServiceCollection services, AppSettings appSettings)
+    {
+        var messageBroker = appSettings.MessageBroker;
+        if (messageBroker.UsedRabbitMQ())
+        {
+            services.AddHealthChecks()
+                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
+        }
+        return services;
     }
 
     public static IServiceCollection AddEventBus(this IServiceCollection services, AppSettings appSettings)

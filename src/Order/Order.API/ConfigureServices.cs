@@ -30,10 +30,11 @@ public static class ConfigureServices
         {
             services.AddHealthChecks()
                 .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings))
-                .AddUrlGroup(new Uri("https://localhost:5011"), "Cargo.Service", HealthStatus.Degraded)
-                .AddUrlGroup(new Uri("https://localhost:5012"), "Route.Service", HealthStatus.Degraded)
-                .AddUrlGroup(new Uri("https://localhost:5013"), "Delivery.Service", HealthStatus.Degraded)
-                .AddUrlGroup(new Uri("https://localhost:5014"), "Payment.Service", HealthStatus.Degraded);
+                //.AddUrlGroup(new Uri("https://localhost:5010/health"), "Saga.Service", HealthStatus.Degraded)
+                //.AddUrlGroup(new Uri("https://localhost:5011/health"), "Cargo.Service", HealthStatus.Degraded)
+                //.AddUrlGroup(new Uri("https://localhost:5012/health"), "Route.Service", HealthStatus.Degraded)
+                //.AddUrlGroup(new Uri("https://localhost:5013/health"), "Delivery.Service", HealthStatus.Degraded)
+                ;
         }
 
         return services;

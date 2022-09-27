@@ -8,6 +8,7 @@ using Delivery.Application.Consumer;
 using Core.Infrastructure;
 using Delivery.GRPC.Client.Services;
 using Delivery.GRPC.Server.Services;
+using Core.Infrastructure.Common.Extensions;
 
 namespace Delivery.Service;
 
@@ -25,6 +26,17 @@ public static class ConfigureServices
     {
         app.MapGrpcService<DeliveryService>();
         return app;
+    }
+
+    public static IServiceCollection AddHealthChecksServices(this IServiceCollection services, AppSettings appSettings)
+    {
+        var messageBroker = appSettings.MessageBroker;
+        if (messageBroker.UsedRabbitMQ())
+        {
+            services.AddHealthChecks()
+                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
+        }
+        return services;
     }
 
     public static IServiceCollection AddEventBus(this IServiceCollection services, AppSettings appSettings)

@@ -2,6 +2,7 @@
 using Core.Domain.Bus;
 using Core.Domain.Enums;
 using Core.Infrastructure;
+using Core.Infrastructure.Common.Extensions;
 using MassTransit;
 using MediatR;
 using Payment.Application.Consumer;
@@ -19,6 +20,18 @@ public static class ConfigureServices
 
         return services;
     }
+
+    public static IServiceCollection AddHealthChecksServices(this IServiceCollection services, AppSettings appSettings)
+    {
+        var messageBroker = appSettings.MessageBroker;
+        if (messageBroker.UsedRabbitMQ())
+        {
+            services.AddHealthChecks()
+                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
+        }
+        return services;
+    }
+
 
     public static IServiceCollection AddEventBus(this IServiceCollection services, AppSettings appSettings)
     {

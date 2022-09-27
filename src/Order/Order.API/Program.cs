@@ -36,7 +36,6 @@ internal class Program
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         });
 
-
         app.MapControllers();
 
         app.Run();
