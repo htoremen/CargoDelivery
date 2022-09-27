@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="CargoProtos\cargo.proto" />
+    <None Remove="CargoProtos\health.proto" />
     <None Remove="CargoProtos\stateupdate.proto" />
   </ItemGroup>
 
@@ -22,6 +23,7 @@
   </ItemGroup>
 	<ItemGroup>
 	  <Protobuf Include="CargoProtos\cargo.proto" GrpcServices="Both" />
+	  <Protobuf Include="CargoProtos\health.proto" GrpcServices="Both" />
 	  <Protobuf Include="CargoProtos\stateupdate.proto" GrpcServices="Both" />
 	</ItemGroup>
 

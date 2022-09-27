@@ -1,11 +1,13 @@
 using Core.Infrastructure;
 using HealthChecks.UI.Client;
+using Monitoring.Infrastructure.Healths.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 var appSettings = new AppSettings();
 builder.Configuration.Bind(appSettings);
+//builder.Services.AddInfrastructureServices(appSettings);
 
 builder.Services.AddHealthChecksUI(opt =>
 {
@@ -20,6 +22,7 @@ builder.Services.AddHealthChecksUI(opt =>
 
 
 var app = builder.Build();
+//app.MapGrpcService<CargoHealthService>();
 
 app.UseHealthChecksUI(options => options.UIPath = "/health-ui");
 

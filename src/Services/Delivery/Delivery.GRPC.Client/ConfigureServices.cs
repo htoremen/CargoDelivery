@@ -1,5 +1,6 @@
 ﻿using Delivery.GRPC.Client;
 using Delivery.GRPC.Client.Services;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

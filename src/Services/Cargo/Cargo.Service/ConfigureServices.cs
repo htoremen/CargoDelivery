@@ -27,6 +27,7 @@ public static class ConfigureServices
     {
         app.MapGrpcService<DebitService>();
         app.MapGrpcService<CargoService>();
+        app.MapGrpcService<CargoHealthService>();
         return app;
     }
 

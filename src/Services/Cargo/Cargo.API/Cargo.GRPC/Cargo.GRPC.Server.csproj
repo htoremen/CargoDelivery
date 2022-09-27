@@ -25,6 +25,9 @@
     <Protobuf Include="..\..\..\..\Core\Core.Protos\CargoProtos\cargo.proto" GrpcServices="Both">
       <Link>Protos\cargo.proto</Link>
     </Protobuf>
+    <Protobuf Include="..\..\..\..\Core\Core.Protos\CargoProtos\health.proto" GrpcServices="Both">
+      <Link>Protos\health.proto</Link>
+    </Protobuf>
     <Protobuf Include="..\..\..\..\Core\Core.Protos\CargoProtos\stateupdate.proto" GrpcServices="Both">
       <Link>Protos\stateupdate.proto</Link>
     </Protobuf>

@@ -9,6 +9,8 @@ using Core.Infrastructure;
 using Delivery.GRPC.Client.Services;
 using Delivery.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Delivery.Infrastructure.Healths;
 
 namespace Delivery.Service;
 
@@ -17,14 +19,14 @@ public static class ConfigureServices
     public static IServiceCollection AddWebUIServices(this IServiceCollection services)
     {
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
-
         services.AddHttpContextAccessor();
-
         return services;
     }
+ 
     public static WebApplication MapGrpcServices(this WebApplication app)
     {
         app.MapGrpcService<DeliveryService>();
+        app.MapGrpcHealthChecksService();
         return app;
     }
 
@@ -36,6 +38,15 @@ public static class ConfigureServices
             services.AddHealthChecks()
                 .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
         }
+
+        //services.AddGrpcHealthChecks(o =>
+        //{
+        //    o.Services.MapService("RouteGrpc", r => r.Tags.Contains("GetRoute"));
+        //}).AddCheck("RouteGrpc", () => HealthCheckResult.Healthy());
+
+        services.AddHealthChecks()
+            .AddCheck<CargoHealthCheck>("cargo-grpc-server");
+
         return services;
     }
 
@@ -54,7 +65,6 @@ public static class ConfigureServices
             x.AddConsumer<DeliveryCompletedConsumer>();
 
             x.SetKebabCaseEndpointNameFormatter();
-
             if (messageBroker.UsedRabbitMQ())
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
 
@@ -83,9 +93,7 @@ public static class ConfigureServices
             services.AddSingleton<IBus>(bus);
             services.AddSingleton<IBusControl>(bus);
         }
-
         return services;
-
     }
 
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
