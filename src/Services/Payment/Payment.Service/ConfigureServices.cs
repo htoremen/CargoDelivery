@@ -6,6 +6,7 @@ using Core.Infrastructure.Common.Extensions;
 using MassTransit;
 using MediatR;
 using Payment.Application.Consumer;
+using Payment.Infrastructure.Healths;
 using Payment.Service.Services;
 
 namespace Payment.Service;
@@ -29,6 +30,9 @@ public static class ConfigureServices
             services.AddHealthChecks()
                 .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
         }
+
+        services.AddHealthChecks()
+            .AddCheck<DeliveryHealthCheck>("delivery-grpc-server");
         return services;
     }
 
