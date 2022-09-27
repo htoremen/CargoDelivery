@@ -7,6 +7,7 @@ using Route.Service.Services;
 using Core.Infrastructure;
 using Route.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
+using Route.Infrastructure.Healths;
 
 namespace Cargo.Service;
 
@@ -35,6 +36,9 @@ public static class ConfigureServices
             services.AddHealthChecks()
                 .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
         }
+
+        services.AddHealthChecks()
+            .AddCheck<CargoHealthCheck>("cargo-grpc-server");
         return services;
     }
 
