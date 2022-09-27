@@ -1,0 +1,23 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Route.GRPC.Server";
+package grpc.health.v1;
+
+service RouteHealthGrpc {
+  rpc Check(RouteHealthCheckRequest) returns (RouteHealthCheckResponse);
+
+  rpc Watch(RouteHealthCheckRequest) returns (stream RouteHealthCheckResponse);
+}
+
+message RouteHealthCheckRequest {
+  string service = 1;
+}
+
+message RouteHealthCheckResponse {
+  enum RouteStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+  }
+  RouteStatus status = 1;
+}

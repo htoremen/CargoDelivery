@@ -25,6 +25,7 @@ public static class ConfigureServices
     public static WebApplication MapGrpcServices(this WebApplication app)
     {
         app.MapGrpcService<RouteService>();
+        app.MapGrpcService<RouteHealthService>();
         return app;
     }
 

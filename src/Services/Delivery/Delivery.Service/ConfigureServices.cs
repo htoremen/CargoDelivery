@@ -45,7 +45,8 @@ public static class ConfigureServices
         //}).AddCheck("RouteGrpc", () => HealthCheckResult.Healthy());
 
         services.AddHealthChecks()
-            .AddCheck<CargoHealthCheck>("cargo-grpc-server");
+            .AddCheck<CargoHealthCheck>("cargo-grpc-server")
+            .AddCheck<RouteHealthCheck>("route-grpc-server");
 
         return services;
     }
