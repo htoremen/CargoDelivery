@@ -110,10 +110,7 @@ public static class ConfigureServices
             rider.UsingKafka((context, k) =>
             {
                 var mediator = context.GetRequiredService<IMediator>();
-                k.Host(config.BootstrapServers, h =>
-                {
-
-                });
+                k.Host(config.BootstrapServers);
 
                 k.TopicEndpoint<IStartDelivery>(queueConfiguration.Names[QueueName.StartDelivery], config.GroupId, e =>
                 {

@@ -3,11 +3,14 @@ using Core.Domain.Bus;
 using Core.Domain.Enums;
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
+using Core.Infrastructure.MessageBrokers;
+using Deliveries;
 using MassTransit;
 using MediatR;
 using Payment.Application.Consumer;
 using Payment.Infrastructure.Healths;
 using Payment.Service.Services;
+using Payments;
 
 namespace Payment.Service;
 
@@ -51,20 +54,9 @@ public static class ConfigureServices
             x.SetKebabCaseEndpointNameFormatter();
             if (messageBroker.UsedRabbitMQ())
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
-            else if (messageBroker.UsedKafka())
-            {
-                x.AddRider(rider =>
-                {
-                    rider.UsingKafka((context, cfg) =>
-                    {
-                        var mediator = context.GetRequiredService<IMediator>();
-                        cfg.Host(appSettings.MessageBroker.Kafka.BootstrapServers, h =>
-                        {
-
-                        });
-                    });
-                });
-            }
+            else if (messageBroker.UsedKafka())            
+                UsingKafka(x, messageBroker, queueConfiguration);
+            
         });
 
 
@@ -97,6 +89,35 @@ public static class ConfigureServices
 
         return services;
 
+    }
+
+    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    {
+        var config = messageBroker.Kafka;
+        x.AddRider(rider =>
+        {
+            rider.UsingKafka((context, k) =>
+            {
+                var mediator = context.GetRequiredService<IMediator>();
+                k.Host(config.BootstrapServers);
+
+                k.TopicEndpoint<ICardPayment>(queueConfiguration.Names[QueueName.CardPayment], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<CardPaymentConsumer>(context);
+                });
+
+                k.TopicEndpoint<IFreeDelivery>(queueConfiguration.Names[QueueName.FreeDelivery], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<FreeDeliveryConsumer>(context);
+                });
+
+                k.TopicEndpoint<IPayAtDoor>(queueConfiguration.Names[QueueName.PayAtDoor], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<PayAtDoorConsumer>(context);
+                });
+
+            });
+        });
     }
 
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)

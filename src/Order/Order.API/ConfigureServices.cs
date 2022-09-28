@@ -1,9 +1,11 @@
 ﻿using Cargos;
 using Core.Domain;
 using Core.Domain.Bus;
+using Core.Domain.Enums;
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
 using Core.Infrastructure.MessageBrokers;
+using Deliveries;
 using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -51,19 +53,8 @@ public static class ConfigureServices
             if (messageBroker.UsedRabbitMQ())
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
             else if (messageBroker.UsedKafka())
-            {
-                x.AddRider(rider =>
-                {
-                    rider.UsingKafka((context, cfg) =>
-                    {
-                        var mediator = context.GetRequiredService<IMediator>();
-                        cfg.Host(appSettings.MessageBroker.Kafka.BootstrapServers, h =>
-                        {
-                            
-                        });
-                    });
-                });
-            }
+                UsingKafka(x, messageBroker, queueConfiguration);
+            
         });
 
         services.Configure<MassTransitHostOptions>(options =>
@@ -97,6 +88,19 @@ public static class ConfigureServices
             //busControl.StartAsync(startTokenSource);
         }
         return services;
+    }
+
+    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    {
+        var config = messageBroker.Kafka;
+        x.AddRider(rider =>
+        {
+            rider.UsingKafka((context, k) =>
+            {
+                var mediator = context.GetRequiredService<IMediator>();
+                k.Host(config.BootstrapServers);
+            });
+        });
     }
 
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)

@@ -9,6 +9,7 @@ using Core.Infrastructure.MessageBrokers;
 using Cargos;
 using Cargo.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
+using Deliveries;
 
 namespace Cargo.Service;
 
@@ -57,22 +58,10 @@ public static class ConfigureServices
             x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
             x.SetKebabCaseEndpointNameFormatter();
 
-            if(messageBroker.UsedRabbitMQ())
+            if (messageBroker.UsedRabbitMQ())
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
             else if (messageBroker.UsedKafka())
-            {
-                x.AddRider(rider =>
-                {
-                    rider.UsingKafka((context, cfg) =>
-                    {
-                        var mediator = context.GetRequiredService<IMediator>();
-                        cfg.Host(appSettings.MessageBroker.Kafka.BootstrapServers, h =>
-                        {
-
-                        });
-                    });
-                });
-            }
+                UsingKafka(x, messageBroker, queueConfiguration);
 
         });
 
@@ -99,8 +88,46 @@ public static class ConfigureServices
             services.AddSingleton<IBus>(bus);
             services.AddSingleton<IBusControl>(bus);
         }
+        else if (messageBroker.UsedRabbitMQ())
+        {
+
+        }
 
         return services;
+    }
+
+    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    {
+        var config = messageBroker.Kafka;
+        x.AddRider(rider =>
+        {
+            rider.UsingKafka((context, k) =>
+            {
+                var mediator = context.GetRequiredService<IMediator>();
+                k.Host(config.BootstrapServers);
+
+                k.TopicEndpoint<ICreateCargo>(queueConfiguration.Names[QueueName.CreateCargo], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<CreateCargoConsumer>(context);
+                });
+
+                k.TopicEndpoint<ISendSelfie>(queueConfiguration.Names[QueueName.SendSelfie], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<SendSelfieConsumer>(context);
+                });
+
+                k.TopicEndpoint<ICargoApproval>(queueConfiguration.Names[QueueName.CargoApproval], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<CargoApprovalConsumer>(context);
+                });
+
+                k.TopicEndpoint<ICargoRejected>(queueConfiguration.Names[QueueName.CargoRejected], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<CargoRejectedConsumer>(context);
+                });
+
+            });
+        });
     }
 
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)

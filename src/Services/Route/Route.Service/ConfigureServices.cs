@@ -8,6 +8,10 @@ using Core.Infrastructure;
 using Route.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
 using Route.Infrastructure.Healths;
+using Core.Infrastructure.MessageBrokers;
+using Deliveries;
+using Routes;
+using Cargos;
 
 namespace Cargo.Service;
 
@@ -60,19 +64,8 @@ public static class ConfigureServices
             if (messageBroker.UsedRabbitMQ())
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
             else if (messageBroker.UsedKafka())
-            {
-                x.AddRider(rider =>
-                {
-                    rider.UsingKafka((context, cfg) =>
-                    {
-                        var mediator = context.GetRequiredService<IMediator>();
-                        cfg.Host(appSettings.MessageBroker.Kafka.BootstrapServers, h =>
-                        {
+                UsingKafka(x, messageBroker, queueConfiguration);
 
-                        });
-                    });
-                });
-            }
         });
 
         services.Configure<MassTransitHostOptions>(options =>
@@ -98,9 +91,41 @@ public static class ConfigureServices
             services.AddSingleton<IBus>(bus);
             services.AddSingleton<IBusControl>(bus);
         }
+        else if (messageBroker.UsedKafka())
+        {
+
+        }
 
         return services;
 
+    }
+
+    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    {
+        var config = messageBroker.Kafka;
+        x.AddRider(rider =>
+        {
+            rider.UsingKafka((context, k) =>
+            {
+                var mediator = context.GetRequiredService<IMediator>();
+                k.Host(config.BootstrapServers);
+
+                k.TopicEndpoint<IManuelRoute>(queueConfiguration.Names[QueueName.ManuelRoute], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<ManuelRouteConsumer>(context);
+                });
+
+                k.TopicEndpoint<IAutoRoute>(queueConfiguration.Names[QueueName.AutoRoute], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<AutoRouteConsumer>(context);
+                });
+
+                k.TopicEndpoint<IStartRoute>(queueConfiguration.Names[QueueName.StartRoute], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<StartRouteConsumer>(context);
+                });
+            });
+        });
     }
 
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
