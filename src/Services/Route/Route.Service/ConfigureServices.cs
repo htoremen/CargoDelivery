@@ -59,6 +59,20 @@ public static class ConfigureServices
 
             if (messageBroker.UsedRabbitMQ())
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
+            else if (messageBroker.UsedKafka())
+            {
+                x.AddRider(rider =>
+                {
+                    rider.UsingKafka((context, cfg) =>
+                    {
+                        var mediator = context.GetRequiredService<IMediator>();
+                        cfg.Host(appSettings.MessageBroker.Kafka.BootstrapServers, h =>
+                        {
+
+                        });
+                    });
+                });
+            }
         });
 
         services.Configure<MassTransitHostOptions>(options =>

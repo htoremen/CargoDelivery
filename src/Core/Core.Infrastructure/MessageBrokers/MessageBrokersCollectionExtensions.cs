@@ -17,7 +17,7 @@ public static class MessageBrokersCollectionExtensions
 
     public static IServiceCollection AddKafkaSender<T>(this IServiceCollection services, KafkaOptions options)
     {
-        services.AddSingleton<IMessageSender<T>>(new KafkaSender<T>(options.BootstrapServers, options.Topics[typeof(T).Name]));
+        services.AddSingleton<IMessageSender<T>, KafkaSender<T>>();
         return services;
     }
 

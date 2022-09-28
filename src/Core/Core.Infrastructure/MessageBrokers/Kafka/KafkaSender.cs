@@ -1,4 +1,6 @@
 ﻿using Confluent.Kafka;
+using Core.Domain;
+using Core.Domain.Enums;
 using Core.Domain.MessageBrokers;
 using System;
 using System.Collections.Generic;
@@ -11,15 +13,16 @@ namespace Core.Infrastructure.MessageBrokers.Kafka;
 
 public class KafkaSender<T> : IMessageSender<T>
 {
-    private readonly string _topic;
+    private string _topic;
     private readonly IProducer<Null, string> _producer;
+    private readonly IQueueConfiguration _queueConfiguration;
 
-    public KafkaSender(string bootstrapServers, string topic)
+    public KafkaSender(IQueueConfiguration queueConfiguration)
     {
-        _topic = topic;
-
-        var config = new ProducerConfig { BootstrapServers = bootstrapServers };
+        var config = new ProducerConfig { BootstrapServers = "localhost:9092" };
         _producer = new ProducerBuilder<Null, string>(config).Build();
+        _queueConfiguration = queueConfiguration;
+        _topic = _queueConfiguration.Names[QueueName.CargoSaga];
     }
 
     public async Task SendAsync(T message, MetaData metaData = null, CancellationToken cancellationToken = default)

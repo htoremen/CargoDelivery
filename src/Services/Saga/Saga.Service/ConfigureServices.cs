@@ -1,16 +1,18 @@
-﻿using Confluent.Kafka;
-using Core.Application;
+﻿using Core.Application;
 using Core.Domain;
 using Core.Domain.Bus;
 using Core.Domain.Enums;
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
 using Core.Infrastructure.MessageBrokers;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Saga.Domain.Instances;
 using Saga.Infrastructure.Persistence;
 using Saga.Service.StateMachines;
+using System.Threading;
+using MassTransit;
+using Microsoft.Extensions.DependencyInjection;
+using Saga.Service.Components;
 
 namespace Saga.Service;
 public static class ConfigureServices
@@ -38,8 +40,13 @@ public static class ConfigureServices
 
             if (messageBroker.UsedRabbitMQ())
                 CreateUsingRabbitMq(x, messageBroker, queueConfiguration);
+            else if (messageBroker.UsedKafka())
+            {
+                x.UsingRabbitMq((context, cfg) => cfg.ConfigureEndpoints(context));
+                AddRiderKafka(x, messageBroker, queueConfiguration);
+            }
 
-            x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance>()
+            x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance, SagaStateDefinition>()
                 .EntityFrameworkRepository(config =>
                 {
                     config.AddDbContext<DbContext, CargoStateDbContext>((p, b) =>
@@ -59,7 +66,44 @@ public static class ConfigureServices
             options.StartTimeout = TimeSpan.FromSeconds(30);
             options.StopTimeout = TimeSpan.FromMinutes(1);
         });
+
+        if (messageBroker.UsedKafka())
+        {
+           // var bus = MassTransit.Bus.Factory.CreateUsingkafka();
+
+            //var provider = services.BuildServiceProvider();
+            //var busControl = provider.GetRequiredService<IBusControl>(); 
+            //var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
+            //busControl.StartAsync(cancellationToken);
+        }
         return services;
+    }
+    private static void AddRiderKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    {
+        var config = messageBroker.Kafka;
+        x.AddRider(rider =>
+        {
+            rider.UsingKafka((context, k) =>
+            {
+                // k.SecurityProtocol = config.SecurityProtocol;
+                k.Host(config.BootstrapServers, configurator =>
+                {
+                    //configurator.UseSasl(saslConfigurator =>
+                    //{
+                    //    saslConfigurator.Username = config.Username;
+                    //    saslConfigurator.Password = config.Password;
+                    //    saslConfigurator.Mechanism = config.SaslMechanism;
+                    //});
+                });
+
+                //k.TopicEndpoint<CargoStateInstance>(nameof(CargoStateInstance), queueConfiguration.Names[QueueName.CargoSaga], e =>
+                //{
+                //    e.CheckpointInterval = TimeSpan.FromSeconds(10);
+
+                //});
+
+            });
+        });
     }
 
     private static void CreateUsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)

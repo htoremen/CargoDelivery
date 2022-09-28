@@ -1,4 +1,4 @@
-﻿using Delivery.Application.Deliveries.ShiftCompletions;
+﻿//using Delivery.Application.Deliveries.ShiftCompletions;
 
 namespace Delivery.Application.Consumer;
 
@@ -15,9 +15,9 @@ public class ShiftCompletionConsumer : IConsumer<IShiftCompletion>
     {
         var command = context.Message;
 
-        await _mediator.Send(new ShiftCompletionCommand
-        {
-            CorrelationId = command.CorrelationId
-        });
+        //await _mediator.Send(new ShiftCompletionCommand
+        //{
+        //    CorrelationId = command.CorrelationId
+        //});
     }
 }

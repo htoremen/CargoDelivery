@@ -50,6 +50,20 @@ public static class ConfigureServices
 
             if (messageBroker.UsedRabbitMQ())
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
+            else if (messageBroker.UsedKafka())
+            {
+                x.AddRider(rider =>
+                {
+                    rider.UsingKafka((context, cfg) =>
+                    {
+                        var mediator = context.GetRequiredService<IMediator>();
+                        cfg.Host(appSettings.MessageBroker.Kafka.BootstrapServers, h =>
+                        {
+                            
+                        });
+                    });
+                });
+            }
         });
 
         services.Configure<MassTransitHostOptions>(options =>
@@ -74,6 +88,13 @@ public static class ConfigureServices
             services.AddSingleton<ISendEndpointProvider>(bus);
             services.AddSingleton<IBus>(bus);
             services.AddSingleton<IBusControl>(bus);
+        }
+        else if (messageBroker.UsedKafka())
+        {
+            //using var provider = services.BuildServiceProvider(true);
+            //var busControl = provider.GetRequiredService<IBusControl>();
+            //var startTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
+            //busControl.StartAsync(startTokenSource);
         }
         return services;
     }
