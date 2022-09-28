@@ -77,7 +77,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         #region Event
 
-        Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.UserId, context => context.Message.DebitId).SelectId(s => Guid.NewGuid()));
+        Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CourierId, context => context.Message.DebitId).SelectId(s => Guid.NewGuid()));
         Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
@@ -105,7 +105,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
             When(CreateCargoEvent)
                 .Then(context =>
                 {
-                    context.Instance.UserId = context.Data.CourierId;
+                    context.Instance.CourierId = context.Data.CourierId;
                     context.Instance.CreatedOn = DateTime.Now;
                 })
                 .TransitionTo(CreateCargo)

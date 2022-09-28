@@ -1,5 +1,4 @@
-﻿using Core.Application;
-using Core.Domain;
+﻿using Core.Domain;
 using Core.Domain.Bus;
 using Core.Domain.Enums;
 using Core.Infrastructure;
@@ -9,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Saga.Domain.Instances;
 using Saga.Infrastructure.Persistence;
 using Saga.Service.StateMachines;
-using System.Threading;
 using MassTransit;
-using Microsoft.Extensions.DependencyInjection;
 using Saga.Service.Components;
+using Confluent.Kafka;
+using Confluent.SchemaRegistry;
 
 namespace Saga.Service;
 public static class ConfigureServices
@@ -33,28 +32,26 @@ public static class ConfigureServices
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
 
         var messageBroker = appSettings.MessageBroker;
-
-        services.AddMassTransit<IEventBus>(x =>
+        if (messageBroker.UsedRabbitMQ())
         {
-            x.SetKebabCaseEndpointNameFormatter();
-
-            if (messageBroker.UsedRabbitMQ())
-                CreateUsingRabbitMq(x, messageBroker, queueConfiguration);
-            else if (messageBroker.UsedKafka())
+            services.AddMassTransit<IEventBus>(x =>
             {
-                x.UsingRabbitMq((context, cfg) => cfg.ConfigureEndpoints(context));
-                AddRiderKafka(x, messageBroker, queueConfiguration);
-            }
+                x.SetKebabCaseEndpointNameFormatter();
+                UsingRabbitMq(x, messageBroker, queueConfiguration, configuration);
+            });
+        }
+        else if (messageBroker.UsedKafka())
+        {
+            var schemaRegistryConfig = new SchemaRegistryConfig { Url = messageBroker.Kafka.SchemaRegistryUrl };
+            var schemaRegistryClient = new CachedSchemaRegistryClient(schemaRegistryConfig);
+            services.AddSingleton<ISchemaRegistryClient>(schemaRegistryClient);
 
-            x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance, SagaStateDefinition>()
-                .EntityFrameworkRepository(config =>
-                {
-                    config.AddDbContext<DbContext, CargoStateDbContext>((p, b) =>
-                    {
-                        b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
-                    });
-                });
-        });
+            services.AddMassTransit<IEventBus>(x =>
+            {
+                x.SetKebabCaseEndpointNameFormatter();
+                UsingKafka(x, messageBroker, queueConfiguration);
+            });
+        }
 
         //services.AddSingleton(rabbitMQConfig);
         //services.AddTransient(typeof(IEventBusService<>), typeof(EventBusService<>));
@@ -69,7 +66,7 @@ public static class ConfigureServices
 
         if (messageBroker.UsedKafka())
         {
-           // var bus = MassTransit.Bus.Factory.CreateUsingkafka();
+            // var bus = MassTransit.Bus.Factory.CreateUsingkafka();
 
             //var provider = services.BuildServiceProvider();
             //var busControl = provider.GetRequiredService<IBusControl>(); 
@@ -78,37 +75,46 @@ public static class ConfigureServices
         }
         return services;
     }
-    private static void AddRiderKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
         var config = messageBroker.Kafka;
+
+        x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context, SnakeCaseEndpointNameFormatter.Instance));
+        x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance, SagaStateDefinition>()
+            .InMemoryRepository();
         x.AddRider(rider =>
         {
             rider.UsingKafka((context, k) =>
             {
-                // k.SecurityProtocol = config.SecurityProtocol;
-                k.Host(config.BootstrapServers, configurator =>
+                k.Host(config.BootstrapServers);
+
+                k.TopicEndpoint<Null>(queueConfiguration.Names[QueueName.CargoSaga], config.GroupId, e =>
                 {
-                    //configurator.UseSasl(saslConfigurator =>
-                    //{
-                    //    saslConfigurator.Username = config.Username;
-                    //    saslConfigurator.Password = config.Password;
-                    //    saslConfigurator.Mechanism = config.SaslMechanism;
-                    //});
+                    e.AutoOffsetReset = AutoOffsetReset.Earliest; 
+                   // e.SetKeyDeserializer(new AvroDeserializer<string>(config.SchemaRegistryUrl, null).AsSyncOverAsync());
+
+                    e.CreateIfMissing(t => t.NumPartitions = 1);
                 });
 
-                //k.TopicEndpoint<CargoStateInstance>(nameof(CargoStateInstance), queueConfiguration.Names[QueueName.CargoSaga], e =>
-                //{
-                //    e.CheckpointInterval = TimeSpan.FromSeconds(10);
-
-                //});
-
+                
             });
+
         });
     }
 
-    private static void CreateUsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration, IConfigurationRoot configuration)
     {
         var config = messageBroker.RabbitMQ;
+
+        x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance, SagaStateDefinition>()
+            .EntityFrameworkRepository(config =>
+            {
+                config.AddDbContext<DbContext, CargoStateDbContext>((p, b) =>
+                {
+                    b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
+                });
+            });
+
         x.AddBus(factory => MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
         {
             cfg.Host(config.HostName, config.VirtualHost, h =>

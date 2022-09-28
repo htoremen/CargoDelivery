@@ -13,6 +13,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Delivery.Infrastructure.Healths;
 using Core.Infrastructure.MessageBrokers;
 using Deliveries;
+using Confluent.Kafka;
 
 namespace Delivery.Service;
 
@@ -115,6 +116,9 @@ public static class ConfigureServices
                 k.TopicEndpoint<IStartDelivery>(queueConfiguration.Names[QueueName.StartDelivery], config.GroupId, e =>
                 {
                     e.ConfigureConsumer<StartDeliveryConsumer>(context);
+
+                    e.CheckpointInterval = TimeSpan.FromMilliseconds(100);
+                    e.AutoOffsetReset = AutoOffsetReset.Earliest;
                 });
 
                 k.TopicEndpoint<INewDelivery>(queueConfiguration.Names[QueueName.NewDelivery], config.GroupId, e =>

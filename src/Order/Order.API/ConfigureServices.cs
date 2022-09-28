@@ -57,15 +57,15 @@ public static class ConfigureServices
             
         });
 
-        services.Configure<MassTransitHostOptions>(options =>
-        {
-            options.WaitUntilStarted = true;
-            options.StartTimeout = TimeSpan.FromSeconds(30);
-            options.StopTimeout = TimeSpan.FromMinutes(1);
-        });
-
         if (messageBroker.UsedRabbitMQ())
         {
+            services.Configure<MassTransitHostOptions>(options =>
+            {
+                options.WaitUntilStarted = true;
+                options.StartTimeout = TimeSpan.FromSeconds(30);
+                options.StopTimeout = TimeSpan.FromMinutes(1);
+            });
+
             var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
                 cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
@@ -82,6 +82,7 @@ public static class ConfigureServices
         }
         else if (messageBroker.UsedKafka())
         {
+
             //using var provider = services.BuildServiceProvider(true);
             //var busControl = provider.GetRequiredService<IBusControl>();
             //var startTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
@@ -93,6 +94,7 @@ public static class ConfigureServices
     private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
         var config = messageBroker.Kafka;
+        x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context, SnakeCaseEndpointNameFormatter.Instance));
         x.AddRider(rider =>
         {
             rider.UsingKafka((context, k) =>
@@ -100,6 +102,11 @@ public static class ConfigureServices
                 var mediator = context.GetRequiredService<IMediator>();
                 k.Host(config.BootstrapServers);
             });
+        }); 
+        
+        x.AddOptions<MassTransitHostOptions>().Configure(options =>
+        {
+            options.WaitUntilStarted = true;
         });
     }
 

@@ -10,6 +10,6 @@ public class CargoStateMap : SagaClassMap<CargoStateInstance>
     protected override void Configure(EntityTypeBuilder<CargoStateInstance> entity, ModelBuilder model)
     {
         entity.Property(p => p.CurrentState);
-        entity.Property(p => p.UserId).IsRequired();
+        entity.Property(p => p.CourierId).IsRequired();
     }
 }

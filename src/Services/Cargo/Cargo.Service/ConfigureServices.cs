@@ -10,6 +10,7 @@ using Cargos;
 using Cargo.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
 using Deliveries;
+using Confluent.Kafka;
 
 namespace Cargo.Service;
 
@@ -99,35 +100,51 @@ public static class ConfigureServices
     private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
         var config = messageBroker.Kafka;
+        x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context, SnakeCaseEndpointNameFormatter.Instance));
+
         x.AddRider(rider =>
         {
+            rider.AddConsumer<CreateCargoConsumer>();
+            //rider.AddConsumer<SendSelfieConsumer>();
+            //rider.AddConsumer<CargoApprovalConsumer>();
+            //rider.AddConsumer<CargoRejectedConsumer>();
+
+            rider.AddConsumersFromNamespaceContaining<CreateCargoConsumer>();
+            //rider.AddConsumersFromNamespaceContaining<SendSelfieConsumer>();
+            //rider.AddConsumersFromNamespaceContaining<CargoApprovalConsumer>();
+            //rider.AddConsumersFromNamespaceContaining<CargoRejectedConsumer>();
+
             rider.UsingKafka((context, k) =>
             {
                 var mediator = context.GetRequiredService<IMediator>();
                 k.Host(config.BootstrapServers);
 
-                k.TopicEndpoint<ICreateCargo>(queueConfiguration.Names[QueueName.CreateCargo], config.GroupId, e =>
+                k.TopicEndpoint<string, ICreateCargo>(queueConfiguration.Names[QueueName.CreateCargo], config.GroupId, e =>
                 {
+                    e.AutoOffsetReset = AutoOffsetReset.Earliest;
                     e.ConfigureConsumer<CreateCargoConsumer>(context);
                 });
 
-                k.TopicEndpoint<ISendSelfie>(queueConfiguration.Names[QueueName.SendSelfie], config.GroupId, e =>
-                {
-                    e.ConfigureConsumer<SendSelfieConsumer>(context);
-                });
+                //k.TopicEndpoint<string, ISendSelfie>(queueConfiguration.Names[QueueName.SendSelfie], config.GroupId, e =>
+                //{
+                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
+                //    e.ConfigureConsumer<SendSelfieConsumer>(context);
+                //});
 
-                k.TopicEndpoint<ICargoApproval>(queueConfiguration.Names[QueueName.CargoApproval], config.GroupId, e =>
-                {
-                    e.ConfigureConsumer<CargoApprovalConsumer>(context);
-                });
+                //k.TopicEndpoint<string, ICargoApproval>(queueConfiguration.Names[QueueName.CargoApproval], config.GroupId, e =>
+                //{
+                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
+                //    e.ConfigureConsumer<CargoApprovalConsumer>(context);
+                //});
 
-                k.TopicEndpoint<ICargoRejected>(queueConfiguration.Names[QueueName.CargoRejected], config.GroupId, e =>
-                {
-                    e.ConfigureConsumer<CargoRejectedConsumer>(context);
-                });
+                //k.TopicEndpoint<string, ICargoRejected>(queueConfiguration.Names[QueueName.CargoRejected], config.GroupId, e =>
+                //{
+                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
+                //    e.ConfigureConsumer<CargoRejectedConsumer>(context);
+                //});
 
             });
-        });
+        }); 
     }
 
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)

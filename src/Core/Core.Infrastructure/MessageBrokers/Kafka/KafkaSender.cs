@@ -19,7 +19,13 @@ public class KafkaSender<T> : IMessageSender<T>
 
     public KafkaSender(IQueueConfiguration queueConfiguration)
     {
-        var config = new ProducerConfig { BootstrapServers = "localhost:9092" };
+        var config = new ProducerConfig
+        {
+            BootstrapServers = "localhost:9092",
+            //MessageMaxBytes = 3000000,
+            //MessageTimeoutMs = 10000
+        };
+
         _producer = new ProducerBuilder<Null, string>(config).Build();
         _queueConfiguration = queueConfiguration;
         _topic = _queueConfiguration.Names[QueueName.CargoSaga];
@@ -27,7 +33,7 @@ public class KafkaSender<T> : IMessageSender<T>
 
     public async Task SendAsync(T message, MetaData metaData = null, CancellationToken cancellationToken = default)
     {
-        _ = await _producer.ProduceAsync(_topic, new Message<Null, string>
+        var response = await _producer.ProduceAsync(_topic, new Message<Null, string>
         {
             Value = JsonSerializer.Serialize(new Message<T>
             {
