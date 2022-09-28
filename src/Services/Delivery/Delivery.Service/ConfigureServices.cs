@@ -11,6 +11,8 @@ using Delivery.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Delivery.Infrastructure.Healths;
+using Core.Infrastructure.MessageBrokers;
+using Deliveries;
 
 namespace Delivery.Service;
 
@@ -57,7 +59,7 @@ public static class ConfigureServices
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
         var messageBroker = appSettings.MessageBroker;
 
-        services.AddMassTransit<IEventBus>(x =>
+        services.AddMassTransit<IBus>(x =>
         {
             x.AddConsumer<StartDeliveryConsumer>();
             x.AddConsumer<NewDeliveryConsumer>();
@@ -70,19 +72,7 @@ public static class ConfigureServices
             if (messageBroker.UsedRabbitMQ())
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
             else if (messageBroker.UsedKafka())
-            {
-                x.AddRider(rider =>
-                {
-                    rider.UsingKafka((context, cfg) =>
-                    {
-                        var mediator = context.GetRequiredService<IMediator>();
-                        cfg.Host(appSettings.MessageBroker.Kafka.BootstrapServers, h =>
-                        {
-
-                        });
-                    });
-                });
-            }
+                UsingKafka(x, messageBroker, queueConfiguration);            
 
         });
 
@@ -112,7 +102,53 @@ public static class ConfigureServices
         return services;
     }
 
-    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    private static void UsingKafka(IBusRegistrationConfigurator<IBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    {
+        var config = messageBroker.Kafka;
+        x.AddRider(rider =>
+        {
+            rider.UsingKafka((context, k) =>
+            {
+                var mediator = context.GetRequiredService<IMediator>();
+                k.Host(config.BootstrapServers, h =>
+                {
+
+                });
+
+                k.TopicEndpoint<IStartDelivery>(queueConfiguration.Names[QueueName.StartDelivery], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<StartDeliveryConsumer>(context);
+                });
+
+                k.TopicEndpoint<INewDelivery>(queueConfiguration.Names[QueueName.NewDelivery], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<NewDeliveryConsumer>(context);
+                });
+
+                k.TopicEndpoint<ICreateDelivery>(queueConfiguration.Names[QueueName.CreateDelivery], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<CreateDeliveryConsumer>(context);
+                });
+
+                k.TopicEndpoint<INotDelivered>(queueConfiguration.Names[QueueName.NotDelivered], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<NotDeliveredConsumer>(context);
+                });
+
+                k.TopicEndpoint<ICreateRefund>(queueConfiguration.Names[QueueName.CreateRefund], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<CreateRefundConsumer>(context);
+                });
+
+                k.TopicEndpoint<IDeliveryCompleted>(queueConfiguration.Names[QueueName.DeliveryCompleted], config.GroupId, e =>
+                {
+                    e.ConfigureConsumer<DeliveryCompletedConsumer>(context);
+                });
+            });
+        });
+    }
+
+    private static void UsingRabbitMq(IBusRegistrationConfigurator<IBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
         var config = messageBroker.RabbitMQ;
         x.UsingRabbitMq((context, cfg) =>
