@@ -14,7 +14,7 @@ namespace Order.API.Controllers
         [Route("create-cargo")]
         public async Task<IActionResult> CreateCargo()
         {
-            for (int i = 0; i < 40000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 var response = await Mediator.Send(new CreateCargoCommand
                 {
