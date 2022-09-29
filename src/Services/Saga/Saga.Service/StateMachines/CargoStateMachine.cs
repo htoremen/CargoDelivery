@@ -79,180 +79,61 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         Initially(ProcessApplication(queueConfiguration));
 
-        //Initially(
-        //    When(CreateCargoEvent)
-        //        .Then(context =>
-        //        {
-        //            context.Instance.CourierId = context.Data.CourierId;
-        //            context.Instance.CreatedOn = DateTime.Now;
-        //        })
-        //        .TransitionTo(CreateCargo)
-        //        .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateCargo]}"), context => new CreateCargoCommand(context.Instance.CorrelationId)
-        //        {
-        //            DebitId = context.Data.DebitId,
-        //            CourierId = context.Data.CourierId,
-        //            Cargos = context.Data.Cargos,
-        //            CurrentState = context.Instance.CurrentState
-        //        }));
+        During(CreateCargo, SendSelfieActivity(queueConfiguration));
+        During(SendSelfie, SendSelfieActivity(queueConfiguration), CargoApprovalActivity(queueConfiguration));
+        During(CargoApproval, StartRouteActivity(queueConfiguration), CargoRejectedActivity(queueConfiguration));
 
-        #region Cargo
+        During(StartRoute, AutoRouteActivity(queueConfiguration), ManuelRouteActivity(queueConfiguration));
+        During(AutoRoute, StartDeliveryActivity(queueConfiguration));
+        During(ManuelRoute, StartDeliveryActivity(queueConfiguration));
 
-        During(CreateCargo,
-             When(SendSelfieEvent)
-                 .TransitionTo(SendSelfie)
-                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.SendSelfie]}"), context => new SendSelfieCommand(context.Data.CorrelationId)
-                 {
-                     CorrelationId = context.Instance.CorrelationId,
-                     CurrentState = context.Instance.CurrentState
-                 }));
+        During(StartDelivery, NewDeliveryActivity(queueConfiguration));
+        During(NewDelivery, CreateDeliveryActivity(queueConfiguration), NotDeliveredActivity(queueConfiguration), CreateRefundActivity(queueConfiguration));
+        During(CreateDelivery, CardPaymentActivity(queueConfiguration), FreeDeliveryActivity(queueConfiguration), PayAtDoorActivity(queueConfiguration));  
+        
+        During(CardPayment, DeliveryCompletedActivity(queueConfiguration));
+        During(FreeDelivery, DeliveryCompletedActivity(queueConfiguration));
+        During(PayAtDoor, DeliveryCompletedActivity(queueConfiguration));
 
-        During(SendSelfie,
-         When(SendSelfieEvent)
-             .TransitionTo(SendSelfie)
-             .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.SendSelfie]}"), context => new SendSelfieCommand(context.Data.CorrelationId)
-             {
-                 CorrelationId = context.Instance.CorrelationId,
-                 CurrentState = context.Instance.CurrentState
-             }));
+        During(NotDelivered, DeliveryCompletedActivity(queueConfiguration));
+        During(CreateRefund, DeliveryCompletedActivity(queueConfiguration));
 
-        During(SendSelfie,
-           When(CargoApprovalEvent)
-               .TransitionTo(CargoApproval)
-               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoApproval]}"), context => new CargoApprovalCommand(context.Data.CorrelationId)
+        During(DeliveryCompleted, NewDeliveryActivity(queueConfiguration));
+        During(DeliveryCompleted, ShiftCompletionActivity(queueConfiguration));
+
+        SetCompletedWhenFinalized();
+    }
+
+    private EventActivities<CargoStateInstance> ShiftCompletionActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(ShiftCompletionEvent)
+              .TransitionTo(ShiftCompletion)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ShiftCompletion]}"), context => new ShiftCompletionCommand(context.Data.CorrelationId)
                {
                    CorrelationId = context.Instance.CorrelationId,
                    CurrentState = context.Instance.CurrentState,
-                   
-               }));
+               }).Finalize();
+    }
 
-        During(CargoApproval,
-            When(StartRouteEvent)
-               //.Then(context =>
-               //{
-               //    context.Instance.CargoRoutes = context.Data.CargoRoutes;
-               //})
-               .TransitionTo(StartRoute)
-               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartRoute]}"), context => new StartRouteCommand(context.Data.CorrelationId)
-               {
-                    CurrentState = context.Instance.CurrentState,
-                    CorrelationId = context.Instance.CorrelationId
-               }),
-            When(CargoRejectedEvent)
-                .TransitionTo(CargoRejected)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoRejected]}"), context => new CargoRejectedCommand(context.Data.CorrelationId)
-                {
-                    CorrelationId = context.Instance.CorrelationId,
-                    CurrentState = context.Instance.CurrentState
-                }));
-
-        #endregion
-
-        #region Start Route
-
-        During(StartRoute,
-            When(AutoRouteEvent)
-                .TransitionTo(AutoRoute)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.AutoRoute]}"), context => new AutoRouteCommand(context.Data.CorrelationId)
-                {
-                    CorrelationId = context.Instance.CorrelationId,
-                    CurrentState = context.Instance.CurrentState
-
-                }),
-            When(ManuelRouteEvent)
-                .TransitionTo(ManuelRoute)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ManuelRoute]}"), context => new ManuelRouteCommand(context.Data.CorrelationId)
-                {
-                    CorrelationId = context.Instance.CorrelationId,
-                    CurrentState = context.Instance.CurrentState
-                })
-            );
-
-        During(AutoRoute,
-         When(StartDeliveryEvent)
-             .TransitionTo(StartDelivery)
-             .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartDelivery]}"), context => new StartDeliveryCommand(context.Data.CorrelationId)
-             {
-                 CorrelationId = context.Instance.CorrelationId,
-                 CurrentState = context.Instance.CurrentState
-             }));
-
-        During(ManuelRoute,
-         When(StartDeliveryEvent)
-             .TransitionTo(StartDelivery)
-             .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartDelivery]}"), context => new StartDeliveryCommand(context.Data.CorrelationId)
-             {
-                 CorrelationId = context.Instance.CorrelationId,
-                 CurrentState = context.Instance.CurrentState,
-             }));
-
-        #endregion
-
-        #region Delivery
-
-        #region Start Delivery
+    private EventActivities<CargoStateInstance> DeliveryCompletedActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(DeliveryCompletedEvent)
+             .TransitionTo(DeliveryCompleted)
+              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DeliveryCompleted]}"), context => new DeliveryCompletedCommand(context.Data.CorrelationId)
+              {
+                  CorrelationId = context.Instance.CorrelationId,
+                  CurrentState = context.Instance.CurrentState,
+              });
+    }
 
 
-        During(StartDelivery,
-             When(NewDeliveryEvent)
-                 .TransitionTo(NewDelivery)
-                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.NewDelivery]}"), context => new NewDeliveryCommand(context.Data.CorrelationId)
-                 {
-                     CorrelationId = context.Instance.CorrelationId,
-                     CurrentState = context.Instance.CurrentState
-                 }));
 
-        During(NewDelivery,
-           When(CreateDeliveryEvent)
-               .TransitionTo(CreateDelivery)
-               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateDelivery]}"), context => new CreateDeliveryCommand(context.Data.CorrelationId)
-               {
-                   CorrelationId = context.Instance.CorrelationId,
-                   CurrentState = context.Instance.CurrentState,
-                   CargoId = context.Data.CargoId,
-                   PaymentType = context.Data.PaymentType
-               }),
-           When(NotDeliveredEvent)
-               .TransitionTo(NotDelivered)
-               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.NotDelivered]}"), context => new NotDeliveredCommand(context.Data.CorrelationId)
-               {
-                   CorrelationId = context.Instance.CorrelationId,
-                   CurrentState = context.Instance.CurrentState,
-                   CargoId = context.Data.CargoId
-               }),
-           When(CreateRefundEvent)
-               .TransitionTo(CreateRefund)
-               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateRefund]}"), context => new CreateRefundCommand(context.Data.CorrelationId)
-               {
-                   CorrelationId = context.Instance.CorrelationId,
-                   CurrentState = context.Instance.CurrentState,
-                   CargoId = context.Data.CargoId
-               })
-           );
+    #region CreateDelivery During
 
-        #endregion
-
-        #region CreateDelivery
-
-        During(CreateDelivery,
-          When(CardPaymentEvent)
-              .TransitionTo(CardPayment)
-               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CardPayment]}"), context => new CardPaymentCommand(context.Data.CorrelationId)
-               {
-                   CorrelationId = context.Instance.CorrelationId,
-                   CargoId = context.Data.CargoId,
-                   CurrentState = context.Instance.CurrentState,
-                   PaymentType = context.Data.PaymentType
-               }),
-           When(FreeDeliveryEvent)
-              .TransitionTo(FreeDelivery)
-               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.FreeDelivery]}"), context => new FreeDeliveryCommand(context.Data.CorrelationId)
-               {
-                   CorrelationId = context.Instance.CorrelationId,
-                   CargoId = context.Data.CargoId,
-                   CurrentState = context.Instance.CurrentState,
-                   PaymentType = context.Data.PaymentType
-               }),
-            When(PayAtDoorEvent)
+    [Obsolete]
+    private EventActivities<CargoStateInstance> PayAtDoorActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(PayAtDoorEvent)
               .TransitionTo(PayAtDoor)
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.PayAtDoor]}"), context => new PayAtDoorCommand(context.Data.CorrelationId)
                {
@@ -260,92 +141,183 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                    CargoId = context.Data.CargoId,
                    CurrentState = context.Instance.CurrentState,
                    PaymentType = context.Data.PaymentType
-               })
-          );
-
-        During(CardPayment,
-         When(DeliveryCompletedEvent)
-             .TransitionTo(DeliveryCompleted)
-              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DeliveryCompleted]}"), context => new DeliveryCompletedCommand(context.Data.CorrelationId)
-              {
-                  CorrelationId = context.Instance.CorrelationId,
-                  CurrentState = context.Instance.CurrentState,
-              })
-         );
-
-        During(FreeDelivery,
-         When(DeliveryCompletedEvent)
-             .TransitionTo(DeliveryCompleted)
-              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DeliveryCompleted]}"), context => new DeliveryCompletedCommand(context.Data.CorrelationId)
-              {
-                  CorrelationId = context.Instance.CorrelationId,
-                  CurrentState = context.Instance.CurrentState,
-              })
-         );
-
-        During(PayAtDoor,
-         When(DeliveryCompletedEvent)
-             .TransitionTo(DeliveryCompleted)
-              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DeliveryCompleted]}"), context => new DeliveryCompletedCommand(context.Data.CorrelationId)
-              {
-                  CorrelationId = context.Instance.CorrelationId,
-                  CurrentState = context.Instance.CurrentState,
-              })
-         );
-        #endregion
-
-        #region NotDelivered
-
-        During(NotDelivered,
-          When(DeliveryCompletedEvent)
-              .TransitionTo(DeliveryCompleted)
-               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DeliveryCompleted]}"), context => new DeliveryCompletedCommand(context.Data.CorrelationId)
-               {
-                   CorrelationId = context.Instance.CorrelationId,
-                   CurrentState = context.Instance.CurrentState,
-               })
-          );
-
-        #endregion
-
-        #region CreateRefund
-
-        During(CreateRefund,
-           When(DeliveryCompletedEvent)
-               .TransitionTo(DeliveryCompleted)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DeliveryCompleted]}"), context => new DeliveryCompletedCommand(context.Data.CorrelationId)
-                {
-                    CorrelationId = context.Instance.CorrelationId,
-                    CurrentState = context.Instance.CurrentState,
-                })
-           );
-
-        #endregion
-
-        During(DeliveryCompleted,
-           When(NewDeliveryEvent)
-               .TransitionTo(NewDelivery)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.NewDelivery]}"), context => new NewDeliveryCommand(context.Data.CorrelationId)
-                {
-                    CorrelationId = context.Instance.CorrelationId,
-                    CurrentState = context.Instance.CurrentState,
-                })
-           );
-
-        During(DeliveryCompleted,
-          When(ShiftCompletionEvent)
-              .TransitionTo(ShiftCompletion)
-               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ShiftCompletion]}"), context => new ShiftCompletionCommand(context.Data.CorrelationId)
-               {
-                   CorrelationId = context.Instance.CorrelationId,
-                   CurrentState = context.Instance.CurrentState,
-               }).Finalize()
-          );
-
-        #endregion
-
-        SetCompletedWhenFinalized();
+               });
     }
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> FreeDeliveryActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(FreeDeliveryEvent)
+              .TransitionTo(FreeDelivery)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.FreeDelivery]}"), context => new FreeDeliveryCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId,
+                   CargoId = context.Data.CargoId,
+                   CurrentState = context.Instance.CurrentState,
+                   PaymentType = context.Data.PaymentType
+               });
+    }
+
+    private EventActivities<CargoStateInstance> CardPaymentActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(CardPaymentEvent)
+              .TransitionTo(CardPayment)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CardPayment]}"), context => new CardPaymentCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId,
+                   CargoId = context.Data.CargoId,
+                   CurrentState = context.Instance.CurrentState,
+                   PaymentType = context.Data.PaymentType
+               });
+    }
+
+    #endregion
+
+    #region Start Delivery During
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> CreateRefundActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(CreateRefundEvent)
+               .TransitionTo(CreateRefund)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateRefund]}"), context => new CreateRefundCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId,
+                   CurrentState = context.Instance.CurrentState,
+                   CargoId = context.Data.CargoId
+               });
+    }
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> NotDeliveredActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(NotDeliveredEvent)
+               .TransitionTo(NotDelivered)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.NotDelivered]}"), context => new NotDeliveredCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId,
+                   CurrentState = context.Instance.CurrentState,
+                   CargoId = context.Data.CargoId
+               });
+    }
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> CreateDeliveryActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(CreateDeliveryEvent)
+               .TransitionTo(CreateDelivery)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateDelivery]}"), context => new CreateDeliveryCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId,
+                   CurrentState = context.Instance.CurrentState,
+                   CargoId = context.Data.CargoId,
+                   PaymentType = context.Data.PaymentType
+               });
+    }
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> NewDeliveryActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(NewDeliveryEvent)
+                 .TransitionTo(NewDelivery)
+                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.NewDelivery]}"), context => new NewDeliveryCommand(context.Data.CorrelationId)
+                 {
+                     CorrelationId = context.Instance.CorrelationId,
+                     CurrentState = context.Instance.CurrentState
+                 });
+    }
+
+    #endregion
+
+    #region Start Route During
+
+    private EventActivities<CargoStateInstance> StartDeliveryActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(StartDeliveryEvent)
+             .TransitionTo(StartDelivery)
+             .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartDelivery]}"), context => new StartDeliveryCommand(context.Data.CorrelationId)
+             {
+                 CorrelationId = context.Instance.CorrelationId,
+                 CurrentState = context.Instance.CurrentState,
+             });
+    }
+
+    private EventActivities<CargoStateInstance> ManuelRouteActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(ManuelRouteEvent)
+                .TransitionTo(ManuelRoute)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ManuelRoute]}"), context => new ManuelRouteCommand(context.Data.CorrelationId)
+                {
+                    CorrelationId = context.Instance.CorrelationId,
+                    CurrentState = context.Instance.CurrentState
+                });
+    }
+
+    private EventActivities<CargoStateInstance> AutoRouteActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(AutoRouteEvent)
+                .TransitionTo(AutoRoute)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.AutoRoute]}"), context => new AutoRouteCommand(context.Data.CorrelationId)
+                {
+                    CorrelationId = context.Instance.CorrelationId,
+                    CurrentState = context.Instance.CurrentState
+
+                });
+    }
+
+    #endregion
+
+    #region Cargo During
+
+    private EventActivities<CargoStateInstance> CargoRejectedActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(CargoRejectedEvent)
+                .TransitionTo(CargoRejected)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoRejected]}"), context => new CargoRejectedCommand(context.Data.CorrelationId)
+                {
+                    CorrelationId = context.Instance.CorrelationId,
+                    CurrentState = context.Instance.CurrentState
+                });
+    }
+
+    private EventActivities<CargoStateInstance> StartRouteActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(StartRouteEvent)
+               .TransitionTo(StartRoute)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartRoute]}"), context => new StartRouteCommand(context.Data.CorrelationId)
+               {
+                   CurrentState = context.Instance.CurrentState,
+                   CorrelationId = context.Instance.CorrelationId
+               });
+    }
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> CargoApprovalActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(CargoApprovalEvent)
+               .TransitionTo(CargoApproval)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoApproval]}"), context => new CargoApprovalCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId,
+                   CurrentState = context.Instance.CurrentState
+               });
+    }
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> SendSelfieActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(SendSelfieEvent)
+                 .TransitionTo(SendSelfie)
+                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.SendSelfie]}"), context => new SendSelfieCommand(context.Data.CorrelationId)
+                 {
+                     CorrelationId = context.Instance.CorrelationId,
+                     CurrentState = context.Instance.CurrentState
+                 });
+    }
+
+    #endregion
+
+
 
     private void SetCorrelationId()
     {
@@ -374,7 +346,6 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         Event(() => ShiftCompletionEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
         #endregion
-
     }
 
     /// <summary>
@@ -382,6 +353,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     /// </summary>
     /// <param name="queueConfiguration"></param>
     /// <returns></returns>
+    [Obsolete]
     public EventActivityBinder<CargoStateInstance, ICreateCargo> ProcessApplication(IQueueConfiguration queueConfiguration)
     {
         return When(CreateCargoEvent)
@@ -396,7 +368,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                     DebitId = context.Data.DebitId,
                     CourierId = context.Data.CourierId,
                     Cargos = context.Data.Cargos,
-                    CurrentState = context.Instance.CurrentState
+                    CurrentState = context.Instance.CurrentState                    
                 });
     }
 }
