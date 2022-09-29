@@ -83,6 +83,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		Content.txt = Content.txt
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mongo", "Mongo", "{4B8C8968-C97F-4A15-87D1-557F4225929F}"
@@ -112,8 +113,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitoring.Service", "src\Services\Monitoring\Monitoring.Service\Monitoring.Service.csproj", "{986075A8-2ED4-4BC3-BADA-51ECE2525CDC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitoring.Infrastructure", "src\Services\Monitoring\Monitoring.Infrastructure\Monitoring.Infrastructure.csproj", "{3729AC22-B8EC-4434-B29B-1E9D31B4F382}"
-EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{AFDC1460-6BFC-4C6E-8C1B-0997237C8513}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -277,10 +276,6 @@ Global
 		{3729AC22-B8EC-4434-B29B-1E9D31B4F382}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3729AC22-B8EC-4434-B29B-1E9D31B4F382}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3729AC22-B8EC-4434-B29B-1E9D31B4F382}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AFDC1460-6BFC-4C6E-8C1B-0997237C8513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AFDC1460-6BFC-4C6E-8C1B-0997237C8513}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AFDC1460-6BFC-4C6E-8C1B-0997237C8513}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AFDC1460-6BFC-4C6E-8C1B-0997237C8513}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

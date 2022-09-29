@@ -89,7 +89,7 @@ public static class ConfigureServices
             {
                 k.Host(config.BootstrapServers);
 
-                k.TopicEndpoint<Null>(queueConfiguration.Names[QueueName.CargoSaga], config.GroupId, e =>
+                k.TopicEndpoint<string>(queueConfiguration.Names[QueueName.CargoSaga], config.GroupId, e =>
                 {
                     e.AutoOffsetReset = AutoOffsetReset.Earliest;
 
