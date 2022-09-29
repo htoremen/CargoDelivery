@@ -14,7 +14,7 @@ namespace Order.API.Controllers
         [Route("create-debit")]
         public async Task<IActionResult> CreateDebit()
         {
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 40000; i++)
             {
                 var response = await Mediator.Send(new CreateDebitCommand
                 {
@@ -22,7 +22,7 @@ namespace Order.API.Controllers
                     DebitId = Guid.NewGuid(),
                     Cargos = GetCargos()
                 });
-                break;
+                //break;
             }
             // return Ok(response);
             return Ok();
@@ -38,17 +38,18 @@ namespace Order.API.Controllers
             //return Ok(response);
         }
 
-        private List<CargoDetay> GetCargos()
+        private List<CreateDebitCargo> GetCargos()
         {
             Random rnd = new Random();
             var cargoLength= rnd.Next(10, 20);
 
-            var cargos = new List<CargoDetay>();
+            var cargos = new List<CreateDebitCargo>();
             for (int i = 1; i <= cargoLength; i++)
             {
                 var itemLength = rnd.Next(1, 5);
-                cargos.Add(new CargoDetay
+                cargos.Add(new CreateDebitCargo
                 {
+                    CargoId = Guid.NewGuid(),
                     Address = "Address " + i,
                     CargoItems = GetCargoItems(itemLength)
                 });
@@ -63,6 +64,7 @@ namespace Order.API.Controllers
             {
                 items.Add(new CreateDebitCargoItem
                 {
+                    CargoItemId = Guid.NewGuid(),
                     Address = "Address" + i,
                     Barcode = Guid.NewGuid().ToString(),
                     Description = Guid.NewGuid().ToString(),

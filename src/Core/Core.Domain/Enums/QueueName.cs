@@ -7,9 +7,10 @@ public enum QueueName
 
     // Zimmetine Geçir
     CreateDebit = 101,
-    SendSelfie = 102,
-    CargoApproval = 103,
-    CargoRejected = 104,
+    CreateCargo = 102,
+    SendSelfie = 103,
+    CargoApproval = 104,
+    CargoRejected = 105,
 
     // Güzergah Oluştur
     StartRoute = 200,

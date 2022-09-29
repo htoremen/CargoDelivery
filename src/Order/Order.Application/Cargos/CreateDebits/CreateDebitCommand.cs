@@ -4,7 +4,7 @@ public class CreateDebitCommand : IRequest<CreateDebitResponse>
 {
     public Guid DebitId { get; set; }
     public Guid CourierId { get; set; }
-    public List<CargoDetay> Cargos { get; set; }
+    public List<CreateDebitCargo> Cargos { get; set; }
 }
 
 public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, CreateDebitResponse>

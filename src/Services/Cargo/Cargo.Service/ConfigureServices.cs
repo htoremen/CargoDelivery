@@ -52,11 +52,12 @@ public static class ConfigureServices
         services.AddMassTransit<IEventBus>(x =>
         {
             x.AddConsumer<CreateDebitConsumer>();
+            x.AddConsumer<CreateCargoConsumer>();
             x.AddConsumer<SendSelfieConsumer>();
             x.AddConsumer<CargoApprovalConsumer>();
             x.AddConsumer<CargoRejectedConsumer>();
 
-            x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
+           // x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
             x.SetKebabCaseEndpointNameFormatter();
 
             if (messageBroker.UsedRabbitMQ())
@@ -175,6 +176,20 @@ public static class ConfigureServices
                     cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                 });
                 e.ConfigureConsumer<CreateDebitConsumer>(context);
+            });
+
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateCargo], e =>
+            {
+                e.PrefetchCount = 1;
+                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                e.UseCircuitBreaker(cb =>
+                {
+                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                    cb.TripThreshold = config.TripThreshold;
+                    cb.ActiveThreshold = config.ActiveThreshold;
+                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                });
+                e.ConfigureConsumer<CreateCargoConsumer>(context);
             });
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.SendSelfie], e =>

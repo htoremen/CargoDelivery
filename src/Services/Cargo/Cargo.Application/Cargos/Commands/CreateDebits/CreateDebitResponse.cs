@@ -2,6 +2,6 @@
 
 public class CreateDebitResponse
 {
-    public Guid DebitId { get; set; }
+    public string DebitId { get; set; }
     public Guid CorrelationId { get; set; }
 }

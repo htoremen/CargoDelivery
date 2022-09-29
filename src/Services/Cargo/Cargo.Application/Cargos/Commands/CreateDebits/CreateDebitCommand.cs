@@ -9,7 +9,7 @@ public class CreateDebitCommand : IRequest<GenericResponse<CreateDebitResponse>>
     public Guid DebitId { get; set; }
     public Guid CourierId { get; set; }
     public string CurrentState { get; set; }
-    public List<CargoDetay> Cargos { get; set; }
+    public List<CreateDebitCargo> Cargos { get; set; }
 }
 
 public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, GenericResponse<CreateDebitResponse>>
@@ -29,12 +29,12 @@ public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, Gen
         if (DatabaseType.SQLServer == databaseType)
         {
             var debit = await CreateCargoSQLServer(request, cancellationToken); 
-            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { DebitId = Guid.Parse(debit.DebitId), CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
+            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { DebitId = debit.DebitId, CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
         }
         else if (DatabaseType.Mongo == databaseType)
         {
             var debit = await CreateCargoMongo(request, cancellationToken);
-            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { DebitId = Guid.Parse(debit.DebitId), CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
+            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { DebitId = debit.DebitId, CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
 
         }
         return GenericResponse<CreateDebitResponse>.NotFoundException("", 404);
@@ -53,7 +53,7 @@ public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, Gen
                 {
                     cargoItems.Add(new CargoItem
                     {
-                        CargoItemId = Guid.NewGuid().ToString(),
+                        CargoItemId = cargoItem.CargoItemId.ToString(),
                         Address = cargoItem.Address,
                         Barcode = cargoItem.Barcode,
                         Description = cargoItem.Description,
@@ -64,7 +64,7 @@ public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, Gen
                 }
                 cargos.Add(new Domain.Entities.Cargo
                 {
-                    CargoId = Guid.NewGuid().ToString(),
+                    CargoId = cargo.CargoId.ToString(),
                     Address = cargo.Address,
                     CargoItems = cargoItems
                 });
@@ -129,5 +129,29 @@ public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, Gen
         await _debitRepository.InsertOneAsync(debit);
         return debit;
     }
- 
+
+
+    public async Task<GenericResponse<CreateDebitResponse>> _Handle(CreateDebitCommand request, CancellationToken cancellationToken)
+    {
+        var debit = await _context.Debits.FirstOrDefaultAsync(x => x.DistributionDate != DateTime.Now && x.CourierId == request.CourierId.ToString());
+        if (debit == null)
+        {
+            debit = _context.Debits.Add(new Debit
+            {
+                DebitId = request.DebitId.ToString(),
+                CorrelationId = request.CorrelationId.ToString(),
+                CourierId = request.CourierId.ToString(),
+                DistributionDate = DateTime.Now.Date,
+                StartingDate = DateTime.Now,
+                IsApproval = false,
+                IsCompleted = false,
+                CurrentState = request.CurrentState
+            }).Entity;
+            await _context.SaveChangesAsync(cancellationToken);
+            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { CorrelationId = request.CorrelationId, DebitId = debit.DebitId }, 200);
+        }
+        return GenericResponse<CreateDebitResponse>.NotFoundException("", 404);
+    }
+
+
 }
