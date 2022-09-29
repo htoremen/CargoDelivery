@@ -101,6 +101,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         #endregion
 
+        //Initially(ProcessApplication(queueConfiguration));
+
         Initially(
             When(CreateCargoEvent)
                 .Then(context =>
@@ -367,5 +369,28 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         #endregion
 
         SetCompletedWhenFinalized();
+    }
+
+    /// <summary>
+    /// https://github.com/i-akash/distributed-transaction-patterns/blob/main/SyncSaga/StateMachine/LoanStateManchine.cs
+    /// </summary>
+    /// <param name="queueConfiguration"></param>
+    /// <returns></returns>
+    public EventActivityBinder<CargoStateInstance, ICreateCargo> ProcessApplication(IQueueConfiguration queueConfiguration)
+    {
+        return When(CreateCargoEvent)
+                .Then(context =>
+                {
+                    context.Instance.CourierId = context.Data.CourierId;
+                    context.Instance.CreatedOn = DateTime.Now;
+                })
+                .TransitionTo(CreateCargo)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateCargo]}"), context => new CreateCargoCommand(context.Instance.CorrelationId)
+                {
+                    DebitId = context.Data.DebitId,
+                    CourierId = context.Data.CourierId,
+                    Cargos = context.Data.Cargos,
+                    CurrentState = context.Instance.CurrentState
+                });
     }
 }
