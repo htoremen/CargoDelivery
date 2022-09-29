@@ -75,49 +75,25 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         QueueConfigurationExtensions.AddQueueConfiguration(null, out IQueueConfiguration queueConfiguration);
         InstanceState(instance => instance.CurrentState);
 
-        #region Event
+        SetCorrelationId();
 
-        Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CourierId, context => context.Message.DebitId).SelectId(s => Guid.NewGuid()));
-        Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Initially(ProcessApplication(queueConfiguration));
 
-        Event(() => StartRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => AutoRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => ManuelRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-
-        Event(() => StartDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => NewDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => CardPaymentEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => FreeDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => PayAtDoorEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-
-        Event(() => CreateDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => NotDeliveredEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => CreateRefundEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-
-        Event(() => DeliveryCompletedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => ShiftCompletionEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-
-        #endregion
-
-        //Initially(ProcessApplication(queueConfiguration));
-
-        Initially(
-            When(CreateCargoEvent)
-                .Then(context =>
-                {
-                    context.Instance.CourierId = context.Data.CourierId;
-                    context.Instance.CreatedOn = DateTime.Now;
-                })
-                .TransitionTo(CreateCargo)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateCargo]}"), context => new CreateCargoCommand(context.Instance.CorrelationId)
-                {
-                    DebitId = context.Data.DebitId,
-                    CourierId = context.Data.CourierId,
-                    Cargos = context.Data.Cargos,
-                    CurrentState = context.Instance.CurrentState
-                }));
+        //Initially(
+        //    When(CreateCargoEvent)
+        //        .Then(context =>
+        //        {
+        //            context.Instance.CourierId = context.Data.CourierId;
+        //            context.Instance.CreatedOn = DateTime.Now;
+        //        })
+        //        .TransitionTo(CreateCargo)
+        //        .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateCargo]}"), context => new CreateCargoCommand(context.Instance.CorrelationId)
+        //        {
+        //            DebitId = context.Data.DebitId,
+        //            CourierId = context.Data.CourierId,
+        //            Cargos = context.Data.Cargos,
+        //            CurrentState = context.Instance.CurrentState
+        //        }));
 
         #region Cargo
 
@@ -369,6 +345,36 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         #endregion
 
         SetCompletedWhenFinalized();
+    }
+
+    private void SetCorrelationId()
+    {
+        #region Event
+
+        Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CourierId, context => context.Message.DebitId).SelectId(s => Guid.NewGuid()));
+        Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+
+        Event(() => StartRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => AutoRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => ManuelRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+
+        Event(() => StartDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => NewDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => CardPaymentEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => FreeDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => PayAtDoorEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+
+        Event(() => CreateDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => NotDeliveredEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => CreateRefundEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+
+        Event(() => DeliveryCompletedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => ShiftCompletionEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+
+        #endregion
+
     }
 
     /// <summary>
