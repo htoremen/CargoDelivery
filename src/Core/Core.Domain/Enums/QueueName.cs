@@ -6,7 +6,7 @@ public enum QueueName
     CargoSaga = 10,
 
     // Zimmetine Geçir
-    CreateCargo = 101,
+    CreateDebit = 101,
     SendSelfie = 102,
     CargoApproval = 103,
     CargoRejected = 104,

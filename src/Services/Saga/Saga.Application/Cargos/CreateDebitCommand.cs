@@ -1,8 +1,8 @@
 ﻿namespace Saga.Application.Cargos;
 
-public class CreateCargoCommand : ICreateCargo
+public class CreateDebitCommand : ICreateDebit
 {
-    public CreateCargoCommand(Guid correlationId)
+    public CreateDebitCommand(Guid correlationId)
     {
         CorrelationId = correlationId;
     }

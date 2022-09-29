@@ -1,9 +1,9 @@
 ﻿using Core.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cargo.Application.Cargos.CreateCargos;
+namespace Cargo.Application.Cargos.CreateDebits;
 
-public class CreateCargoCommand : IRequest<GenericResponse<CreateCargoResponse>>
+public class CreateDebitCommand : IRequest<GenericResponse<CreateDebitResponse>>
 {
     public Guid CorrelationId { get; set; }
     public Guid DebitId { get; set; }
@@ -12,35 +12,35 @@ public class CreateCargoCommand : IRequest<GenericResponse<CreateCargoResponse>>
     public List<CargoDetay> Cargos { get; set; }
 }
 
-public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, GenericResponse<CreateCargoResponse>>
+public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, GenericResponse<CreateDebitResponse>>
 {
     private IApplicationDbContext _context;
     private IMongoRepository<DebitBson> _debitRepository;
 
-    public CreateCargoCommandHandler(IApplicationDbContext context, IMongoRepository<DebitBson> debitRepository)
+    public CreateDebitCommandHandler(IApplicationDbContext context, IMongoRepository<DebitBson> debitRepository)
     {
         _context = context;
         _debitRepository = debitRepository;
     }
 
-    public async Task<GenericResponse<CreateCargoResponse>> Handle(CreateCargoCommand request, CancellationToken cancellationToken)
+    public async Task<GenericResponse<CreateDebitResponse>> Handle(CreateDebitCommand request, CancellationToken cancellationToken)
     {
         var databaseType = DatabaseType.SQLServer;
         if (DatabaseType.SQLServer == databaseType)
         {
             var debit = await CreateCargoSQLServer(request, cancellationToken); 
-            return GenericResponse<CreateCargoResponse>.Success(new CreateCargoResponse { DebitId = Guid.Parse(debit.DebitId), CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
+            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { DebitId = Guid.Parse(debit.DebitId), CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
         }
         else if (DatabaseType.Mongo == databaseType)
         {
             var debit = await CreateCargoMongo(request, cancellationToken);
-            return GenericResponse<CreateCargoResponse>.Success(new CreateCargoResponse { DebitId = Guid.Parse(debit.DebitId), CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
+            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { DebitId = Guid.Parse(debit.DebitId), CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
 
         }
-        return GenericResponse<CreateCargoResponse>.NotFoundException("", 404);
+        return GenericResponse<CreateDebitResponse>.NotFoundException("", 404);
     }
 
-    private async Task<Debit> CreateCargoSQLServer(CreateCargoCommand request, CancellationToken cancellationToken)
+    private async Task<Debit> CreateCargoSQLServer(CreateDebitCommand request, CancellationToken cancellationToken)
     {
         var debit = await _context.Debits.FirstOrDefaultAsync(x => x.DistributionDate != DateTime.Now && x.CourierId == request.CourierId.ToString());
         if (debit == null)
@@ -87,7 +87,7 @@ public class CreateCargoCommandHandler : IRequestHandler<CreateCargoCommand, Gen
         return debit;
     }
 
-    private async Task<DebitBson> CreateCargoMongo(CreateCargoCommand request, CancellationToken cancellationToken)
+    private async Task<DebitBson> CreateCargoMongo(CreateDebitCommand request, CancellationToken cancellationToken)
     {
         var cargos = new List<CargoBson>();
         foreach (var cargo in request.Cargos)

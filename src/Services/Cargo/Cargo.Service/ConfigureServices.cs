@@ -51,7 +51,7 @@ public static class ConfigureServices
 
         services.AddMassTransit<IEventBus>(x =>
         {
-            x.AddConsumer<CreateCargoConsumer>();
+            x.AddConsumer<CreateDebitConsumer>();
             x.AddConsumer<SendSelfieConsumer>();
             x.AddConsumer<CargoApprovalConsumer>();
             x.AddConsumer<CargoRejectedConsumer>();
@@ -104,12 +104,12 @@ public static class ConfigureServices
 
         x.AddRider(rider =>
         {
-            rider.AddConsumer<CreateCargoConsumer>();
+            rider.AddConsumer<CreateDebitConsumer>();
             //rider.AddConsumer<SendSelfieConsumer>();
             //rider.AddConsumer<CargoApprovalConsumer>();
             //rider.AddConsumer<CargoRejectedConsumer>();
 
-            rider.AddConsumersFromNamespaceContaining<CreateCargoConsumer>();
+            rider.AddConsumersFromNamespaceContaining<CreateDebitConsumer>();
             //rider.AddConsumersFromNamespaceContaining<SendSelfieConsumer>();
             //rider.AddConsumersFromNamespaceContaining<CargoApprovalConsumer>();
             //rider.AddConsumersFromNamespaceContaining<CargoRejectedConsumer>();
@@ -119,10 +119,10 @@ public static class ConfigureServices
                 var mediator = context.GetRequiredService<IMediator>();
                 k.Host(config.BootstrapServers);
 
-                k.TopicEndpoint<string, ICreateCargo>(queueConfiguration.Names[QueueName.CreateCargo], config.GroupId, e =>
+                k.TopicEndpoint<string, ICreateDebit>(queueConfiguration.Names[QueueName.CreateDebit], config.GroupId, e =>
                 {
                     e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                    e.ConfigureConsumer<CreateCargoConsumer>(context);
+                    e.ConfigureConsumer<CreateDebitConsumer>(context);
                 });
 
                 //k.TopicEndpoint<string, ISendSelfie>(queueConfiguration.Names[QueueName.SendSelfie], config.GroupId, e =>
@@ -163,7 +163,7 @@ public static class ConfigureServices
             cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
             cfg.ConfigureEndpoints(context);
 
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateCargo], e =>
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebit], e =>
             {
                 e.PrefetchCount = 1;
                 e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
@@ -174,7 +174,7 @@ public static class ConfigureServices
                     cb.ActiveThreshold = config.ActiveThreshold;
                     cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                 });
-                e.ConfigureConsumer<CreateCargoConsumer>(context);
+                e.ConfigureConsumer<CreateDebitConsumer>(context);
             });
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.SendSelfie], e =>

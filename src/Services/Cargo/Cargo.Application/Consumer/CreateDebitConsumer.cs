@@ -1,22 +1,22 @@
 ﻿using AutoMapper;
-using Cargo.Application.Cargos.CreateCargos;
+using Cargo.Application.Cargos.CreateDebits;
 
 namespace Cargo.Application.Consumer;
-public class CreateCargoConsumer : IConsumer<ICreateCargo>
+public class CreateDebitConsumer : IConsumer<ICreateDebit>
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
 
-    public CreateCargoConsumer(IMediator mediator, IMapper mapper)
+    public CreateDebitConsumer(IMediator mediator, IMapper mapper)
     {
         _mediator = mediator;
         _mapper = mapper;
     }
 
-    public async Task Consume(ConsumeContext<ICreateCargo> context)
+    public async Task Consume(ConsumeContext<ICreateDebit> context)
     {
         var command = context.Message;
-        var model = _mapper.Map<CreateCargoCommand>(command);
+        var model = _mapper.Map<CreateDebitCommand>(command);
         await _mediator.Send(model);
     }
 }

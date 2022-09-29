@@ -16,7 +16,7 @@ public class SagaStateDefinition : SagaDefinition<CargoStateInstance>
 
     protected override void ConfigureSaga(IReceiveEndpointConfigurator endpointConfigurator, ISagaConfigurator<CargoStateInstance> sagaConfigurator)
     {
-        sagaConfigurator.Message<ICreateCargo>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));
+        sagaConfigurator.Message<ICreateDebit>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));
         sagaConfigurator.Message<ISendSelfie>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));
         sagaConfigurator.Message<ICargoRejected>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));
         sagaConfigurator.Message<ICargoApproval>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));

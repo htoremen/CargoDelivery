@@ -22,7 +22,7 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
         services
-            .AddMessageBusSender<ICreateCargo>(appSettings.MessageBroker)
+            .AddMessageBusSender<ICreateDebit>(appSettings.MessageBroker)
             .AddMessageBusSender<ISendSelfie>(appSettings.MessageBroker)
             .AddMessageBusSender<ICargoApproval>(appSettings.MessageBroker)
             .AddMessageBusSender<ICargoRejected>(appSettings.MessageBroker)

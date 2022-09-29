@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Cargo.Application.Cargos.CreateCargos;
+using Cargo.Application.Cargos.CreateDebits;
 using Cargo.Application.Cargos.Queries.GetCargos;
 using Cargo.Application.Cargos.SendSelfie;
 using Core.Domain.Instances;
@@ -11,7 +11,7 @@ public class AutoMapProfile : Profile
     public AutoMapProfile()
     {
         CreateMap<ISendSelfie, SendSelfieCommand>();
-        CreateMap<ICreateCargo, CreateCargoCommand>();
+        CreateMap<ICreateDebit, CreateDebitCommand>();
 
         CreateMap<Domain.Entities.Cargo, CargoRouteInstance>();
         CreateMap<Domain.Entities.Cargo, GetCargosResponse>()

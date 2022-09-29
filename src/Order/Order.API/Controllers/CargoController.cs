@@ -1,5 +1,5 @@
 ﻿using Cargo.Application.Cargos.CargoApprovals;
-using Cargo.Application.Cargos.CreateCargos;
+using Cargo.Application.Cargos.CreateDebits;
 using Cargo.Application.Cargos.SendSelfies;
 using Cargos;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +11,12 @@ namespace Order.API.Controllers
         [HttpPost()]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        [Route("create-cargo")]
-        public async Task<IActionResult> CreateCargo()
+        [Route("create-debit")]
+        public async Task<IActionResult> CreateDebit()
         {
             for (int i = 0; i < 1000; i++)
             {
-                var response = await Mediator.Send(new CreateCargoCommand
+                var response = await Mediator.Send(new CreateDebitCommand
                 {
                     CourierId = Guid.NewGuid(),
                     DebitId = Guid.NewGuid(),
@@ -28,7 +28,7 @@ namespace Order.API.Controllers
             return Ok();
 
 
-            //var response = await Mediator.Send(new CreateCargoCommand
+            //var response = await Mediator.Send(new CreateDebitCommand
             //{
             //    CourierId = Guid.NewGuid(),
             //    DebitId = Guid.NewGuid(),
@@ -56,12 +56,12 @@ namespace Order.API.Controllers
             return cargos;
         }
 
-        private List<CreateCargoCargoItem> GetCargoItems(int itemLength)
+        private List<CreateDebitCargoItem> GetCargoItems(int itemLength)
         {
-            var items = new List<CreateCargoCargoItem>();
+            var items = new List<CreateDebitCargoItem>();
             for (int i = 1; i <= itemLength; i++)
             {
-                items.Add(new CreateCargoCargoItem
+                items.Add(new CreateDebitCargoItem
                 {
                     Address = "Address" + i,
                     Barcode = Guid.NewGuid().ToString(),

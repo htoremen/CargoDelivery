@@ -17,7 +17,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 {
     #region States
 
-    public State CreateCargo { get; set; }
+    public State CreateDebit { get; set; }
     public State SendSelfie { get; set; }
     public State CargoApproval { get; set; }
     public State CargoRejected { get; set; }
@@ -45,7 +45,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
     #region Events
 
-    public Event<ICreateCargo> CreateCargoEvent { get; private set; }
+    public Event<ICreateDebit> CreateDebitEvent { get; private set; }
     public Event<ISendSelfie> SendSelfieEvent { get; private set; }
     public Event<ICargoApproval> CargoApprovalEvent { get; private set; }
     public Event<ICargoRejected> CargoRejectedEvent { get; private set; }
@@ -79,7 +79,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         Initially(ProcessApplication(queueConfiguration));
 
-        During(CreateCargo, SendSelfieActivity(queueConfiguration));
+        During(CreateDebit, SendSelfieActivity(queueConfiguration));
         During(SendSelfie, SendSelfieActivity(queueConfiguration), CargoApprovalActivity(queueConfiguration));
         During(CargoApproval, StartRouteActivity(queueConfiguration), CargoRejectedActivity(queueConfiguration));
 
@@ -323,7 +323,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     {
         #region Event
 
-        Event(() => CreateCargoEvent, instance => instance.CorrelateBy<Guid>(state => state.CourierId, context => context.Message.DebitId).SelectId(s => Guid.NewGuid()));
+        Event(() => CreateDebitEvent, instance => instance.CorrelateBy<Guid>(state => state.CourierId, context => context.Message.DebitId).SelectId(s => Guid.NewGuid()));
         Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
@@ -354,16 +354,16 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     /// <param name="queueConfiguration"></param>
     /// <returns></returns>
     [Obsolete]
-    public EventActivityBinder<CargoStateInstance, ICreateCargo> ProcessApplication(IQueueConfiguration queueConfiguration)
+    public EventActivityBinder<CargoStateInstance, ICreateDebit> ProcessApplication(IQueueConfiguration queueConfiguration)
     {
-        return When(CreateCargoEvent)
+        return When(CreateDebitEvent)
                 .Then(context =>
                 {
                     context.Instance.CourierId = context.Data.CourierId;
                     context.Instance.CreatedOn = DateTime.Now;
                 })
-                .TransitionTo(CreateCargo)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateCargo]}"), context => new CreateCargoCommand(context.Instance.CorrelationId)
+                .TransitionTo(CreateDebit)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateDebit]}"), context => new CreateDebitCommand(context.Instance.CorrelationId)
                 {
                     DebitId = context.Data.DebitId,
                     CourierId = context.Data.CourierId,

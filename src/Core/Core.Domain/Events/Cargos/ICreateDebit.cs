@@ -1,6 +1,6 @@
 ﻿namespace Cargos;
 
-public interface ICreateCargo //: IEvent
+public interface ICreateDebit //: IEvent
 {
     public Guid CorrelationId { get; }
     public Guid DebitId { get; set; }
@@ -9,7 +9,7 @@ public interface ICreateCargo //: IEvent
     public List<CargoDetay> Cargos { get; set; }
 }
 
-public class CreateCargo : ICreateCargo
+public class CreateDebit : ICreateDebit
 {
     public Guid CorrelationId { get; private set; }
     public Guid DebitId { get; set; }
@@ -21,10 +21,10 @@ public class CreateCargo : ICreateCargo
 public class CargoDetay
 {
     public string Address { get; set; }
-    public List<CreateCargoCargoItem> CargoItems { get; set; }
+    public List<CreateDebitCargoItem> CargoItems { get; set; }
 }
 
-public class CreateCargoCargoItem
+public class CreateDebitCargoItem
 {
     public string Barcode { get; set; }
     public string WaybillNumber { get; set; }
