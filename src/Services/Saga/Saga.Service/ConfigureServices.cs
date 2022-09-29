@@ -12,6 +12,7 @@ using MassTransit;
 using Saga.Service.Components;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
+using Core.Infrastructure.Common.AvroSerializers;
 
 namespace Saga.Service;
 public static class ConfigureServices
@@ -90,8 +91,10 @@ public static class ConfigureServices
 
                 k.TopicEndpoint<Null>(queueConfiguration.Names[QueueName.CargoSaga], config.GroupId, e =>
                 {
-                    e.AutoOffsetReset = AutoOffsetReset.Earliest; 
-                   // e.SetKeyDeserializer(new AvroDeserializer<string>(config.SchemaRegistryUrl, null).AsSyncOverAsync());
+                    e.AutoOffsetReset = AutoOffsetReset.Earliest;
+
+                    //var deserializier = new CustomAvroDeserializer<Avro.Specific>();
+                  //  e.SetKeyDeserializer(new CustomAvroDeserializer<byte>().Deserialize(config.SchemaRegistryUrl, null).AsSyncOverAsync());
 
                     e.CreateIfMissing(t => t.NumPartitions = 1);
                 });
