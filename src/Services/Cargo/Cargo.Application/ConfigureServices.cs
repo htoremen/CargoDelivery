@@ -23,12 +23,12 @@ public static class ConfigureServices
 
         services
             .AddMessageBusSender<ICreateDebit>(appSettings.MessageBroker)
-            .AddMessageBusSender<ICreateCargo>(appSettings.MessageBroker)
+            //.AddMessageBusSender<ICreateCargo>(appSettings.MessageBroker)
             .AddMessageBusSender<ISendSelfie>(appSettings.MessageBroker)
             .AddMessageBusSender<ICargoApproval>(appSettings.MessageBroker)
             .AddMessageBusSender<ICargoRejected>(appSettings.MessageBroker)
             .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker)
-            .AddMessageBusSender<IDebitHistory>(appSettings.MessageBroker);
+            .AddMessageBusSender<ICreateDebitHistory>(appSettings.MessageBroker);
 
         services.AddNoSQLMongoServices(appSettings.MongoDbSettings);
 

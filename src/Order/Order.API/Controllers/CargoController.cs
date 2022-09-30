@@ -14,7 +14,7 @@ namespace Order.API.Controllers
         [Route("create-debit")]
         public async Task<IActionResult> CreateDebit()
         {
-            for (int i = 0; i < 40000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 var response = await Mediator.Send(new CreateDebitCommand
                 {
@@ -22,7 +22,7 @@ namespace Order.API.Controllers
                     DebitId = Guid.NewGuid(),
                     Cargos = GetCargos()
                 });
-                //break;
+                break;
             }
             // return Ok(response);
             return Ok();

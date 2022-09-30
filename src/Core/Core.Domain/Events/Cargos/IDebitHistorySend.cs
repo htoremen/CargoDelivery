@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Cargos;
 
-public interface IDebitHistory
+public interface ICreateDebitHistory
 {
-    public string UserId { get; set; }
+    public string CourierId { get; set; }
     public string DebitId { get; set; }
     public string CargoId { get; set; }
     public string CargoItemId { get; set; }
@@ -17,9 +17,9 @@ public interface IDebitHistory
     public string Response { get; set; }
 }
 
-public class DebitHistory : IDebitHistory
+public class CreateDebitHistory : ICreateDebitHistory
 {
-    public string UserId { get; set; }
+    public string CourierId { get; set; }
     public string DebitId { get; set; }
     public string CargoId { get; set; }
     public string CargoItemId { get; set; }

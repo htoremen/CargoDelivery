@@ -52,11 +52,11 @@ public static class ConfigureServices
         services.AddMassTransit<IEventBus>(x =>
         {
             x.AddConsumer<CreateDebitConsumer>();
-            x.AddConsumer<CreateCargoConsumer>();
+           // x.AddConsumer<CreateCargoConsumer>();
             x.AddConsumer<SendSelfieConsumer>();
             x.AddConsumer<CargoApprovalConsumer>();
             x.AddConsumer<CargoRejectedConsumer>();
-            x.AddConsumer<DebitHistoryConsumer>();
+            x.AddConsumer<CreateDebitHistoryConsumer>();
 
            // x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
             x.SetKebabCaseEndpointNameFormatter();
@@ -179,19 +179,19 @@ public static class ConfigureServices
                 e.ConfigureConsumer<CreateDebitConsumer>(context);
             });
 
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateCargo], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<CreateCargoConsumer>(context);
-            });
+            //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateCargo], e =>
+            //{
+            //    e.PrefetchCount = 1;
+            //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+            //    e.UseCircuitBreaker(cb =>
+            //    {
+            //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+            //        cb.TripThreshold = config.TripThreshold;
+            //        cb.ActiveThreshold = config.ActiveThreshold;
+            //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+            //    });
+            //    e.ConfigureConsumer<CreateCargoConsumer>(context);
+            //});
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.SendSelfie], e =>
             {
@@ -235,7 +235,7 @@ public static class ConfigureServices
                 e.ConfigureConsumer<CargoRejectedConsumer>(context);
             });
 
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.DebitHistory], e =>
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebitHistory], e =>
             {
                 e.PrefetchCount = 1;
                 e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
@@ -246,7 +246,7 @@ public static class ConfigureServices
                     cb.ActiveThreshold = config.ActiveThreshold;
                     cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                 });
-                e.ConfigureConsumer<DebitHistoryConsumer>(context);
+                e.ConfigureConsumer<CreateDebitHistoryConsumer>(context);
             });
 
         });

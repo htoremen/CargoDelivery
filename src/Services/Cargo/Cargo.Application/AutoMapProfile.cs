@@ -14,7 +14,7 @@ public class AutoMapProfile : Profile
     {
         CreateMap<ISendSelfie, SendSelfieCommand>();
         CreateMap<ICreateDebit, CreateDebitCommand>();
-        CreateMap<IDebitHistory, DebitHistoryCommand>();
+        CreateMap<ICreateDebitHistory, DebitHistoryCommand>();
 
         CreateMap<Domain.Entities.Cargo, CargoRouteInstance>();
         CreateMap<Domain.Entities.Cargo, GetCargosResponse>()

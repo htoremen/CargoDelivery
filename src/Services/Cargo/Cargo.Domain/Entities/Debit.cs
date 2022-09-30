@@ -10,12 +10,12 @@ namespace Cargo.Domain.Entities
             Cargos = new HashSet<Cargo>();
         }
 
-        public string DebitId { get; set; } = null!;
-        public string CourierId { get; set; } = null!;
-        public string CorrelationId { get; set; } = null!;
-        public string? ApprovingId { get; set; }
+        public string DebitId { get; set; }
+        public string CourierId { get; set; }
+        public string CorrelationId { get; set; }
+        public string ApprovingId { get; set; }
         public string CurrentState { get; set; }
-        public string? Selfie { get; set; }
+        public string Selfie { get; set; }
         public DateTime DistributionDate { get; set; }
         public DateTime StartingDate { get; set; }
         public DateTime? ClosingDate { get; set; }

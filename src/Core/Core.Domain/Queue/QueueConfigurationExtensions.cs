@@ -18,7 +18,7 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueName.CargoApproval, "Cargo." + QueueName.CargoApproval.ToString());
         queueConfiguration.Names.Add(QueueName.CargoRejected, "Cargo." + QueueName.CargoRejected.ToString());
 
-        queueConfiguration.Names.Add(QueueName.DebitHistory, "Cargo." + QueueName.DebitHistory.ToString());
+        queueConfiguration.Names.Add(QueueName.CreateDebitHistory, "Cargo." + QueueName.CreateDebitHistory.ToString());
 
         // Route
         queueConfiguration.Names.Add(QueueName.StartRoute, "Route." + QueueName.StartRoute.ToString());

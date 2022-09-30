@@ -1,5 +1,8 @@
-﻿using Cargo.Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using Cargo.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Cargo.Infrastructure.Persistence
 {
@@ -14,10 +17,10 @@ namespace Cargo.Infrastructure.Persistence
         {
         }
 
-        public virtual DbSet<Domain.Entities.Cargo> Cargos { get; set; }
+        public virtual DbSet<Cargo.Domain.Entities.Cargo> Cargos { get; set; }
         public virtual DbSet<CargoItem> CargoItems { get; set; }
         public virtual DbSet<Debit> Debits { get; set; }
-        public virtual DbSet<DebitHistory> DebitHistories { get; set; } = null!;
+        public virtual DbSet<DebitHistory> DebitHistories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -28,15 +31,9 @@ namespace Cargo.Infrastructure.Persistence
             }
         }
 
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
-        {
-            var result = await base.SaveChangesAsync(cancellationToken);
-            return result;
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Domain.Entities.Cargo>(entity =>
+            modelBuilder.Entity<Cargo.Domain.Entities.Cargo>(entity =>
             {
                 entity.ToTable("Cargo");
 
@@ -87,6 +84,11 @@ namespace Cargo.Infrastructure.Persistence
             {
                 entity.ToTable("Debit");
 
+                entity.HasIndex(e => e.CorrelationId, "IX_Debit")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.CourierId, "IX_Debit_1");
+
                 entity.Property(e => e.DebitId).HasMaxLength(50);
 
                 entity.Property(e => e.ApprovingId).HasMaxLength(50);
@@ -101,11 +103,36 @@ namespace Cargo.Infrastructure.Persistence
                     .IsRequired()
                     .HasMaxLength(50);
 
+                entity.Property(e => e.CurrentState).HasMaxLength(50);
+
                 entity.Property(e => e.DistributionDate).HasColumnType("date");
 
                 entity.Property(e => e.Selfie).HasColumnType("ntext");
 
                 entity.Property(e => e.StartingDate).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<DebitHistory>(entity =>
+            {
+                entity.ToTable("DebitHistory");
+
+                entity.Property(e => e.DebitHistoryId).HasMaxLength(50);
+
+                entity.Property(e => e.CargoId).HasMaxLength(50);
+
+                entity.Property(e => e.CargoItemId).HasMaxLength(50);
+
+                entity.Property(e => e.CommandName).HasMaxLength(150);
+
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.DebitId).HasMaxLength(50);
+
+                entity.Property(e => e.Request).HasMaxLength(4000);
+
+                entity.Property(e => e.Response).HasMaxLength(4000);
+
+                entity.Property(e => e.UserId).HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);

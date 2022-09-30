@@ -11,7 +11,7 @@ public enum QueueName
     SendSelfie = 103,
     CargoApproval = 104,
     CargoRejected = 105,
-    DebitHistory = 111,
+    CreateDebitHistory = 111,
 
 
     // Güzergah Oluştur
