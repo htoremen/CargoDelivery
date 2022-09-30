@@ -56,6 +56,7 @@ public static class ConfigureServices
             x.AddConsumer<SendSelfieConsumer>();
             x.AddConsumer<CargoApprovalConsumer>();
             x.AddConsumer<CargoRejectedConsumer>();
+            x.AddConsumer<DebitHistoryConsumer>();
 
            // x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
             x.SetKebabCaseEndpointNameFormatter();
@@ -232,6 +233,20 @@ public static class ConfigureServices
                     cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                 });
                 e.ConfigureConsumer<CargoRejectedConsumer>(context);
+            });
+
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.DebitHistory], e =>
+            {
+                e.PrefetchCount = 1;
+                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                e.UseCircuitBreaker(cb =>
+                {
+                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                    cb.TripThreshold = config.TripThreshold;
+                    cb.ActiveThreshold = config.ActiveThreshold;
+                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                });
+                e.ConfigureConsumer<DebitHistoryConsumer>(context);
             });
 
         });

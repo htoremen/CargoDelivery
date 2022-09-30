@@ -28,23 +28,23 @@ public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, Gen
         var databaseType = DatabaseType.SQLServer;
         if (DatabaseType.SQLServer == databaseType)
         {
-            var debit = await CreateCargoSQLServer(request, cancellationToken); 
-            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { DebitId = debit.DebitId, CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
+            await CreateCargoSQLServer(request, cancellationToken); 
+            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { DebitId = request.DebitId.ToString(), CorrelationId = request.CorrelationId }, 200);
         }
         else if (DatabaseType.Mongo == databaseType)
         {
             var debit = await CreateCargoMongo(request, cancellationToken);
-            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { DebitId = debit.DebitId, CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
+            return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { DebitId = debit.DebitId.ToString(), CorrelationId = Guid.Parse(debit.CorrelationId) }, 200);
 
         }
         return GenericResponse<CreateDebitResponse>.NotFoundException("", 404);
     }
 
-    private async Task<Debit> CreateCargoSQLServer(CreateDebitCommand request, CancellationToken cancellationToken)
+    private async Task CreateCargoSQLServer(CreateDebitCommand request, CancellationToken cancellationToken)
     {
-        var debit = await _context.Debits.FirstOrDefaultAsync(x => x.DistributionDate != DateTime.Now && x.CourierId == request.CourierId.ToString());
-        if (debit == null)
-        {
+       // var debit = await _context.Debits.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString() && x.CourierId == request.CourierId.ToString());
+       // if (debit == null)
+        //{
             var cargos = new List<Domain.Entities.Cargo>();
             foreach (var cargo in request.Cargos)
             {
@@ -70,7 +70,7 @@ public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, Gen
                 });
             }
 
-            debit = _context.Debits.Add(new Debit
+            _context.Debits.Add(new Debit
             {
                 DebitId = request.DebitId.ToString(),
                 CorrelationId = request.CorrelationId.ToString(),
@@ -81,10 +81,10 @@ public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, Gen
                 IsCompleted = false,
                 CurrentState = request.CurrentState,
                 Cargos = cargos
-            }).Entity;
+            });
             await _context.SaveChangesAsync(cancellationToken);
-        }
-        return debit;
+       // }
+      //  return debit;
     }
 
     private async Task<DebitBson> CreateCargoMongo(CreateDebitCommand request, CancellationToken cancellationToken)
