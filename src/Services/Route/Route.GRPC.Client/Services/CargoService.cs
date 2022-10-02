@@ -1,4 +1,5 @@
 ﻿using Cargo.GRPC.Server;
+using Core.Infrastructure.Grpc;
 using Grpc.Core;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Configuration;
@@ -22,33 +23,7 @@ public class CargoService : ICargoService
     /// </summary>
     public CargoService()
     {
-        var handler = new SocketsHttpHandler
-        {
-            PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
-            KeepAlivePingDelay = TimeSpan.FromSeconds(60),
-            KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
-            EnableMultipleHttp2Connections = true
-        };
-
-        var defaultMethodConfig = new MethodConfig
-        {
-            Names = { MethodName.Default },
-            RetryPolicy = new RetryPolicy
-            {
-                MaxAttempts = 5,
-                InitialBackoff = TimeSpan.FromSeconds(1),
-                MaxBackoff = TimeSpan.FromSeconds(5),
-                BackoffMultiplier = 1.5,
-                RetryableStatusCodes = { StatusCode.Unavailable }
-            }
-        };
-
-        Channel = GrpcChannel.ForAddress("https://localhost:5011",
-            new GrpcChannelOptions
-            {
-                HttpHandler = handler,
-                ServiceConfig = new ServiceConfig { MethodConfigs = { defaultMethodConfig } }
-            });
+        Channel = GrpcChannel.ForAddress("https://localhost:5011", GrpcExtensions.GetGrpcChannelOptions());
         Client = new CargoGrpcClient(Channel);
     }
 
