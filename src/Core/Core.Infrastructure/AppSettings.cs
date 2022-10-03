@@ -10,6 +10,7 @@ public class AppSettings
     public MongoDbSettings MongoDbSettings { get; set; }
 
     public ServiceUrls ServiceUrls { get; set; }
+    public CachingOptions Cachings { get; set; }
 }
 
 
