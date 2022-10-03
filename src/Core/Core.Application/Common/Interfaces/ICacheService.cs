@@ -8,7 +8,7 @@ namespace Core.Application.Common.Interfaces;
 
 public interface ICacheService
 {
-    bool TryGet<T>(string cacheKey, out T value);
-    T Set<T>(string cacheKey, T value);
+    T Get<T>(string cacheKey);
+    void Set<T>(string cacheKey, T value);
     void Remove(string cacheKey);
 }

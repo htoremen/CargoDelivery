@@ -8,6 +8,7 @@ namespace Core.Infrastructure;
 
 public class CachingOptions
 {
+    public InMemoryCacheOptions InMemory { get; set; }
     public DistributedCacheOptions Distributed { get; set; }
 }
 
