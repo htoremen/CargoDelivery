@@ -8,7 +8,7 @@ namespace Core.Application.Common.Interfaces;
 
 public interface ICacheService
 {
-    T Get<T>(string cacheKey);
-    void Set<T>(string cacheKey, T value);
-    void Remove(string cacheKey);
+    Task<T> GetAsync<T>(string cacheKey);
+    Task SetAsync<T>(string cacheKey, T value);
+    Task RemoveAsync(string cacheKey);
 }

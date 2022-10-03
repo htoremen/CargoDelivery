@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Cache\RedisCacheService.cs~RF233be785.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Apache.Avro" Version="1.11.1" />
     <PackageReference Include="AspNetCore.HealthChecks.Kafka" Version="6.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="6.0.2" />

@@ -124,6 +124,8 @@ public static class ConfigureServices
 
             cfg.UseJsonSerializer();
             cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
+            cfg.UseMessageRetry(r => r.Immediate(5));
+
             cfg.ConfigureEndpoints(context);
         });
     }

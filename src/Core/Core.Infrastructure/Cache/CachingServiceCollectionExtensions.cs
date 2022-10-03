@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Core.Application.Common.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,7 @@ public static class CachingServiceCollectionExtensions
                 opt.TableName = options.Distributed.SqlServer.TableName;
             });
         }
+        services.AddSingleton<ICacheService, RedisCacheService>();
 
         return services;
     }

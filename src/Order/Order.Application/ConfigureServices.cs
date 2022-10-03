@@ -4,6 +4,8 @@ using FluentValidation;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Microsoft.Extensions.Configuration;
+using Core.Infrastructure.Cache;
+using Core.Application.Common.Interfaces;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +21,7 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
-
+        services.AddCaches(appSettings.Caching);
 
         services
             .AddMessageBusSender<ICreateDebit>(appSettings.MessageBroker)
@@ -38,7 +40,6 @@ public static class ConfigureServices
             .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker)
 
             .AddMessageBusSender<IShiftCompletion>(appSettings.MessageBroker);
-
         return services;
     }
 }

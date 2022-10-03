@@ -11,6 +11,7 @@ using Cargo.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
 using Deliveries;
 using Confluent.Kafka;
+using System.Data;
 
 namespace Cargo.Service;
 
@@ -56,7 +57,7 @@ public static class ConfigureServices
             x.AddConsumer<SendSelfieConsumer>();
             x.AddConsumer<CargoApprovalConsumer>();
             x.AddConsumer<CargoRejectedConsumer>();
-            x.AddConsumer<CreateDebitHistoryConsumer>();
+           // x.AddConsumer<CreateDebitHistoryConsumer>();
 
            // x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
             x.SetKebabCaseEndpointNameFormatter();
@@ -164,11 +165,17 @@ public static class ConfigureServices
             cfg.UseJsonSerializer();
             cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
             cfg.ConfigureEndpoints(context);
+//cfg.UseDelayedRedelivery(r => r.Intervals(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(5)));
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebit], e =>
             {
                 e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+                e.UseMessageRetry(x =>
+                {
+                    x.Interval(config.RetryCount, config.ResetInterval);
+                    x.Immediate(3);
+                   // x.Handle<DataException>(x => x.Message.Contains("SQL"));
+                });
                 e.UseCircuitBreaker(cb =>
                 {
                     cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
@@ -191,6 +198,20 @@ public static class ConfigureServices
             //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
             //    });
             //    e.ConfigureConsumer<CreateCargoConsumer>(context);
+            //});
+
+            //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebitHistory], e =>
+            //{
+            //    e.PrefetchCount = 1;
+            //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
+            //    e.UseCircuitBreaker(cb =>
+            //    {
+            //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+            //        cb.TripThreshold = config.TripThreshold;
+            //        cb.ActiveThreshold = config.ActiveThreshold;
+            //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+            //    });
+            //    e.ConfigureConsumer<CreateDebitHistoryConsumer>(context);
             //});
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.SendSelfie], e =>
@@ -233,20 +254,6 @@ public static class ConfigureServices
                     cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                 });
                 e.ConfigureConsumer<CargoRejectedConsumer>(context);
-            });
-
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebitHistory], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<CreateDebitHistoryConsumer>(context);
             });
 
         });

@@ -24,13 +24,13 @@ public class CreateDebitConsumer : IConsumer<ICreateDebit>
         var model = _mapper.Map<CreateDebitCommand>(command);
         var response = await _mediator.Send(model);
 
-        await _debitHistory.SendAsync(new CreateDebitHistory
-        {
-            DebitId = command.DebitId.ToString(),
-            CommandName = "ICreateDebit",
-            CourierId = command.CourierId.ToString(),
-            Request = JsonSerializer.Serialize(model), 
-            Response = JsonSerializer.Serialize(response)
-        });
+        //await _debitHistory.SendAsync(new CreateDebitHistory
+        //{
+        //    DebitId = command.DebitId.ToString(),
+        //    CommandName = "ICreateDebit",
+        //    CourierId = command.CourierId.ToString(),
+        //    //Request = JsonSerializer.Serialize(model), 
+        //    //Response = JsonSerializer.Serialize(response)
+        //});
     }
 }
