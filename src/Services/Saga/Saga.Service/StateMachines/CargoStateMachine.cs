@@ -107,6 +107,20 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         SetCompletedWhenFinalized();
     }
 
+    private EventActivities<CargoStateInstance> CreateDebitFaultActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(CreateDebitFaultEvent)
+                 .TransitionTo(CreateDebitFault)
+                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateDebitFault]}"), context => new CreateDebitFaultCommand(context.Instance.CorrelationId)
+                 {
+                     DebitId = context.Data.Message.DebitId,
+                     CourierId = context.Data.Message.CourierId,
+                     Cargos = context.Data.Message.Cargos,
+                     CurrentState = context.Instance.CurrentState,
+                     Exceptions = context.Data.Exceptions
+                 });
+    }
+
     private EventActivities<CargoStateInstance> ShiftCompletionActivity(IQueueConfiguration queueConfiguration)
     {
         return When(ShiftCompletionEvent)

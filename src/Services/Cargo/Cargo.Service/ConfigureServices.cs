@@ -192,17 +192,17 @@ public static class ConfigureServices
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebitFault], e =>
             {
                 e.PrefetchCount = 1;
-                //e.UseMessageRetry(x =>
-                //{
-                //    x.Interval(1, config.ResetInterval);
-                //});
-                //e.UseCircuitBreaker(cb =>
-                //{
-                //    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                //    cb.TripThreshold = config.TripThreshold;
-                //    cb.ActiveThreshold = config.ActiveThreshold;
-                //    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                //});
+                e.UseMessageRetry(x =>
+                {
+                    x.Interval(1, config.ResetInterval);
+                });
+                e.UseCircuitBreaker(cb =>
+                {
+                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
+                    cb.TripThreshold = config.TripThreshold;
+                    cb.ActiveThreshold = config.ActiveThreshold;
+                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
+                });
                 e.ConfigureConsumer<CreateDebitFaultConsumer>(context);
             });
 
