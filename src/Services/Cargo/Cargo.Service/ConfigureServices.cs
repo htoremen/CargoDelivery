@@ -59,7 +59,7 @@ public static class ConfigureServices
             x.AddConsumer<CargoRejectedConsumer>();
             // x.AddConsumer<CreateDebitHistoryConsumer>();
 
-            x.AddConsumer<CreateDebitFaultConsumer>();
+            x.AddConsumer<CreateDebitFaultConsumer>(); //.Endpoint(x => x.InstanceId =  );
 
            // x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
             x.SetKebabCaseEndpointNameFormatter();

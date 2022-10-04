@@ -117,8 +117,24 @@ public static class ConfigureServices
                     b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
                 });
             });
+        //x.AddBus(factory => MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
+        //{
+        //    cfg.Host(config.HostName, config.VirtualHost, h =>
+        //    {
+        //        h.Username(config.UserName);
+        //        h.Password(config.Password);
+        //    });
 
-        x.AddBus(factory => MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
+        //    cfg.UseJsonSerializer();
+        //    cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
+
+        //    cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSaga], e =>
+        //    {
+        //        e.ConfigureSaga<CargoStateInstance>(factory);
+        //    });
+        //}));
+
+        x.UsingRabbitMq((context, cfg) =>
         {
             cfg.Host(config.HostName, config.VirtualHost, h =>
             {
@@ -127,12 +143,15 @@ public static class ConfigureServices
             });
 
             cfg.UseJsonSerializer();
-            cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
+           // cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSaga], e =>
             {
-                e.ConfigureSaga<CargoStateInstance>(factory);
+                e.ConfigureSaga<CargoStateInstance>(context);
             });
-        }));
+
+            cfg.ConfigureEndpoints(context);
+        });
+
     }
 }
