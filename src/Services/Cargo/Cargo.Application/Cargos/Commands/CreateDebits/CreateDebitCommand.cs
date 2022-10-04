@@ -15,12 +15,10 @@ public class CreateDebitCommand : IRequest<GenericResponse<CreateDebitResponse>>
 public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, GenericResponse<CreateDebitResponse>>
 {
     private IApplicationDbContext _context;
-    private IMongoRepository<DebitBson> _debitRepository;
 
-    public CreateDebitCommandHandler(IApplicationDbContext context, IMongoRepository<DebitBson> debitRepository)
+    public CreateDebitCommandHandler(IApplicationDbContext context)
     {
         _context = context;
-        _debitRepository = debitRepository;
     }
 
     public async Task<GenericResponse<CreateDebitResponse>> Handle(CreateDebitCommand request, CancellationToken cancellationToken)

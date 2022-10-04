@@ -342,7 +342,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         #region Event
 
         Event(() => CreateDebitEvent, instance => instance.CorrelateBy<Guid>(state => state.CourierId, context => context.Message.DebitId).SelectId(s => Guid.NewGuid()));
-        Event(() => CreateDebitFaultEvent, instance => instance.CorrelateById(selector => selector.Message.Message.CorrelationId));
+        Event(() => CreateDebitFaultEvent, instance => instance.CorrelateById(selector => selector.Message.Message.CorrelationId)
+                                                               .SelectId(selector => selector.Message.Message.DebitId));
 
         Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));

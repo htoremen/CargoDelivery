@@ -12,6 +12,7 @@ using Core.Infrastructure.Common.Extensions;
 using Deliveries;
 using Confluent.Kafka;
 using System.Data;
+using MassTransit.Transports;
 
 namespace Cargo.Service;
 
@@ -101,57 +102,6 @@ public static class ConfigureServices
 
         return services;
     }
-
-    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
-    {
-        var config = messageBroker.Kafka;
-        x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context, SnakeCaseEndpointNameFormatter.Instance));
-
-        x.AddRider(rider =>
-        {
-            rider.AddConsumer<CreateDebitConsumer>();
-            //rider.AddConsumer<SendSelfieConsumer>();
-            //rider.AddConsumer<CargoApprovalConsumer>();
-            //rider.AddConsumer<CargoRejectedConsumer>();
-
-            rider.AddConsumersFromNamespaceContaining<CreateDebitConsumer>();
-            //rider.AddConsumersFromNamespaceContaining<SendSelfieConsumer>();
-            //rider.AddConsumersFromNamespaceContaining<CargoApprovalConsumer>();
-            //rider.AddConsumersFromNamespaceContaining<CargoRejectedConsumer>();
-
-            rider.UsingKafka((context, k) =>
-            {
-                var mediator = context.GetRequiredService<IMediator>();
-                k.Host(config.BootstrapServers);
-
-                k.TopicEndpoint<string, ICreateDebit>(queueConfiguration.Names[QueueName.CreateDebit], config.GroupId, e =>
-                {
-                    e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                    e.ConfigureConsumer<CreateDebitConsumer>(context);
-                });
-
-                //k.TopicEndpoint<string, ISendSelfie>(queueConfiguration.Names[QueueName.SendSelfie], config.GroupId, e =>
-                //{
-                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                //    e.ConfigureConsumer<SendSelfieConsumer>(context);
-                //});
-
-                //k.TopicEndpoint<string, ICargoApproval>(queueConfiguration.Names[QueueName.CargoApproval], config.GroupId, e =>
-                //{
-                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                //    e.ConfigureConsumer<CargoApprovalConsumer>(context);
-                //});
-
-                //k.TopicEndpoint<string, ICargoRejected>(queueConfiguration.Names[QueueName.CargoRejected], config.GroupId, e =>
-                //{
-                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                //    e.ConfigureConsumer<CargoRejectedConsumer>(context);
-                //});
-
-            });
-        }); 
-    }
-
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
         var config = messageBroker.RabbitMQ;
@@ -171,7 +121,8 @@ public static class ConfigureServices
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebit], e =>
             {
-                e.PrefetchCount = 1;
+                e.PrefetchCount = 1; 
+                e.DiscardFaultedMessages();
                 e.UseMessageRetry(x =>
                 {
                     x.Interval(config.RetryCount, config.ResetInterval);
@@ -186,6 +137,7 @@ public static class ConfigureServices
                     cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
                 });
                 e.ConfigureConsumer<CreateDebitConsumer>(context);
+
             });
 
 
@@ -278,4 +230,57 @@ public static class ConfigureServices
 
         });
     }
+
+
+
+    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    {
+        var config = messageBroker.Kafka;
+        x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context, SnakeCaseEndpointNameFormatter.Instance));
+
+        x.AddRider(rider =>
+        {
+            rider.AddConsumer<CreateDebitConsumer>();
+            //rider.AddConsumer<SendSelfieConsumer>();
+            //rider.AddConsumer<CargoApprovalConsumer>();
+            //rider.AddConsumer<CargoRejectedConsumer>();
+
+            rider.AddConsumersFromNamespaceContaining<CreateDebitConsumer>();
+            //rider.AddConsumersFromNamespaceContaining<SendSelfieConsumer>();
+            //rider.AddConsumersFromNamespaceContaining<CargoApprovalConsumer>();
+            //rider.AddConsumersFromNamespaceContaining<CargoRejectedConsumer>();
+
+            rider.UsingKafka((context, k) =>
+            {
+                var mediator = context.GetRequiredService<IMediator>();
+                k.Host(config.BootstrapServers);
+
+                k.TopicEndpoint<string, ICreateDebit>(queueConfiguration.Names[QueueName.CreateDebit], config.GroupId, e =>
+                {
+                    e.AutoOffsetReset = AutoOffsetReset.Earliest;
+                    e.ConfigureConsumer<CreateDebitConsumer>(context);
+                });
+
+                //k.TopicEndpoint<string, ISendSelfie>(queueConfiguration.Names[QueueName.SendSelfie], config.GroupId, e =>
+                //{
+                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
+                //    e.ConfigureConsumer<SendSelfieConsumer>(context);
+                //});
+
+                //k.TopicEndpoint<string, ICargoApproval>(queueConfiguration.Names[QueueName.CargoApproval], config.GroupId, e =>
+                //{
+                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
+                //    e.ConfigureConsumer<CargoApprovalConsumer>(context);
+                //});
+
+                //k.TopicEndpoint<string, ICargoRejected>(queueConfiguration.Names[QueueName.CargoRejected], config.GroupId, e =>
+                //{
+                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
+                //    e.ConfigureConsumer<CargoRejectedConsumer>(context);
+                //});
+
+            });
+        });
+    }
+
 }

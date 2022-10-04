@@ -22,7 +22,7 @@ public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, Cre
 
     public async Task<CreateDebitResponse> Handle(CreateDebitCommand request, CancellationToken cancellationToken)
     {
-        await _cacheService.SetAsync(request.DebitId.ToString(), request);
+        await _cacheService.SetAsync(StaticKeyValues.Cargo + request.DebitId.ToString(), request);
 
         await _createCargo.SendAsync(new CreateDebit
         {
