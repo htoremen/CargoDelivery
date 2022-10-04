@@ -13,6 +13,8 @@ public enum QueueName
     CargoRejected = 105,
     CreateDebitHistory = 111,
 
+    CreateDebitFault = 121,
+
 
     // Güzergah Oluştur
     StartRoute = 200,

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Cargo.Application.Cargos.Commands.CreateDebitFaults;
 using Cargo.Application.Cargos.Commands.DebitHistories;
 using Cargo.Application.Cargos.CreateDebits;
 using Cargo.Application.Cargos.Queries.GetCargos;
@@ -14,6 +15,7 @@ public class AutoMapProfile : Profile
     {
         CreateMap<ISendSelfie, SendSelfieCommand>();
         CreateMap<ICreateDebit, CreateDebitCommand>();
+        CreateMap<Fault<ICreateDebit>, CreateDebitFaultCommand>();
         CreateMap<ICreateDebitHistory, DebitHistoryCommand>();
 
         CreateMap<Domain.Entities.Cargo, CargoRouteInstance>();

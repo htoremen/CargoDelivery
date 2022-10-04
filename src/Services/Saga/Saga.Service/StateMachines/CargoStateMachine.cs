@@ -18,6 +18,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     #region States
 
     public State CreateDebit { get; set; }
+    public State CreateDebitFault { get; set; }
     public State SendSelfie { get; set; }
     public State CargoApproval { get; set; }
     public State CargoRejected { get; set; }
@@ -46,6 +47,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     #region Events
 
     public Event<ICreateDebit> CreateDebitEvent { get; private set; }
+    public Event<Fault<ICreateDebit>> CreateDebitFaultEvent { get; private set; }
     public Event<ISendSelfie> SendSelfieEvent { get; private set; }
     public Event<ICargoApproval> CargoApprovalEvent { get; private set; }
     public Event<ICargoRejected> CargoRejectedEvent { get; private set; }
@@ -80,6 +82,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         Initially(ProcessApplication(queueConfiguration));
 
         During(CreateDebit, SendSelfieActivity(queueConfiguration));
+
         During(SendSelfie, SendSelfieActivity(queueConfiguration), CargoApprovalActivity(queueConfiguration));
         During(CargoApproval, StartRouteActivity(queueConfiguration), CargoRejectedActivity(queueConfiguration));
 
@@ -315,6 +318,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                  });
     }
 
+  
     #endregion
 
 
@@ -324,6 +328,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         #region Event
 
         Event(() => CreateDebitEvent, instance => instance.CorrelateBy<Guid>(state => state.CourierId, context => context.Message.DebitId).SelectId(s => Guid.NewGuid()));
+        Event(() => CreateDebitFaultEvent, instance => instance.CorrelateById(selector => selector.Message.Message.CorrelationId));
+
         Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));

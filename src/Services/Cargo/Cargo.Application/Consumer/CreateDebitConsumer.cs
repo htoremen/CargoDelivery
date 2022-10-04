@@ -20,6 +20,7 @@ public class CreateDebitConsumer : IConsumer<ICreateDebit>
 
     public async Task Consume(ConsumeContext<ICreateDebit> context)
     {
+        throw new NullReferenceException("Student object is null.");
         var command = context.Message;
         var model = _mapper.Map<CreateDebitCommand>(command);
         var response = await _mediator.Send(model);
