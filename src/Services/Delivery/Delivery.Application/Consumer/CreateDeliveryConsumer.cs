@@ -31,12 +31,12 @@ public class CreateDeliveryConsumer : IConsumer<ICreateDelivery>
             DeliveryType = DeliveryType.CreateDelivery
         });
 
-        await _mediator.Send(new CreateDeliveryCommand
-        {
-            CorrelationId = command.CorrelationId,
-            CargoId = command.CargoId,
-            PaymentType = command.PaymentType,
-        });
+        //await _mediator.Send(new CreateDeliveryCommand
+        //{
+        //    CorrelationId = command.CorrelationId,
+        //    CargoId = command.CargoId,
+        //    PaymentType = command.PaymentType,
+        //});
 
 
         if (command.PaymentType == PaymentType.CardPayment)
