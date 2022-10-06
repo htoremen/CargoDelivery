@@ -32,9 +32,9 @@ namespace Order.API.Controllers
                     CacheValue = command.DebitId.ToString(),
                     Value = JsonSerializer.Serialize(command)
                 });
-
                 var response = await Mediator.Send(command);
-               break;
+
+                break;
             }
            // return Ok(response);
             return Ok();
@@ -46,9 +46,19 @@ namespace Order.API.Controllers
         [Route("send-selfie")]
         public async Task<IActionResult> SendSelfie([FromBody] Guid correlationId)
         {
+            var command = new SendSelfieCommand
+            {
+                CorrelationId = correlationId
+            };
+
+            await Mediator.Send(new RedisDataAddCommand
+            {
+                CacheKey = StaticKeyValues.SendSelfie,
+                CacheValue = command.CorrelationId.ToString(),
+                Value = JsonSerializer.Serialize(command)
+            });
             var response = await Mediator.Send(new SendSelfieCommand
             {
-                CargoId = Guid.NewGuid(),
                 CorrelationId = correlationId
             });
             return Ok(response);

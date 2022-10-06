@@ -4,7 +4,6 @@ namespace Cargo.Application.Cargos.SendSelfies;
 
 public class SendSelfieCommand : IRequest<GenericResponse<SendSelfieResponse>>
 {
-    public Guid CargoId { get; set; }
     public Guid CorrelationId { get; set; }
 }
 
@@ -25,10 +24,9 @@ public class SendSelfieCommandHandler : IRequestHandler<SendSelfieCommand, Gener
 
         await _sendSelfie.SendAsync(new SendSelfie
         {
-            CargoId = request.CargoId,
             CorrelationId = request.CorrelationId
         }, null, cancellationToken);
-        var response = new SendSelfieResponse { Id = request.CargoId };
+        var response = new SendSelfieResponse { CorrelationId = request.CorrelationId };
 
         return GenericResponse<SendSelfieResponse>.Success(response, 200);
     }
