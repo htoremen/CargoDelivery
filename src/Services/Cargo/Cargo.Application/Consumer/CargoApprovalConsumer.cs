@@ -22,4 +22,3 @@ public class CargoApprovalConsumer : IConsumer<ICargoApproval>
         });
     }
 }
-

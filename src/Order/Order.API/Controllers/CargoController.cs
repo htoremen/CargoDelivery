@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Order.Application.NoSqls.RedisDataAdds;
 using Order.Domain;
+using System.Drawing;
 
 namespace Order.API.Controllers
 {
@@ -87,6 +88,8 @@ namespace Order.API.Controllers
             return Ok(response);
         }
 
+        #region Debit Cargos Data
+
         private List<CreateDebitCargo> GetCargos()
         {
             Random rnd = new Random();
@@ -125,5 +128,6 @@ namespace Order.API.Controllers
             return items;
         }
 
+        #endregion
     }
 }

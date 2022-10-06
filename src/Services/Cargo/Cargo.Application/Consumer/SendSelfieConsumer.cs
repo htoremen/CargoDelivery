@@ -19,12 +19,5 @@ public class SendSelfieConsumer : IConsumer<ISendSelfie>
         var model = _mapper.Map<SendSelfieCommand>(command);
 
         await _mediator.Send(model);
-
-        //await _mediator.Send(new SendSelfieCommand
-        //{
-        //    CorrelationId = command.CorrelationId,
-        //    CargoId = command.CargoId,
-        //    CurrentState = command.CurrentState,
-        //});
     }
 }
