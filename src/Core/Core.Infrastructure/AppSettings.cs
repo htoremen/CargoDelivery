@@ -1,4 +1,5 @@
 ﻿using Core.Infrastructure.MessageBrokers;
+using Core.Infrastructure.Notification;
 using NoSQLMongo.Infrastructure.Settings;
 
 namespace Core.Infrastructure;
@@ -11,6 +12,7 @@ public class AppSettings
 
     public ServiceUrls ServiceUrls { get; set; }
     public CachingOptions Caching { get; set; }
+    public NotificationOptions Notification { get; set; }    
 }
 
 
