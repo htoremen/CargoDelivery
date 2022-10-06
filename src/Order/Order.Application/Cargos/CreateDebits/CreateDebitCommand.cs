@@ -12,18 +12,14 @@ public class CreateDebitCommand : IRequest<CreateDebitResponse>
 public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, CreateDebitResponse>
 {
     private readonly IMessageSender<ICreateDebit> _createCargo;
-    private readonly ICacheService _cacheService;
 
-    public CreateDebitCommandHandler(IMessageSender<ICreateDebit> createCargo, ICacheService cacheService)
+    public CreateDebitCommandHandler(IMessageSender<ICreateDebit> createCargo)
     {
         _createCargo = createCargo;
-        _cacheService = cacheService;
     }
 
     public async Task<CreateDebitResponse> Handle(CreateDebitCommand request, CancellationToken cancellationToken)
     {
-        await _cacheService.SetAsync(StaticKeyValues.Cargo + request.DebitId.ToString(), request);
-
         await _createCargo.SendAsync(new CreateDebit
         {
             DebitId = request.DebitId,

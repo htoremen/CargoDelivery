@@ -3,6 +3,9 @@ using Cargo.Application.Cargos.CreateDebits;
 using Cargo.Application.Cargos.SendSelfies;
 using Cargos;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using Order.Application.NoSqls.RedisDataAdds;
+using Order.Domain;
 
 namespace Order.API.Controllers
 {
@@ -16,32 +19,61 @@ namespace Order.API.Controllers
         {
             for (int i = 0; i < 40000; i++)
             {
-                var response = await Mediator.Send(new CreateDebitCommand
+                var command = new CreateDebitCommand
                 {
                     CourierId = Guid.NewGuid(),
                     DebitId = Guid.NewGuid(),
                     Cargos = GetCargos()
+                };
+
+                await Mediator.Send(new RedisDataAddCommand
+                {
+                    CacheKey = StaticKeyValues.CreateDebit,
+                    CacheValue = command.DebitId.ToString(),
+                    Value = JsonSerializer.Serialize(command)
                 });
+
+                var response = await Mediator.Send(command);
                break;
             }
            // return Ok(response);
             return Ok();
-
-
-            //var response = await Mediator.Send(new CreateDebitCommand
-            //{
-            //    CourierId = Guid.NewGuid(),
-            //    DebitId = Guid.NewGuid(),
-            //    Cargos = GetCargos()
-            //});
-
-            //return Ok(response);
         }
+
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [Route("send-selfie")]
+        public async Task<IActionResult> SendSelfie([FromBody] Guid correlationId)
+        {
+            var response = await Mediator.Send(new SendSelfieCommand
+            {
+                CargoId = Guid.NewGuid(),
+                CorrelationId = correlationId
+            });
+            return Ok(response);
+        }
+
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [Route("cargo-approval")]
+        public async Task<IActionResult> CargoApproval([FromBody] Guid correlationId)
+        {
+            var response = await Mediator.Send(new CargoApprovalCommand
+            {
+                CargoId = Guid.NewGuid(),
+                CorrelationId = correlationId
+            });
+            return Ok(response);
+        }
+
+
 
         private List<CreateDebitCargo> GetCargos()
         {
             Random rnd = new Random();
-            var cargoLength= rnd.Next(10, 20);
+            var cargoLength = rnd.Next(10, 20);
 
             var cargos = new List<CreateDebitCargo>();
             for (int i = 1; i <= cargoLength; i++)
@@ -76,32 +108,5 @@ namespace Order.API.Controllers
             return items;
         }
 
-        [HttpPost()]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [Route("send-selfie")]
-        public async Task<IActionResult> SendSelfie([FromBody] Guid correlationId)
-        {
-            var response = await Mediator.Send(new SendSelfieCommand
-            {
-                CargoId = Guid.NewGuid(),
-                CorrelationId = correlationId
-            });
-            return Ok(response);
-        }
-
-        [HttpPost()]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [Route("cargo-approval")]
-        public async Task<IActionResult> CargoApproval([FromBody] Guid correlationId)
-        {
-            var response = await Mediator.Send(new CargoApprovalCommand
-            {
-                CargoId = Guid.NewGuid(),
-                CorrelationId = correlationId
-            });
-            return Ok(response);
-        }
     }
 }
