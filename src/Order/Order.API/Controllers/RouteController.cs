@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Order.Application.NoSqls.RedisDataAdds;
 using Order.Application.Routes.AutoRoutes;
 using Order.Application.Routes.ManuelRoutes;
+using Order.Domain;
+using System.Text.Json;
 
 namespace Order.API.Controllers;
 
@@ -13,11 +16,19 @@ public class RouteController : ApiControllerBase
 
     public async Task<IActionResult> AutoRoute([FromBody] Guid correlationId)
     {
-        var response = await Mediator.Send(new AutoRouteCommand
+        var command = new AutoRouteCommand
         {
             CorrelationId = correlationId
+        };
 
+        await Mediator.Send(new RedisDataAddCommand
+        {
+            CacheKey = StaticKeyValues.AutoRoute,
+            CacheValue = command.CorrelationId.ToString(),
+            Value = JsonSerializer.Serialize(command)
         });
+
+        var response = await Mediator.Send(command);
         return Ok(response);
     }
 
@@ -27,11 +38,19 @@ public class RouteController : ApiControllerBase
     [Route("manuel-route")]
     public async Task<IActionResult> ManuelRoute([FromBody] Guid correlationId)
     {
-        var response = await Mediator.Send(new ManuelRouteCommand
+        var command = new ManuelRouteCommand
         {
             CorrelationId = correlationId
+        };
 
+        await Mediator.Send(new RedisDataAddCommand
+        {
+            CacheKey = StaticKeyValues.ManuelRoute,
+            CacheValue = command.CorrelationId.ToString(),
+            Value = JsonSerializer.Serialize(command)
         });
+
+        var response = await Mediator.Send(command);
         return Ok(response);
     }
 }

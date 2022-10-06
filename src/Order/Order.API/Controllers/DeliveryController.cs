@@ -4,6 +4,9 @@ using Delivery.Application.Deliveries.CreateDeliveries;
 using Delivery.Application.Deliveries.CreateRefunds;
 using Delivery.Application.Deliveries.NotDelivereds;
 using Enums;
+using Order.Application.NoSqls.RedisDataAdds;
+using Order.Domain;
+using System.Text.Json;
 
 namespace Order.API.Controllers
 {
@@ -15,12 +18,21 @@ namespace Order.API.Controllers
         [Route("create-delivery")]
         public async Task<IActionResult> CreateDelivery(Guid correlationId, Guid cargoId, PaymentType paymentType)
         {
-            var response = await Mediator.Send(new CreateDeliveryCommand
+            var command = new CreateDeliveryCommand
             {
                 CargoId = cargoId,
                 CorrelationId = correlationId,
                 PaymentType = paymentType
+            };
+
+            await Mediator.Send(new RedisDataAddCommand
+            {
+                CacheKey = StaticKeyValues.CreateDelivery,
+                CacheValue = command.CorrelationId.ToString(),
+                Value = JsonSerializer.Serialize(command)
             });
+
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
 
@@ -30,12 +42,20 @@ namespace Order.API.Controllers
         [Route("not-delivered")]
         public async Task<IActionResult> NotDelivered(Guid correlationId, Guid cargoId)
         {
-            var response = await Mediator.Send(new NotDeliveredCommand
+            var command = new NotDeliveredCommand
             {
                 CargoId = cargoId,
                 CorrelationId = correlationId
+            };
 
+            await Mediator.Send(new RedisDataAddCommand
+            {
+                CacheKey = StaticKeyValues.NotDelivered,
+                CacheValue = command.CorrelationId.ToString(),
+                Value = JsonSerializer.Serialize(command)
             });
+
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
 
@@ -46,12 +66,21 @@ namespace Order.API.Controllers
         [Route("create-refund")]
         public async Task<IActionResult> CreateRefund(Guid correlationId, Guid cargoId)
         {
-            var response = await Mediator.Send(new CreateRefundCommand
+            var command = new CreateRefundCommand
             {
                 CargoId = cargoId,
                 CorrelationId = correlationId
+            };
 
+            await Mediator.Send(new RedisDataAddCommand
+            {
+                CacheKey = StaticKeyValues.CreateRefund,
+                CacheValue = command.CorrelationId.ToString(),
+                Value = JsonSerializer.Serialize(command)
             });
+
+            var response = await Mediator.Send(command);
+
             return Ok(response);
         }
 
@@ -62,11 +91,19 @@ namespace Order.API.Controllers
         [Route("shift-completion")]
         public async Task<IActionResult> ShiftCompletion([FromBody] Guid correlationId)
         {
-            var response = await Mediator.Send(new ShiftCompletionCommand
+            var command = new ShiftCompletionCommand
             {
                 CorrelationId = correlationId
+            };
 
+            await Mediator.Send(new RedisDataAddCommand
+            {
+                CacheKey = StaticKeyValues.ShiftCompletion,
+                CacheValue = command.CorrelationId.ToString(),
+                Value = JsonSerializer.Serialize(command)
             });
+
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
     }

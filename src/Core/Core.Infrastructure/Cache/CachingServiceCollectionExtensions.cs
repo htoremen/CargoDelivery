@@ -32,6 +32,7 @@ public static class CachingServiceCollectionExtensions
             {
                 opt.Configuration = options.Distributed.Redis.Configuration;
                 opt.InstanceName = options.Distributed.Redis.InstanceName;
+                
             });
         }
         else if (distributedProvider == "SqlServer")

@@ -32,6 +32,7 @@ namespace Order.API.Controllers
                     CacheValue = command.DebitId.ToString(),
                     Value = JsonSerializer.Serialize(command)
                 });
+
                 var response = await Mediator.Send(command);
 
                 break;
@@ -70,15 +71,21 @@ namespace Order.API.Controllers
         [Route("cargo-approval")]
         public async Task<IActionResult> CargoApproval([FromBody] Guid correlationId)
         {
-            var response = await Mediator.Send(new CargoApprovalCommand
+            var command = new CargoApprovalCommand
             {
-                CargoId = Guid.NewGuid(),
                 CorrelationId = correlationId
+            };
+
+            await Mediator.Send(new RedisDataAddCommand
+            {
+                CacheKey = StaticKeyValues.SendSelfie,
+                CacheValue = command.CorrelationId.ToString(),
+                Value = JsonSerializer.Serialize(command)
             });
+
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
-
-
 
         private List<CreateDebitCargo> GetCargos()
         {

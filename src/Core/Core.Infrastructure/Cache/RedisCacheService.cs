@@ -27,11 +27,11 @@ public class RedisCacheService : ICacheService
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects
         });
-       await  _cache.SetAsync(cacheKey, Encoding.UTF8.GetBytes(dataSerialize));
+        await _cache.SetAsync(cacheKey, Encoding.UTF8.GetBytes(dataSerialize));
     }
 
     public async Task RemoveAsync(string cacheKey)
     {
-       await _cache.RemoveAsync(cacheKey);
+        await _cache.RemoveAsync(cacheKey);
     }
 }
