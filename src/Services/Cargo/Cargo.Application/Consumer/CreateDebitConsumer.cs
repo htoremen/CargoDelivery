@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using Cargo.Application.Cargos.Commands.CreateCargos;
 using Cargo.Application.Cargos.CreateDebits;
 using Core.Domain.MessageBrokers;
-using System.Text.Json;
 
 namespace Cargo.Application.Consumer;
 public class CreateDebitConsumer : IConsumer<ICreateDebit>
@@ -33,5 +31,20 @@ public class CreateDebitConsumer : IConsumer<ICreateDebit>
         //    //Request = JsonSerializer.Serialize(model), 
         //    //Response = JsonSerializer.Serialize(response)
         //});
+    }
+
+    public class CreateDebitConsumerDefinition : ConsumerDefinition<CreateDebitConsumer>
+    {
+        public CreateDebitConsumerDefinition()
+        {
+            ConcurrentMessageLimit = 8;
+        }
+
+        protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CreateDebitConsumer> consumerConfigurator)
+        {
+            endpointConfigurator.ConfigureConsumeTopology = false;
+            endpointConfigurator.UseMessageRetry(r => r.Intervals(100, 200, 500, 800, 1000));
+            endpointConfigurator.UseInMemoryOutbox();
+        }
     }
 }

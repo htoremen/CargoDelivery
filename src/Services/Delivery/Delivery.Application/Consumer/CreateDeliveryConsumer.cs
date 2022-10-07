@@ -38,6 +38,7 @@ public class CreateDeliveryConsumer : IConsumer<ICreateDelivery>
         //    PaymentType = command.PaymentType,
         //});
 
+        using var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
         if (command.PaymentType == PaymentType.CardPayment)
         {
@@ -46,7 +47,7 @@ public class CreateDeliveryConsumer : IConsumer<ICreateDelivery>
                 CargoId = command.CargoId,
                 CorrelationId = command.CorrelationId,
                 PaymentType = command.PaymentType
-            }, null);
+            }, null, cancellationToken.Token);
         }
         else if (command.PaymentType == PaymentType.PayAtDoor)
         {
@@ -55,7 +56,7 @@ public class CreateDeliveryConsumer : IConsumer<ICreateDelivery>
                 CargoId = command.CargoId,
                 CorrelationId = command.CorrelationId,
                 PaymentType = command.PaymentType
-            }, null);
+            }, null, cancellationToken.Token);
         }
         else if (command.PaymentType == PaymentType.FreeDelivery)
         {
@@ -64,7 +65,7 @@ public class CreateDeliveryConsumer : IConsumer<ICreateDelivery>
                 CargoId = command.CargoId,
                 CorrelationId = command.CorrelationId,
                 PaymentType = command.PaymentType
-            }, null);
+            }, null, cancellationToken.Token);
         }
     }
 }

@@ -39,4 +39,3 @@ public class CreateRefundConsumer : IConsumer<ICreateRefund>
         }, null);
     }
 }
-

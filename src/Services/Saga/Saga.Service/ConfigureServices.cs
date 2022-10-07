@@ -13,6 +13,7 @@ using Saga.Service.Components;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Core.Infrastructure.Common.AvroSerializers;
+using System.Reflection;
 
 namespace Saga.Service;
 public static class ConfigureServices
@@ -117,6 +118,9 @@ public static class ConfigureServices
                     b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
                 });
             });
+        x.AddSagas(Assembly.GetExecutingAssembly());
+        x.AddSagasFromNamespaceContaining<CargoStateInstance>();
+        x.AddSagasFromNamespaceContaining(typeof(CargoStateInstance));
 
         x.AddBus(factory => MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
         {

@@ -13,6 +13,7 @@ using Deliveries;
 using Confluent.Kafka;
 using System.Data;
 using MassTransit.Transports;
+using static Cargo.Application.Consumer.CreateDebitConsumer;
 
 namespace Cargo.Service;
 
@@ -53,7 +54,10 @@ public static class ConfigureServices
 
         services.AddMassTransit<IEventBus>(x =>
         {
-            x.AddConsumer<CreateDebitConsumer>();
+            x.SetKebabCaseEndpointNameFormatter();
+            x.SetSnakeCaseEndpointNameFormatter();
+
+            x.AddConsumer<CreateDebitConsumer>(typeof(CreateDebitConsumerDefinition)).Endpoint(e => { e.ConcurrentMessageLimit = 8; } );
            // x.AddConsumer<CreateCargoConsumer>();
             x.AddConsumer<SendSelfieConsumer>();
             x.AddConsumer<CargoApprovalConsumer>();
@@ -61,9 +65,6 @@ public static class ConfigureServices
             // x.AddConsumer<CreateDebitHistoryConsumer>();
 
             x.AddConsumer<CreateDebitFaultConsumer>();
-
-           // x.AddRequestClient<ISendSelfie>(new Uri("rabbitmq://localhost/Cargo.SendSelfie"));
-            x.SetKebabCaseEndpointNameFormatter();
 
             if (messageBroker.UsedRabbitMQ())
                 UsingRabbitMq(x, messageBroker, queueConfiguration);
@@ -116,7 +117,6 @@ public static class ConfigureServices
 
             cfg.UseJsonSerializer();
             cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
-            cfg.ConfigureEndpoints(context);
 //cfg.UseDelayedRedelivery(r => r.Intervals(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(5)));
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebit], e =>
@@ -227,6 +227,8 @@ public static class ConfigureServices
                 });
                 e.ConfigureConsumer<CargoRejectedConsumer>(context);
             });
+
+            cfg.ConfigureEndpoints(context);
 
         });
     }

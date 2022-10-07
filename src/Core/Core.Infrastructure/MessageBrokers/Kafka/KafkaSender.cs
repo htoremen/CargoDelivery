@@ -42,4 +42,9 @@ public class KafkaSender<T> : IMessageSender<T>
             }),
         }, cancellationToken);
     }
+
+    public Task Publish(T message, MetaData metaData = null, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }

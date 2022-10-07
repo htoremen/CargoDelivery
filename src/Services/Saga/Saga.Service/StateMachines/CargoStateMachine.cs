@@ -79,7 +79,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         SetCorrelationId();
 
-        Initially(ProcessApplication(queueConfiguration));
+        Initially(CreateDebitActivity(queueConfiguration));
 
         During(CreateDebit, SendSelfieActivity(queueConfiguration));
 
@@ -375,7 +375,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     /// <param name="queueConfiguration"></param>
     /// <returns></returns>
     [Obsolete]
-    public EventActivityBinder<CargoStateInstance, ICreateDebit> ProcessApplication(IQueueConfiguration queueConfiguration)
+    public EventActivityBinder<CargoStateInstance, ICreateDebit> CreateDebitActivity(IQueueConfiguration queueConfiguration)
     {
         return When(CreateDebitEvent)
                 .Then(context =>
