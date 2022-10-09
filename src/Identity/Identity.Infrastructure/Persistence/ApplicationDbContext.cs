@@ -28,7 +28,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         }
     }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<RefreshToken>(entity =>
