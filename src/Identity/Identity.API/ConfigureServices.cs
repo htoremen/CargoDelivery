@@ -1,4 +1,6 @@
-﻿using Core.Infrastructure;
+﻿using Core.Application.Common.Interfaces;
+using Core.Infrastructure;
+using Identity.Service.Services;
 
 namespace Identity.Service;
 
@@ -6,6 +8,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddWebUIServices(this IServiceCollection services)
     {
+        services.AddSingleton<ICurrentUserService, CurrentUserService>();
         services.AddHttpContextAccessor();
 
         return services;

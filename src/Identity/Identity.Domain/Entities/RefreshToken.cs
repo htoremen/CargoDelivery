@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Identity.Domain.Entities;
 
-[Owned]
+//[Owned]
 public class RefreshToken
 {
     [Key]

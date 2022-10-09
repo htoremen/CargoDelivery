@@ -22,6 +22,7 @@ public class ConnectionStrings
     public string CargoConnectionString { get; set; }
     public string RouteConnectionString { get; set; }
     public string DeliveryConnectionString { get; set; }
+    public string IdentityConnectionString { get; set; }
     public string Monitoring { get; set; }
 }
 
