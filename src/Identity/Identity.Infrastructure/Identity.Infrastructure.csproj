@@ -6,7 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Grpc.HealthCheck" Version="2.49.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
+	</ItemGroup>
+
+	
+	<ItemGroup>
     <ProjectReference Include="..\Infrastructure.Application\Identity.Application\Identity.Application.csproj" />
   </ItemGroup>
 
