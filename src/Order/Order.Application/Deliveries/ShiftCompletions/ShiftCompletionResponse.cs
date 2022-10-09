@@ -1,4 +1,4 @@
-﻿namespace Delivery.Application.Deliveries.ShiftCompletions;
+﻿namespace Order.Application.Deliveries.ShiftCompletions;
 
 public class ShiftCompletionResponse
 {

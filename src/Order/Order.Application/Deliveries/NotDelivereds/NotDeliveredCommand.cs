@@ -1,4 +1,4 @@
-﻿namespace Delivery.Application.Deliveries.NotDelivereds;
+﻿namespace Order.Application.Deliveries.NotDelivereds;
 
 public class NotDeliveredCommand : IRequest<GenericResponse<NotDeliveredResponse>>
 {

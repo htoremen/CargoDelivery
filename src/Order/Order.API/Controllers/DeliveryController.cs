@@ -1,8 +1,8 @@
-﻿using Delivery.Application.Deliveries.ShiftCompletions;
+﻿using Order.Application.Deliveries.ShiftCompletions;
 using Microsoft.AspNetCore.Mvc;
-using Delivery.Application.Deliveries.CreateDeliveries;
-using Delivery.Application.Deliveries.CreateRefunds;
-using Delivery.Application.Deliveries.NotDelivereds;
+using Order.Application.Deliveries.CreateDeliveries;
+using Order.Application.Deliveries.CreateRefunds;
+using Order.Application.Deliveries.NotDelivereds;
 using Enums;
 using Order.Application.NoSqls.RedisDataAdds;
 using Order.Domain;

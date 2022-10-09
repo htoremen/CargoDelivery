@@ -1,4 +1,4 @@
-﻿namespace Delivery.Application.Deliveries.CreateRefunds;
+﻿namespace Order.Application.Deliveries.CreateRefunds;
 
 public class CreateRefundCommand : IRequest<GenericResponse<CreateRefundResponse>>
 {

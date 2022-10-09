@@ -1,6 +1,6 @@
 ﻿using Enums;
 
-namespace Delivery.Application.Deliveries.CreateDeliveries;
+namespace Order.Application.Deliveries.CreateDeliveries;
 
 public class CreateDeliveryCommand : IRequest<GenericResponse<CreateDeliveryResponse>>
 {
