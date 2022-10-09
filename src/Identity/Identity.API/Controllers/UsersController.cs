@@ -1,5 +1,5 @@
 ﻿using Core.Domain.Models;
-using Identity.Application.Authenticates.Commands.Authenticates;
+using Identity.Application.Authenticates.Commands.Logins;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.API.Controllers
@@ -9,8 +9,8 @@ namespace Identity.API.Controllers
     public class UsersController : ApiControllerBase
     {
         [HttpPost]
-        [Route("authenticate")]
-        public async Task<GenericResponse<AuthenticateResponse>> Authenticate(AuthenticateCommand command)
+        [Route("login")]
+        public async Task<GenericResponse<LoginResponse>> Login(LoginCommand command)
         {
             var response = await Mediator.Send(command);
             return response;
