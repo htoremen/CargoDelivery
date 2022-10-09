@@ -32,7 +32,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Gener
                 UserId = Guid.NewGuid().ToString(),
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Username = request.Username,
+                Username = request.Username.ToLower(),
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
             };
             _context.Users.Add(newUser);

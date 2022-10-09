@@ -13,9 +13,15 @@ public class AppSettings
     public ServiceUrls ServiceUrls { get; set; }
     public CachingOptions Caching { get; set; }
     public NotificationOptions Notification { get; set; }    
+
+    public Authenticate Authenticate { get; set; }
 }
 
-
+public class Authenticate
+{
+    public string Secret { get; set; }
+    public string RefreshTokenTTL { get; set; }
+}
 public class ConnectionStrings
 {
     public string SagaConnectionString { get; set; }
