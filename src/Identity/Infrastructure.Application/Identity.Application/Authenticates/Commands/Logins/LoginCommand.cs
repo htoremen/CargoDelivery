@@ -10,8 +10,8 @@ public class LoginCommand : IRequest<GenericResponse<LoginResponse>>
 
 public class LoginCommandHandler : IRequestHandler<LoginCommand, GenericResponse<LoginResponse>>
 {
-    public Task<GenericResponse<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<GenericResponse<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return GenericResponse<LoginResponse>.Success(200);
     }
 }
