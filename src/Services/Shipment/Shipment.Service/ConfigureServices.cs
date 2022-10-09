@@ -6,7 +6,7 @@ using MassTransit;
 using MediatR;
 using Shipment.Service.Services;
 
-namespace Payment.Service;
+namespace Shipment.Service;
 
 public static class ConfigureServices
 {
@@ -21,6 +21,7 @@ public static class ConfigureServices
 
     public static IServiceCollection AddHealthChecksServices(this IServiceCollection services, AppSettings appSettings)
     {
+        services.AddHealthChecks();
         return services;
     }
 
