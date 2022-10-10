@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Monitoring.Infrastructure": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:59884;http://localhost:59885"
+    }
+  }
+}
