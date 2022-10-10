@@ -18,7 +18,7 @@ namespace Order.API.Controllers
         [Route("create-debit")]
         public async Task<IActionResult> CreateDebit()
         {
-            for (int i = 0; i < 40000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 var command = new CreateDebitCommand
                 {

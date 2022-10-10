@@ -20,6 +20,8 @@ using Jaeger.Senders.Thrift;
 using Jaeger;
 using OpenTracing.Contrib.NetCore.Configuration;
 using OpenTracing;
+using OpenTelemetry.Trace;
+using Tracer = Jaeger.Tracer;
 
 namespace Cargo.Service;
 
@@ -35,9 +37,19 @@ public static class ConfigureServices
     }
 
 
-
+    /// <summary>
+    /// https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry.Extensions.Hosting/README.md
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
     public static IServiceCollection OpenTracingServices(this IServiceCollection services)
     {
+        services.AddOpenTelemetryTracing((builder) => builder
+         .AddAspNetCoreInstrumentation()
+         .AddHttpClientInstrumentation()
+         .AddOtlpExporter(opts => { opts.Endpoint = new Uri("http://localhost:5011"); })
+         );
+
         services.AddOpenTracing();
         // Adds the Jaeger Tracer.
         services.AddSingleton<ITracer>(sp =>
