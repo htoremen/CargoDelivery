@@ -3,6 +3,7 @@ using Core.Domain;
 using Core.Domain.Bus;
 using Core.Domain.Enums;
 using Core.Infrastructure;
+using Core.Infrastructure.Cache;
 using Core.Infrastructure.Common.Extensions;
 using Core.Infrastructure.MessageBrokers;
 using Deliveries;
@@ -10,6 +11,7 @@ using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Order.API.Services;
+using Order.Infrastructure.Healths;
 using System.Reflection;
 
 namespace Order.API;
@@ -38,6 +40,9 @@ public static class ConfigureServices
                 //.AddUrlGroup(new Uri("https://localhost:5013/health"), "Delivery.Service", HealthStatus.Degraded)
                 ;
         }
+
+        services.AddHealthChecks()
+            .AddCheck<RedisHealtCheck>("order-redis");
 
         return services;
     }
