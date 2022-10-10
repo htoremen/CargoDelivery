@@ -1,7 +1,12 @@
 using Core.Infrastructure;
-using Core.Infrastructure.Common.Extensions;
 using HealthChecks.UI.Client;
+using Jaeger;
+using Jaeger.Reporters;
+using Jaeger.Samplers;
+using Jaeger.Senders.Thrift;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using OpenTracing;
+using OpenTracing.Contrib.NetCore.Configuration;
 using Order.API;
 
 internal class Program
@@ -21,6 +26,7 @@ internal class Program
         builder.Services.AddWebUIServices();
         builder.Services.AddEventBus(appSettings);
         builder.Services.AddHealthChecksServices(appSettings);
+        builder.Services.OpenTracingServices();
 
         var app = builder.Build();
         if (app.Environment.IsDevelopment())

@@ -1,18 +1,18 @@
-﻿using Cargos;
-using Core.Domain;
+﻿using Core.Domain;
 using Core.Domain.Bus;
-using Core.Domain.Enums;
 using Core.Infrastructure;
-using Core.Infrastructure.Cache;
 using Core.Infrastructure.Common.Extensions;
 using Core.Infrastructure.MessageBrokers;
-using Deliveries;
+using Jaeger.Reporters;
+using Jaeger.Samplers;
+using Jaeger.Senders.Thrift;
+using Jaeger;
 using MassTransit;
 using MediatR;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+using OpenTracing.Contrib.NetCore.Configuration;
+using OpenTracing;
 using Order.API.Services;
 using Order.Infrastructure.Healths;
-using System.Reflection;
 
 namespace Order.API;
 
@@ -21,9 +21,32 @@ public static class ConfigureServices
     public static IServiceCollection AddWebUIServices(this IServiceCollection services)
     {
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
-
         services.AddHttpContextAccessor();
+        return services;
+    }
 
+    public static IServiceCollection OpenTracingServices(this IServiceCollection services)
+    {
+        services.AddOpenTracing();
+        // Adds the Jaeger Tracer.
+        services.AddSingleton<ITracer>(sp =>
+        {
+            var serviceName = sp.GetRequiredService<IWebHostEnvironment>().ApplicationName;
+            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+            var reporter = new RemoteReporter.Builder().WithLoggerFactory(loggerFactory).WithSender(new UdpSender())
+                .Build();
+            var tracer = new Tracer.Builder(serviceName)
+                // The constant sampler reports every span.
+                .WithSampler(new ConstSampler(true))
+                // LoggingReporter prints every reported span to the logging framework.
+                .WithReporter(reporter)
+                .Build();
+            return tracer;
+        });
+
+        services.Configure<HttpHandlerDiagnosticOptions>(options =>
+        options.OperationNameResolver =
+            request => $"{request.Method.Method}: {request?.RequestUri?.AbsoluteUri}");
         return services;
     }
 
@@ -33,12 +56,7 @@ public static class ConfigureServices
         if (messageBroker.UsedRabbitMQ())
         {
             services.AddHealthChecks()
-                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings))
-                //.AddUrlGroup(new Uri("https://localhost:5010/health"), "Saga.Service", HealthStatus.Degraded)
-                //.AddUrlGroup(new Uri("https://localhost:5011/health"), "Cargo.Service", HealthStatus.Degraded)
-                //.AddUrlGroup(new Uri("https://localhost:5012/health"), "Route.Service", HealthStatus.Degraded)
-                //.AddUrlGroup(new Uri("https://localhost:5013/health"), "Delivery.Service", HealthStatus.Degraded)
-                ;
+                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
         }
 
         services.AddHealthChecks()

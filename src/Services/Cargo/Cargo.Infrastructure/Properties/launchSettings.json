@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Cargo.Infrastructure": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:59840;http://localhost:59841"
+    }
+  }
+}
