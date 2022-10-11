@@ -22,6 +22,8 @@ using OpenTracing.Contrib.NetCore.Configuration;
 using OpenTracing;
 using OpenTelemetry.Trace;
 using Tracer = Jaeger.Tracer;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Metrics;
 
 namespace Cargo.Service;
 
@@ -47,8 +49,14 @@ public static class ConfigureServices
         services.AddOpenTelemetryTracing((builder) => builder
          .AddAspNetCoreInstrumentation()
          .AddHttpClientInstrumentation()
-         .AddOtlpExporter(opts => { opts.Endpoint = new Uri("http://localhost:5011"); })
+        // .Add()
+         .AddOtlpExporter()
          );
+
+        services.AddOpenTelemetryMetrics(builder => builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("MyServiceName"))
+                // Add metrics from the AspNetCore instrumentation library
+                .AddAspNetCoreInstrumentation()
+                .AddConsoleExporter());
 
         services.AddOpenTracing();
         // Adds the Jaeger Tracer.

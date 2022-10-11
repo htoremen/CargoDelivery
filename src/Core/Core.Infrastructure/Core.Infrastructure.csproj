@@ -11,9 +11,9 @@
 
   <ItemGroup>
     <PackageReference Include="Apache.Avro" Version="1.11.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.Kafka" Version="6.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.Kafka" Version="6.0.3" />
     <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="6.0.2" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.48.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.49.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.9" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />

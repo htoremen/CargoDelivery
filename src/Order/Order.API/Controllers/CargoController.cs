@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Order.Application.NoSqls.RedisDataAdds;
 using Order.Domain;
-using System.Drawing;
+using System.Diagnostics;
 
 namespace Order.API.Controllers
 {
@@ -18,7 +18,9 @@ namespace Order.API.Controllers
         [Route("create-debit")]
         public async Task<IActionResult> CreateDebit()
         {
-            for (int i = 0; i < 1000; i++)
+            ActivitySource source = new ActivitySource("Order.DistributedTracing", "1.0.0");
+            var correlationId = "";
+            using (Activity activity = source.StartActivity("CreateDebitCommand"))
             {
                 var command = new CreateDebitCommand
                 {
@@ -26,6 +28,8 @@ namespace Order.API.Controllers
                     DebitId = Guid.NewGuid(),
                     Cargos = GetCargos()
                 };
+
+                correlationId = command.DebitId.ToString();
 
                 await Mediator.Send(new RedisDataAddCommand
                 {
@@ -35,11 +39,8 @@ namespace Order.API.Controllers
                 });
 
                 var response = await Mediator.Send(command);
-
-                break;
             }
-           // return Ok(response);
-            return Ok();
+            return Ok(correlationId);
         }
 
         [HttpPost()]

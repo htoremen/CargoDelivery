@@ -19,7 +19,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         _identityService = identityService;
     }
 
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
 
@@ -77,4 +77,5 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         // User is authorized / authorization not required
         return await next();
     }
+
 }

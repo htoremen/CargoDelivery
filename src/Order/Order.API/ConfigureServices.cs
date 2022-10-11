@@ -3,14 +3,8 @@ using Core.Domain.Bus;
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
 using Core.Infrastructure.MessageBrokers;
-using Jaeger.Reporters;
-using Jaeger.Samplers;
-using Jaeger.Senders.Thrift;
-using Jaeger;
 using MassTransit;
 using MediatR;
-using OpenTracing.Contrib.NetCore.Configuration;
-using OpenTracing;
 using Order.API.Services;
 using Order.Infrastructure.Healths;
 
@@ -24,31 +18,73 @@ public static class ConfigureServices
         services.AddHttpContextAccessor();
         return services;
     }
+    //public static IServiceCollection OpenTelemetryTranckingServices(this IServiceCollection services)
+    //{
+    //    var SourceName = "Order.APi";
+    //    var MeterName = "";
+    //    services.AddOpenTelemetryTracing(options =>
+    //            options
+    //                .AddSource(SourceName)
+    //                .SetResourceBuilder(resourceBuilder: ResourceBuilder.CreateDefault().AddService(SourceName).AddTelemetrySdk())
+    //                .AddSqlClientInstrumentation(options =>
+    //                {
+    //                    options.SetDbStatementForText = true;
+    //                    options.RecordException = true;
+    //                })
+    //                .AddAspNetCoreInstrumentation()
+    //                .AddHttpClientInstrumentation()
+    //                .SetErrorStatusOnException(true)
+    //                .AddOtlpExporter(options =>
+    //                {
+    //                    options.Endpoint = new Uri("http://localhost:4317");
+    //                })
+    //                );
 
-    public static IServiceCollection OpenTracingServices(this IServiceCollection services)
-    {
-        services.AddOpenTracing();
-        // Adds the Jaeger Tracer.
-        services.AddSingleton<ITracer>(sp =>
-        {
-            var serviceName = sp.GetRequiredService<IWebHostEnvironment>().ApplicationName;
-            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-            var reporter = new RemoteReporter.Builder().WithLoggerFactory(loggerFactory).WithSender(new UdpSender())
-                .Build();
-            var tracer = new Tracer.Builder(serviceName)
-                // The constant sampler reports every span.
-                .WithSampler(new ConstSampler(true))
-                // LoggingReporter prints every reported span to the logging framework.
-                .WithReporter(reporter)
-                .Build();
-            return tracer;
-        });
+    //    services.AddOpenTelemetryMetrics(options =>
+    //    {
+    //        options.AddHttpClientInstrumentation()
+    //               .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(SourceName).AddTelemetrySdk())
+    //               .AddMeter(MeterName)
+    //               .AddOtlpExporter(options =>
+    //                {
+    //                    options.Endpoint = new Uri("http://localhost:4317");
+    //                });
+    //    });
 
-        services.Configure<HttpHandlerDiagnosticOptions>(options =>
-        options.OperationNameResolver =
-            request => $"{request.Method.Method}: {request?.RequestUri?.AbsoluteUri}");
-        return services;
-    }
+    //    services.Configure<AspNetCoreInstrumentationOptions>(options =>
+    //    {
+    //        options.RecordException = true;
+    //    });
+
+    // //   services.AddSingleton<ComputerVisionMetricsService>
+
+    //    return services;
+    //}
+
+    //public static IServiceCollection OpenTracingServices(this IServiceCollection services)
+    //{
+    //    services.AddOpenTracing();
+    //    // Adds the Jaeger Tracer.
+    //    services.AddSingleton<ITracer>(sp =>
+    //    {
+    //        var serviceName = sp.GetRequiredService<IWebHostEnvironment>().ApplicationName;
+    //        var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+    //        var reporter = new RemoteReporter.Builder().WithLoggerFactory(loggerFactory).WithSender(new UdpSender())
+    //            .Build();
+    //        var tracer = new Tracer.Builder(serviceName)
+    //            // The constant sampler reports every span.
+    //            .WithSampler(new ConstSampler(true))
+    //            // LoggingReporter prints every reported span to the logging framework.
+    //            .WithReporter(reporter)
+    //            .Build();
+    //        return tracer;
+    //    });
+
+    //    services.Configure<HttpHandlerDiagnosticOptions>(options =>
+    //    options.OperationNameResolver =
+    //        request => $"{request.Method.Method}: {request?.RequestUri?.AbsoluteUri}");
+    //    return services;
+    //}
 
     public static IServiceCollection AddHealthChecksServices(this IServiceCollection services, AppSettings appSettings)
     {

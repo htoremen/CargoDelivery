@@ -5,9 +5,12 @@ using Jaeger.Reporters;
 using Jaeger.Samplers;
 using Jaeger.Senders.Thrift;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using OpenTelemetry.Resources;
+using OpenTelemetry;
 using OpenTracing;
 using OpenTracing.Contrib.NetCore.Configuration;
 using Order.API;
+using OpenTelemetry.Trace;
 
 internal class Program
 {
@@ -26,7 +29,15 @@ internal class Program
         builder.Services.AddWebUIServices();
         builder.Services.AddEventBus(appSettings);
         builder.Services.AddHealthChecksServices(appSettings);
-        builder.Services.OpenTracingServices();
+
+        //builder.Services.OpenTracingServices();
+        // builder.Services.OpenTelemetryTranckingServices();
+
+        using var tracerProvider = Sdk.CreateTracerProviderBuilder()
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Order.API"))
+                .AddSource("Order.DistributedTracing")
+                .AddConsoleExporter()
+                .Build();
 
         var app = builder.Build();
         if (app.Environment.IsDevelopment())
