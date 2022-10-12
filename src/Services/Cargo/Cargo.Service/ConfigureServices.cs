@@ -9,21 +9,7 @@ using Core.Infrastructure.MessageBrokers;
 using Cargos;
 using Cargo.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
-using Deliveries;
 using Confluent.Kafka;
-using System.Data;
-using MassTransit.Transports;
-using static Cargo.Application.Consumer.CreateDebitConsumer;
-using Jaeger.Reporters;
-using Jaeger.Samplers;
-using Jaeger.Senders.Thrift;
-using Jaeger;
-using OpenTracing.Contrib.NetCore.Configuration;
-using OpenTracing;
-using OpenTelemetry.Trace;
-using Tracer = Jaeger.Tracer;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Metrics;
 
 namespace Cargo.Service;
 
@@ -32,52 +18,7 @@ public static class ConfigureServices
     public static IServiceCollection AddWebUIServices(this IServiceCollection services)
     {
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
-
         services.AddHttpContextAccessor();
-
-        return services;
-    }
-
-
-    /// <summary>
-    /// https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry.Extensions.Hosting/README.md
-    /// </summary>
-    /// <param name="services"></param>
-    /// <returns></returns>
-    public static IServiceCollection OpenTracingServices(this IServiceCollection services)
-    {
-        services.AddOpenTelemetryTracing((builder) => builder
-         .AddAspNetCoreInstrumentation()
-         .AddHttpClientInstrumentation()
-        // .Add()
-         .AddOtlpExporter()
-         );
-
-        services.AddOpenTelemetryMetrics(builder => builder.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("MyServiceName"))
-                // Add metrics from the AspNetCore instrumentation library
-                .AddAspNetCoreInstrumentation()
-                .AddConsoleExporter());
-
-        services.AddOpenTracing();
-        // Adds the Jaeger Tracer.
-        services.AddSingleton<ITracer>(sp =>
-        {
-            var serviceName = sp.GetRequiredService<IWebHostEnvironment>().ApplicationName;
-            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-            var reporter = new RemoteReporter.Builder().WithLoggerFactory(loggerFactory).WithSender(new UdpSender())
-                .Build();
-            var tracer = new Tracer.Builder(serviceName)
-                // The constant sampler reports every span.
-                .WithSampler(new ConstSampler(true))
-                // LoggingReporter prints every reported span to the logging framework.
-                .WithReporter(reporter)
-                .Build();
-            return tracer;
-        });
-
-        services.Configure<HttpHandlerDiagnosticOptions>(options =>
-        options.OperationNameResolver =
-            request => $"{request.Method.Method}: {request?.RequestUri?.AbsoluteUri}");
         return services;
     }
 
@@ -111,18 +52,14 @@ public static class ConfigureServices
             x.SetSnakeCaseEndpointNameFormatter();
 
             x.AddConsumer<CreateDebitConsumer>(typeof(CreateDebitConsumerDefinition)).Endpoint(e => { e.ConcurrentMessageLimit = 8; } );
-           // x.AddConsumer<CreateCargoConsumer>();
+            // x.AddConsumer<CreateCargoConsumer>();
             x.AddConsumer<SendSelfieConsumer>();
             x.AddConsumer<CargoApprovalConsumer>();
             x.AddConsumer<CargoRejectedConsumer>();
             // x.AddConsumer<CreateDebitHistoryConsumer>();
-
             x.AddConsumer<CreateDebitFaultConsumer>();
 
-            if (messageBroker.UsedRabbitMQ())
-                UsingRabbitMq(x, messageBroker, queueConfiguration);
-            else if (messageBroker.UsedKafka())
-                UsingKafka(x, messageBroker, queueConfiguration);
+            UsingRabbitMq(x, messageBroker, queueConfiguration);
 
         });
 

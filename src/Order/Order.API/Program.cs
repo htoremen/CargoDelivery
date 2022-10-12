@@ -8,13 +8,11 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
         var appSettings = new AppSettings();
         builder.Configuration.Bind(appSettings);
 
-        builder.Services.AddControllers( config =>
-        {
-           // config.Filters.Add(new OrderActionFilter());
-        });
+        builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -23,17 +21,7 @@ internal class Program
         builder.Services.AddWebUIServices();
         builder.Services.AddEventBus(appSettings);
         builder.Services.AddHealthChecksServices(appSettings);
-
-        //builder.Services.OpenTracingServices();
-        // builder.Services.OpenTelemetryTranckingServices();
-
-        //using var tracerProvider = Sdk.CreateTracerProviderBuilder()
-        //        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Order.API"))
-        //        .AddSource("Order.DistributedTracing")
-        //        .AddConsoleExporter()
-        //        .Build();
-
-        builder.Services.AddOpenTelemetryTracingServices(appSettings);
+        builder.Services.AddTelemetryTracingServices(appSettings);
 
         var app = builder.Build();
         if (app.Environment.IsDevelopment())

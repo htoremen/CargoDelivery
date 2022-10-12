@@ -3,6 +3,7 @@ using Core.Domain.Bus;
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
 using Core.Infrastructure.MessageBrokers;
+using Core.Infrastructure.Telemetry.Options;
 using MassTransit;
 using MediatR;
 using OpenTelemetry.Logs;
@@ -29,40 +30,18 @@ public static class ConfigureServices
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection AddOpenTelemetryTracingServices(this IServiceCollection services, AppSettings appSettings)
+    public static IServiceCollection AddTelemetryTracingServices(this IServiceCollection services, AppSettings appSettings)
     {
-        var multiplexer = ConnectionMultiplexer.Connect(appSettings.Caching.Distributed.Redis.Configuration);
-
-        //Action<ResourceBuilder> configureResource = r => r.AddService(OpenTelemetryExtensions.ServiceName, OpenTelemetryExtensions.ServiceVersion);
-
-        services.AddOpenTelemetryTracing(traceProvider =>
+        var options = new OpenTelemetryOptions
         {
-            traceProvider
-                .AddSource(OpenTelemetryExtensions.ServiceName)
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(OpenTelemetryExtensions.ServiceName, OpenTelemetryExtensions.ServiceVersion))
-                .AddHttpClientInstrumentation()
-                .AddAspNetCoreInstrumentation()
-                //.Configure((sp, builder) =>
-                //{
-                //    RedisCache cache = (RedisCache)sp.GetRequiredService<IDistributedCache>();
-                //    builder.AddRedisInstrumentation(cache.GetConnection());
-                //})
-                .AddRedisInstrumentation(multiplexer, options => options.SetVerboseDatabaseStatements = true)
-                .AddJaegerExporter(exporter =>
-                {
-                    exporter.AgentHost = appSettings.Telemetry.Jaeger.AgentHost;
-                    exporter.AgentPort = Convert.ToInt32(appSettings.Telemetry.Jaeger.AgentPort);
-                    exporter.ExportProcessorType = OpenTelemetry.ExportProcessorType.Simple;
-                });
-        });
+            RedisConfiguration = appSettings.Caching.Distributed.Redis.Configuration,
+            AgentHost=appSettings.Telemetry.Jaeger.AgentHost,
+            AgentPort=appSettings.Telemetry.Jaeger.AgentPort,
+            ServiceName= OpenTelemetryExtensions.ServiceName,
+            ServiceVersion = OpenTelemetryExtensions.ServiceVersion
+        };
 
-        services.Configure<OpenTelemetryLoggerOptions>(opt =>
-        {
-            opt.IncludeScopes = true;
-            opt.ParseStateValues = true;
-            opt.IncludeFormattedMessage = true;
-        });
-
+        services.AddOpenTelemetryTracingServices(options);
 
         return services;
     }

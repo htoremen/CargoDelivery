@@ -37,6 +37,7 @@ public static class CachingServiceCollectionExtensions
 
             //});
 
+            
             var multiplexer = ConnectionMultiplexer.Connect(options.Distributed.Redis.Configuration);
             services.AddSingleton<IConnectionMultiplexer>(multiplexer);
         }

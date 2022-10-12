@@ -32,19 +32,19 @@ public class CreateDebitConsumer : IConsumer<ICreateDebit>
         //    //Response = JsonSerializer.Serialize(response)
         //});
     }
+}
 
-    public class CreateDebitConsumerDefinition : ConsumerDefinition<CreateDebitConsumer>
+public class CreateDebitConsumerDefinition : ConsumerDefinition<CreateDebitConsumer>
+{
+    public CreateDebitConsumerDefinition()
     {
-        public CreateDebitConsumerDefinition()
-        {
-            ConcurrentMessageLimit = 8;
-        }
+        ConcurrentMessageLimit = 8;
+    }
 
-        protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CreateDebitConsumer> consumerConfigurator)
-        {
-            endpointConfigurator.ConfigureConsumeTopology = false;
-            endpointConfigurator.UseMessageRetry(r => r.Intervals(100, 200, 500, 800, 1000));
-            endpointConfigurator.UseInMemoryOutbox();
-        }
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CreateDebitConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.ConfigureConsumeTopology = false;
+        endpointConfigurator.UseMessageRetry(r => r.Intervals(100, 200, 500, 800, 1000));
+        endpointConfigurator.UseInMemoryOutbox();
     }
 }

@@ -16,7 +16,6 @@ builder.Services.AddInfrastructureServices(appSettings);
 builder.Services.AddWebUIServices();
 builder.Services.AddEventBus(appSettings);
 builder.Services.AddHealthChecksServices(appSettings);
-builder.Services.OpenTracingServices();
 
 var app = builder.Build();
 app.MapGrpcServices();

@@ -20,6 +20,5 @@ public static class OpenTelemetryExtensions
         ServiceVersion = typeof(OpenTelemetryExtensions).Assembly.GetName().Version!.ToString();
     }
 
-    public static ActivitySource CreateActivitySource() =>
-        new ActivitySource(ServiceName, ServiceVersion);
+    public static ActivitySource CreateActivitySource() => new ActivitySource(ServiceName, ServiceVersion);
 }
