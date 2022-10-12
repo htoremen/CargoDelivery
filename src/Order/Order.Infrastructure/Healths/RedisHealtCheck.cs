@@ -20,7 +20,7 @@ public class RedisHealtCheck : IHealthCheck
         try
         {
             _logger.LogDebug("Starting RedisHealtCheck");
-            await _cacheService.SetAsync("healtcheck", 1);
+            await _cacheService.SetValueAsync("healtcheck", DateTime.UtcNow.ToString());
 
             return HealthCheckResult.Healthy();
         }

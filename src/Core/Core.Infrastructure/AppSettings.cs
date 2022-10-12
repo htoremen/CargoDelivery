@@ -1,5 +1,6 @@
 ﻿using Core.Infrastructure.MessageBrokers;
 using Core.Infrastructure.Notification;
+using Core.Infrastructure.Telemetry;
 using NoSQLMongo.Infrastructure.Settings;
 
 namespace Core.Infrastructure;
@@ -15,6 +16,7 @@ public class AppSettings
     public NotificationOptions Notification { get; set; }    
 
     public Authenticate Authenticate { get; set; }
+    public TelemetryOptions Telemetry { get; set; }
 }
 
 public class Authenticate

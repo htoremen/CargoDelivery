@@ -6,40 +6,36 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Order.Application.NoSqls.RedisDataAdds;
 using Order.Domain;
-using System.Diagnostics;
 
 namespace Order.API.Controllers
 {
     public class CargoController : ApiControllerBase
     {
+
         [HttpPost()]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [Route("create-debit")]
         public async Task<IActionResult> CreateDebit()
         {
-            ActivitySource source = new ActivitySource("Order.DistributedTracing", "1.0.0");
-            var correlationId = "";
-            using (Activity activity = source.StartActivity("CreateDebitCommand"))
+            var command = new CreateDebitCommand
             {
-                var command = new CreateDebitCommand
-                {
-                    CourierId = Guid.NewGuid(),
-                    DebitId = Guid.NewGuid(),
-                    Cargos = GetCargos()
-                };
+                CourierId = Guid.NewGuid(),
+                DebitId = Guid.NewGuid(),
+                Cargos = GetCargos()
+            };
 
-                correlationId = command.DebitId.ToString();
+            var correlationId = command.DebitId.ToString();
 
-                await Mediator.Send(new RedisDataAddCommand
-                {
-                    CacheKey = StaticKeyValues.CreateDebit,
-                    CacheValue = command.DebitId.ToString(),
-                    Value = JsonSerializer.Serialize(command)
-                });
+            await Mediator.Send(new RedisDataAddCommand
+            {
+                CacheKey = StaticKeyValues.CreateDebit,
+                CacheValue = command.DebitId.ToString(),
+                Value = JsonSerializer.Serialize(command)
+            });
 
-                var response = await Mediator.Send(command);
-            }
+            var response = await Mediator.Send(command);
+
             return Ok(correlationId);
         }
 

@@ -1,7 +1,9 @@
 ﻿using Core.Application.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,12 +30,15 @@ public static class CachingServiceCollectionExtensions
         }
         else if (distributedProvider == "Redis")
         {
-            services.AddDistributedRedisCache(opt =>
-            {
-                opt.Configuration = options.Distributed.Redis.Configuration;
-                opt.InstanceName = options.Distributed.Redis.InstanceName;
-                
-            });
+            //services.AddDistributedRedisCache(opt =>
+            //{
+            //    opt.Configuration = options.Distributed.Redis.Configuration;
+            //    opt.InstanceName = options.Distributed.Redis.InstanceName;
+
+            //});
+
+            var multiplexer = ConnectionMultiplexer.Connect(options.Distributed.Redis.Configuration);
+            services.AddSingleton<IConnectionMultiplexer>(multiplexer);
         }
         else if (distributedProvider == "SqlServer")
         {

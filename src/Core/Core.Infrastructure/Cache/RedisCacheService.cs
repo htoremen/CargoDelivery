@@ -1,37 +1,65 @@
 ﻿using Core.Application.Common.Interfaces;
-using Microsoft.Extensions.Caching.Distributed;
-using Newtonsoft.Json;
-using System.Text;
+using StackExchange.Redis;
+using System.Text.Json;
 
 namespace Core.Infrastructure.Cache;
 
 public class RedisCacheService : ICacheService
 {
-    private IDistributedCache _cache;
+    private readonly IConnectionMultiplexer _redisCon;
+    private readonly IDatabase _cache;
+    private TimeSpan ExpireTime => TimeSpan.FromDays(1);
 
-    public RedisCacheService(IDistributedCache cache)
+    public RedisCacheService(IConnectionMultiplexer redisCon)
     {
-        _cache = cache;
-    }
-    public async Task<T> GetAsync<T>(string cacheKey)
-    {
-        var data = await _cache.GetAsync(cacheKey);
-        var cachedMessage = Encoding.UTF8.GetString(data);
-        var value = JsonConvert.DeserializeObject<T>(cachedMessage);
-        return value;
+        _redisCon = redisCon;
+        _cache = redisCon.GetDatabase(1);
     }
 
-    public async Task SetAsync<T>(string cacheKey, T value)
+    public async Task Clear(string key)
     {
-        var dataSerialize = JsonConvert.SerializeObject(value, Formatting.Indented, new JsonSerializerSettings
+        await _cache.KeyDeleteAsync(key);
+    }
+
+    public void ClearAll()
+    {
+        var endpoints = _redisCon.GetEndPoints(true);
+        foreach (var endpoint in endpoints)
         {
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        });
-        await _cache.SetAsync(cacheKey, Encoding.UTF8.GetBytes(dataSerialize));
+            var server = _redisCon.GetServer(endpoint);
+            server.FlushAllDatabases();
+        }
     }
 
-    public async Task RemoveAsync(string cacheKey)
+    public async Task<T> GetOrAddAsync<T>(string key, Func<Task<T>> action) where T : class
     {
-        await _cache.RemoveAsync(cacheKey);
+        var result = await _cache.StringGetAsync(key);
+        if (result.IsNull)
+        {
+            result = JsonSerializer.SerializeToUtf8Bytes(await action());
+            await SetValueAsync(key, result);
+        }
+        return JsonSerializer.Deserialize<T>(result);
+    }
+
+    public async Task<string> GetValueAsync(string key)
+    {
+        return await _cache.StringGetAsync(key);
+    }
+
+    public async Task<bool> SetValueAsync(string key, string value)
+    {
+        return await _cache.StringSetAsync(key, value, ExpireTime);
+    }
+
+    public T GetOrAdd<T>(string key, Func<T> action) where T : class
+    {
+        var result = _cache.StringGet(key);
+        if (result.IsNull)
+        {
+            result = JsonSerializer.SerializeToUtf8Bytes(action());
+            _cache.StringSet(key, result, ExpireTime);
+        }
+        return JsonSerializer.Deserialize<T>(result);
     }
 }

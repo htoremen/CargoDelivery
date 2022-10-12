@@ -20,7 +20,7 @@ public class RedisDataAddCommandHandler : IRequestHandler<RedisDataAddCommand>
     public async Task<Unit> Handle(RedisDataAddCommand request, CancellationToken cancellationToken)
     {
         var _cacheKey = request.CacheKey + request.CacheValue;
-        await _cacheService.SetAsync(_cacheKey, request.Value);
+        await _cacheService.SetValueAsync(_cacheKey, request.Value);
         return Unit.Value;
     }
 }

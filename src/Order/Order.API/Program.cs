@@ -1,16 +1,7 @@
 using Core.Infrastructure;
 using HealthChecks.UI.Client;
-using Jaeger;
-using Jaeger.Reporters;
-using Jaeger.Samplers;
-using Jaeger.Senders.Thrift;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using OpenTelemetry.Resources;
-using OpenTelemetry;
-using OpenTracing;
-using OpenTracing.Contrib.NetCore.Configuration;
 using Order.API;
-using OpenTelemetry.Trace;
 
 internal class Program
 {
@@ -20,7 +11,10 @@ internal class Program
         var appSettings = new AppSettings();
         builder.Configuration.Bind(appSettings);
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers( config =>
+        {
+           // config.Filters.Add(new OrderActionFilter());
+        });
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -33,11 +27,13 @@ internal class Program
         //builder.Services.OpenTracingServices();
         // builder.Services.OpenTelemetryTranckingServices();
 
-        using var tracerProvider = Sdk.CreateTracerProviderBuilder()
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Order.API"))
-                .AddSource("Order.DistributedTracing")
-                .AddConsoleExporter()
-                .Build();
+        //using var tracerProvider = Sdk.CreateTracerProviderBuilder()
+        //        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Order.API"))
+        //        .AddSource("Order.DistributedTracing")
+        //        .AddConsoleExporter()
+        //        .Build();
+
+        builder.Services.AddOpenTelemetryTracingServices(appSettings);
 
         var app = builder.Build();
         if (app.Environment.IsDevelopment())
