@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using Cargo.Application.Common.Behaviours;
+using Cargo.Application.Telemetry;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
+using Core.Infrastructure.Telemetry.Options;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using NoSQLMongo.Infrastructure;
@@ -32,6 +34,22 @@ public static class ConfigureServices
             .AddMessageBusSender<ICreateDebitHistory>(appSettings.MessageBroker);
 
         services.AddNoSQLMongoServices(appSettings.MongoDbSettings);
+
+        return services;
+    }
+
+    public static IServiceCollection AddTelemetryTracingServices(this IServiceCollection services, AppSettings appSettings)
+    {
+        var options = new OpenTelemetryOptions
+        {
+            RedisConfiguration = appSettings.Caching.Distributed.Redis.Configuration,
+            AgentHost = appSettings.Telemetry.Jaeger.AgentHost,
+            AgentPort = appSettings.Telemetry.Jaeger.AgentPort,
+            ServiceName = OpenTelemetryExtensions.ServiceName,
+            ServiceVersion = OpenTelemetryExtensions.ServiceVersion
+        };
+
+        services.AddOpenTelemetryTracingServices(options);
 
         return services;
     }

@@ -1,5 +1,7 @@
 ﻿using Core.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
+using System.Diagnostics;
 
 namespace Cargo.Application.Cargos.CreateDebits;
 

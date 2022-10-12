@@ -21,7 +21,7 @@ internal class Program
         builder.Services.AddWebUIServices();
         builder.Services.AddEventBus(appSettings);
         builder.Services.AddHealthChecksServices(appSettings);
-        builder.Services.AddTelemetryTracingServices(appSettings);
+        builder.Services.AddTelemetryTracingOrderServices(appSettings);
 
         var app = builder.Build();
         if (app.Environment.IsDevelopment())

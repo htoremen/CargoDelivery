@@ -1,14 +1,17 @@
-﻿
+﻿using MassTransit;
 using Core.Infrastructure.Telemetry.Options;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using StackExchange.Redis;
+using Core.Infrastructure.Telemetry;
+using Core.Infrastructure;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ConfigureServices
 {
+
     /// <summary>
     /// https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/
     /// </summary>
@@ -34,6 +37,7 @@ public static class ConfigureServices
                 //    builder.AddRedisInstrumentation(cache.GetConnection());
                 //})
                 .AddRedisInstrumentation(multiplexer, options => options.SetVerboseDatabaseStatements = true)
+                //.AddMassTransitLegacySource()
                 .AddJaegerExporter(exporter =>
                 {
                     exporter.AgentHost = options.AgentHost;

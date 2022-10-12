@@ -25,12 +25,7 @@ public static class ConfigureServices
         return services;
     }
 
-    /// <summary>
-    /// https://www.mytechramblings.com/posts/getting-started-with-opentelemetry-and-dotnet-core/
-    /// </summary>
-    /// <param name="services"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddTelemetryTracingServices(this IServiceCollection services, AppSettings appSettings)
+    public static IServiceCollection AddTelemetryTracingOrderServices(this IServiceCollection services, AppSettings appSettings)
     {
         var options = new OpenTelemetryOptions
         {

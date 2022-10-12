@@ -1,7 +1,10 @@
 ﻿using Core.Domain;
 using Core.Domain.Enums;
 using Core.Domain.MessageBrokers;
+using Core.Infrastructure.Telemetry;
 using MassTransit;
+using OpenTelemetry.Resources;
+using System.Diagnostics;
 
 namespace Core.Infrastructure.MessageBrokers.RabbitMQ;
 

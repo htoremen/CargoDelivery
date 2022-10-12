@@ -10,6 +10,9 @@ using Cargos;
 using Cargo.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
 using Confluent.Kafka;
+using Core.Infrastructure.Telemetry.Options;
+using Cargo.Application.Telemetry;
+using System.Diagnostics;
 
 namespace Cargo.Service;
 
@@ -21,7 +24,6 @@ public static class ConfigureServices
         services.AddHttpContextAccessor();
         return services;
     }
-
     public static WebApplication MapGrpcServices(this WebApplication app)
     {
         app.MapGrpcService<DebitService>();
