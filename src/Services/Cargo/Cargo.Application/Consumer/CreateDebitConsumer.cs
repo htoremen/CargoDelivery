@@ -10,18 +10,17 @@ public class CreateDebitConsumer : IConsumer<ICreateDebit>
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
 
-    private readonly ActivitySource _activitySource;
-
     public CreateDebitConsumer(IMediator mediator, IMapper mapper)
     {
-        _activitySource = OpenTelemetryExtensions.CreateActivitySource();
         _mediator = mediator;
         _mapper = mapper;
     }
 
     public async Task Consume(ConsumeContext<ICreateDebit> context)
     {
-        using var activity = _activitySource.StartActivity($"{nameof(CreateDebitConsumer)}");
+        using var activity = ConsumerActivitySource.Source.StartActivity($"{nameof(CreateDebitConsumer)}");
+        activity!.SetTag("CorrelationId", context.Message.CorrelationId);
+
         var command = context.Message;
         var model = _mapper.Map<CreateDebitCommand>(command);
         var response = await _mediator.Send(model);
