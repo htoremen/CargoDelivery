@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Infrastructure.MessageBrokers.RabbitMQ;
 using Route.Application.Routes.StartRoutes;
 using Route.Application.Routes.StateUpdates;
 
@@ -27,5 +28,18 @@ public class StartRouteConsumer : IConsumer<IStartRoute>
 
         var state = _mapper.Map<StateUpdateCommand>(command);
         await _mediator.Send(state);
+    }
+}
+
+public class StartRouteConsumerDefinition : ConsumerDefinition<StartRouteConsumer>
+{
+    public StartRouteConsumerDefinition()
+    {
+        ConcurrentMessageLimit = 3;
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<StartRouteConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

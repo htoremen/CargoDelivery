@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Infrastructure.MessageBrokers.RabbitMQ;
 using Deliveries;
 using Route.Application.Routes.ManuelRoutes;
 using Route.Application.Routes.StateUpdates;
@@ -36,3 +37,16 @@ public class ManuelRouteConsumer : IConsumer<IManuelRoute>
     }
 }
 
+
+public class ManuelRouteConsumerDefinition : ConsumerDefinition<ManuelRouteConsumer>
+{
+    public ManuelRouteConsumerDefinition()
+    {
+        ConcurrentMessageLimit = 3;
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<ManuelRouteConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
+    }
+}

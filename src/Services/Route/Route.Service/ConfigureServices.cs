@@ -8,10 +8,6 @@ using Core.Infrastructure;
 using Route.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
 using Route.Infrastructure.Healths;
-using Core.Infrastructure.MessageBrokers;
-using Deliveries;
-using Routes;
-using Cargos;
 
 namespace Cargo.Service;
 
@@ -53,20 +49,7 @@ public static class ConfigureServices
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
         var messageBroker = appSettings.MessageBroker;
 
-        services.AddMassTransit<IEventBus>(x =>
-        {
-            x.AddConsumer<ManuelRouteConsumer>();
-            x.AddConsumer<AutoRouteConsumer>();
-            x.AddConsumer<StartRouteConsumer>();
-
-            x.SetKebabCaseEndpointNameFormatter();
-
-            if (messageBroker.UsedRabbitMQ())
-                UsingRabbitMq(x, messageBroker, queueConfiguration);
-            else if (messageBroker.UsedKafka())
-                UsingKafka(x, messageBroker, queueConfiguration);
-
-        });
+        services.AddMassTransit<IEventBus>(x => { UsingRabbitMq(x, messageBroker, queueConfiguration); });
 
         services.Configure<MassTransitHostOptions>(options =>
         {
@@ -75,61 +58,31 @@ public static class ConfigureServices
             options.StopTimeout = TimeSpan.FromMinutes(1);
         });
 
-        if (messageBroker.UsedRabbitMQ())
+        var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
         {
-            var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
+            cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
             {
-                cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
-                {
-                    h.Username(messageBroker.RabbitMQ.UserName);
-                    h.Password(messageBroker.RabbitMQ.Password);
-                });
-            });
-
-            services.AddSingleton<IPublishEndpoint>(bus);
-            services.AddSingleton<ISendEndpointProvider>(bus);
-            services.AddSingleton<IBus>(bus);
-            services.AddSingleton<IBusControl>(bus);
-        }
-        else if (messageBroker.UsedKafka())
-        {
-
-        }
-
-        return services;
-
-    }
-
-    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
-    {
-        var config = messageBroker.Kafka;
-        x.AddRider(rider =>
-        {
-            rider.UsingKafka((context, k) =>
-            {
-                var mediator = context.GetRequiredService<IMediator>();
-                k.Host(config.BootstrapServers);
-
-                k.TopicEndpoint<IManuelRoute>(queueConfiguration.Names[QueueName.ManuelRoute], config.GroupId, e =>
-                {
-                    e.ConfigureConsumer<ManuelRouteConsumer>(context);
-                });
-
-                k.TopicEndpoint<IAutoRoute>(queueConfiguration.Names[QueueName.AutoRoute], config.GroupId, e =>
-                {
-                    e.ConfigureConsumer<AutoRouteConsumer>(context);
-                });
-
-                k.TopicEndpoint<IStartRoute>(queueConfiguration.Names[QueueName.StartRoute], config.GroupId, e =>
-                {
-                    e.ConfigureConsumer<StartRouteConsumer>(context);
-                });
+                h.Username(messageBroker.RabbitMQ.UserName);
+                h.Password(messageBroker.RabbitMQ.Password);
             });
         });
+
+        services.AddSingleton<IPublishEndpoint>(bus);
+        services.AddSingleton<ISendEndpointProvider>(bus);
+        services.AddSingleton<IBus>(bus);
+        services.AddSingleton<IBusControl>(bus);
+
+        return services;
     }
 
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
+        x.SetKebabCaseEndpointNameFormatter();
+
+        x.AddConsumer<ManuelRouteConsumer, ManuelRouteConsumerDefinition>();
+        x.AddConsumer<AutoRouteConsumer, AutoRouteConsumerDefinition>();
+        x.AddConsumer<StartRouteConsumer, StartRouteConsumerDefinition>();
+
         var config = messageBroker.RabbitMQ;
         x.UsingRabbitMq((context, cfg) =>
         {
@@ -144,48 +97,9 @@ public static class ConfigureServices
             cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
             cfg.ConfigureEndpoints(context);
 
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.ManuelRoute], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<ManuelRouteConsumer>(context);
-            });
-
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.AutoRoute], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<AutoRouteConsumer>(context);
-            });
-
-
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.StartRoute], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<StartRouteConsumer>(context);
-            });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.ManuelRoute], e => { e.ConfigureConsumer<ManuelRouteConsumer>(context); });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.AutoRoute], e => { e.ConfigureConsumer<AutoRouteConsumer>(context); });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.StartRoute], e => { e.ConfigureConsumer<StartRouteConsumer>(context); });
         });
     }
 }
