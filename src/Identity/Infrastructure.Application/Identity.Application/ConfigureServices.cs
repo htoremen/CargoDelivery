@@ -2,6 +2,8 @@
 using Core.Infrastructure;
 using FluentValidation;
 using Identity.Application.Common.Behaviours;
+using Identity.Application.Common.Interfaces;
+using Identity.Application.Extensions;
 using MediatR;
 using MediatR.Pipeline;
 using System.Reflection;
@@ -23,7 +25,7 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
         services.AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>));
 
-
+        services.AddScoped<IJwtUtils, JwtUtils>();
         //   services
         //      .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker);
 

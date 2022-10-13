@@ -1,11 +1,11 @@
 ﻿using Identity.Domain.Entities;
 using System.Text.Json.Serialization;
 
-namespace Identity.Application.Authenticates.Commands.Logins;
+namespace Identity.Application.Authenticates.Commands.UserRefreshTokens;
 
-public class LoginResponse
+public class UserRefreshTokenResponse
 {
-    public string UserId { get; set; }
+    public string Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Username { get; set; }
@@ -14,9 +14,9 @@ public class LoginResponse
     [JsonIgnore] // refresh token is returned in http only cookie
     public string RefreshToken { get; set; }
 
-    public LoginResponse(User user, string jwtToken, string refreshToken)
+    public UserRefreshTokenResponse(User user, string jwtToken, string refreshToken)
     {
-        UserId = user.UserId;
+        Id = user.UserId;
         FirstName = user.FirstName;
         LastName = user.LastName;
         Username = user.Username;
