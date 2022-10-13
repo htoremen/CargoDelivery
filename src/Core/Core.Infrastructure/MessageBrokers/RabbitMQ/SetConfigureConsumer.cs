@@ -19,4 +19,9 @@ public static class SetConfigureConsumer
 
         return endpointConfigurator;
     }
+
+    public static int ConcurrentMessageLimit()
+    {
+        return 3;
+    }
 }

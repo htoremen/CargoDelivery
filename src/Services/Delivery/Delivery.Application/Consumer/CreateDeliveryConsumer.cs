@@ -1,4 +1,5 @@
-﻿using Delivery.Application.Deliveries.Commands.InsertDeliveries;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using Delivery.Application.Deliveries.Commands.InsertDeliveries;
 using Delivery.Application.Deliveries.CreateDeliveries;
 
 namespace Delivery.Application.Consumer;
@@ -67,5 +68,19 @@ public class CreateDeliveryConsumer : IConsumer<ICreateDelivery>
                 PaymentType = command.PaymentType
             }, null, cancellationToken.Token);
         }
+    }
+}
+
+
+public class CreateDeliveryConsumerDefinition : ConsumerDefinition<CreateDeliveryConsumer>
+{
+    public CreateDeliveryConsumerDefinition()
+    {
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CreateDeliveryConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

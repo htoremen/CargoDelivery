@@ -1,4 +1,5 @@
-﻿using Delivery.Application.Deliveries.DeliveryCompleteds;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using Delivery.Application.Deliveries.DeliveryCompleteds;
 
 namespace Delivery.Application.Consumer;
 public class DeliveryCompletedConsumer : IConsumer<IDeliveryCompleted>
@@ -29,5 +30,18 @@ public class DeliveryCompletedConsumer : IConsumer<IDeliveryCompleted>
                 CurrentState = command.CurrentState
             }, null);
         }
+    }
+}
+
+public class DeliveryCompletedConsumerDefinition : ConsumerDefinition<DeliveryCompletedConsumer>
+{
+    public DeliveryCompletedConsumerDefinition()
+    {
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<DeliveryCompletedConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

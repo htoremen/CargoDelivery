@@ -1,4 +1,5 @@
-﻿using Delivery.Application.Cargos.Queries.GetCargoAlls;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using Delivery.Application.Cargos.Queries.GetCargoAlls;
 using Delivery.Application.Cargos.Queries.GetRoutes.GetRouteQuery;
 using Delivery.Application.Deliveries.StartDeliveries;
 
@@ -34,5 +35,18 @@ public class StartDeliveryConsumer : IConsumer<IStartDelivery>
             CorrelationId = command.CorrelationId,
             CurrentState = command.CurrentState
         }, null);
+    }
+}
+
+public class StartDeliveryConsumerDefinition : ConsumerDefinition<StartDeliveryConsumer>
+{
+    public StartDeliveryConsumerDefinition()
+    {
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<StartDeliveryConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

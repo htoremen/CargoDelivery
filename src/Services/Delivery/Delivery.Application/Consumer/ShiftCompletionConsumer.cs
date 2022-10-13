@@ -1,4 +1,4 @@
-﻿//using Delivery.Application.Deliveries.ShiftCompletions;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
 
 namespace Delivery.Application.Consumer;
 
@@ -19,5 +19,18 @@ public class ShiftCompletionConsumer : IConsumer<IShiftCompletion>
         //{
         //    CorrelationId = command.CorrelationId
         //});
+    }
+}
+
+public class ShiftCompletionConsumerDefinition : ConsumerDefinition<ShiftCompletionConsumer>
+{
+    public ShiftCompletionConsumerDefinition()
+    {
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<ShiftCompletionConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

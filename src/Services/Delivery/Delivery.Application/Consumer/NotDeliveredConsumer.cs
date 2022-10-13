@@ -1,4 +1,5 @@
-﻿using Delivery.Application.Deliveries.Commands.InsertDeliveries;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using Delivery.Application.Deliveries.Commands.InsertDeliveries;
 using Delivery.Application.Deliveries.NotDelivereds;
 
 namespace Delivery.Application.Consumer;
@@ -39,5 +40,18 @@ public class NotDeliveredConsumer : IConsumer<INotDelivered>
             CurrentState = command.CurrentState,
             CargoId = command.CargoId,
         }, null);
+    }
+}
+
+public class NotDeliveredConsumerDefinition : ConsumerDefinition<NotDeliveredConsumer>
+{
+    public NotDeliveredConsumerDefinition()
+    {
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<NotDeliveredConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Delivery.Application.Deliveries.Commands.NewDeliveries;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using Delivery.Application.Deliveries.Commands.NewDeliveries;
 
 namespace Delivery.Application.Consumer;
 
@@ -14,5 +15,18 @@ public class NewDeliveryConsumer : IConsumer<INewDelivery>
     {
         var command = context.Message;
         await _mediator.Send(new NewDeliveryCommand { CorrelationId = command.CorrelationId.ToString(), CurrentState = command.CurrentState });
+    }
+}
+
+public class NewDeliveryConsumerDefinition : ConsumerDefinition<NewDeliveryConsumer>
+{
+    public NewDeliveryConsumerDefinition()
+    {
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<NewDeliveryConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

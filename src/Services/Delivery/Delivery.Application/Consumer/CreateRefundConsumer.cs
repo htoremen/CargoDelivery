@@ -1,4 +1,5 @@
-﻿using Delivery.Application.Deliveries.Commands.InsertDeliveries;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using Delivery.Application.Deliveries.Commands.InsertDeliveries;
 using Delivery.Application.Deliveries.CreateRefunds;
 
 namespace Delivery.Application.Consumer;
@@ -37,5 +38,18 @@ public class CreateRefundConsumer : IConsumer<ICreateRefund>
             CurrentState = command.CurrentState,
             CargoId = command.CargoId,
         }, null);
+    }
+}
+
+public class CreateRefundConsumerDefinition : ConsumerDefinition<CreateRefundConsumer>
+{
+    public CreateRefundConsumerDefinition()
+    {
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CreateRefundConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

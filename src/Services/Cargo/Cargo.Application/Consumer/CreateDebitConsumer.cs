@@ -31,7 +31,7 @@ public class CreateDebitConsumerDefinition : ConsumerDefinition<CreateDebitConsu
 {
     public CreateDebitConsumerDefinition()
     {
-        ConcurrentMessageLimit = 3;
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
     }
 
     protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CreateDebitConsumer> consumerConfigurator)
