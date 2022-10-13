@@ -1,4 +1,5 @@
 ﻿using Cargo.Application.Cargos.CargoApprovals;
+using Core.Infrastructure.MessageBrokers.RabbitMQ;
 
 namespace Cargo.Application.Consumer;
 
@@ -20,5 +21,18 @@ public class CargoApprovalConsumer : IConsumer<ICargoApproval>
             CorrelationId = command.CorrelationId,
             CurrentState = command.CurrentState,
         });
+    }
+}
+
+public class CargoApprovalConsumerDefinition : ConsumerDefinition<CargoApprovalConsumer>
+{
+    public CargoApprovalConsumerDefinition()
+    {
+        ConcurrentMessageLimit = 3;
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CargoApprovalConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

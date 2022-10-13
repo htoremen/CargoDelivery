@@ -1,4 +1,5 @@
 ﻿using Cargo.Application.Cargos.CargoRejecteds;
+using Core.Infrastructure.MessageBrokers.RabbitMQ;
 
 namespace Cargo.Application.Consumer;
 
@@ -23,3 +24,15 @@ public class CargoRejectedConsumer : IConsumer<ICargoRejected>
     }
 }
 
+public class CargoRejectedConsumerDefinition : ConsumerDefinition<CargoRejectedConsumer>
+{
+    public CargoRejectedConsumerDefinition()
+    {
+        ConcurrentMessageLimit = 3;
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CargoRejectedConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
+    }
+}

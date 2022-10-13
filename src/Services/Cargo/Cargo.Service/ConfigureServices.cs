@@ -6,13 +6,8 @@ using Cargo.Service.Services;
 using Core.Domain.Enums;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
-using Cargos;
 using Cargo.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
-using Confluent.Kafka;
-using Core.Infrastructure.Telemetry.Options;
-using Cargo.Application.Telemetry;
-using System.Diagnostics;
 
 namespace Cargo.Service;
 
@@ -67,13 +62,10 @@ public static class ConfigureServices
             x.SetKebabCaseEndpointNameFormatter();
             x.SetSnakeCaseEndpointNameFormatter();
 
-            x.AddConsumer<CreateDebitConsumer>(typeof(CreateDebitConsumerDefinition));
-            // x.AddConsumer<CreateCargoConsumer>();
-            x.AddConsumer<SendSelfieConsumer>();
-            x.AddConsumer<CargoApprovalConsumer>();
-            x.AddConsumer<CargoRejectedConsumer>();
-            // x.AddConsumer<CreateDebitHistoryConsumer>();
-           // x.AddConsumer<CreateDebitFaultConsumer>();
+            x.AddConsumer<CreateDebitConsumer, CreateDebitConsumerDefinition>();
+            x.AddConsumer<SendSelfieConsumer, SendSelfieConsumerDefinition>();
+            x.AddConsumer<CargoApprovalConsumer, CargoApprovalConsumerDefinition>();
+            x.AddConsumer<CargoRejectedConsumer, CargoRejectedConsumerDefinition>();
 
             UsingRabbitMq(x, messageBroker, queueConfiguration);
 
@@ -120,110 +112,14 @@ public static class ConfigureServices
                 h.Username(config.UserName);
                 h.Password(config.Password);
             });
-
             cfg.UseJsonSerializer();
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebit], e => { e.ConfigureConsumer<CreateDebitConsumer>(context); });
-
-            
-
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.SendSelfie], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<SendSelfieConsumer>(context);
-            });
-
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoApproval], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<CargoApprovalConsumer>(context);
-            });
-
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoRejected], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<CargoRejectedConsumer>(context);
-            });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.SendSelfie], e => { e.ConfigureConsumer<SendSelfieConsumer>(context); });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoApproval], e => { e.ConfigureConsumer<CargoApprovalConsumer>(context); });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoRejected], e => { e.ConfigureConsumer<CargoRejectedConsumer>(context); });
 
             cfg.ConfigureEndpoints(context);
-
         });
     }
-
-
-
-    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
-    {
-        var config = messageBroker.Kafka;
-        x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context, SnakeCaseEndpointNameFormatter.Instance));
-
-        x.AddRider(rider =>
-        {
-            rider.AddConsumer<CreateDebitConsumer>();
-            //rider.AddConsumer<SendSelfieConsumer>();
-            //rider.AddConsumer<CargoApprovalConsumer>();
-            //rider.AddConsumer<CargoRejectedConsumer>();
-
-            rider.AddConsumersFromNamespaceContaining<CreateDebitConsumer>();
-            //rider.AddConsumersFromNamespaceContaining<SendSelfieConsumer>();
-            //rider.AddConsumersFromNamespaceContaining<CargoApprovalConsumer>();
-            //rider.AddConsumersFromNamespaceContaining<CargoRejectedConsumer>();
-
-            rider.UsingKafka((context, k) =>
-            {
-                var mediator = context.GetRequiredService<IMediator>();
-                k.Host(config.BootstrapServers);
-
-                k.TopicEndpoint<string, ICreateDebit>(queueConfiguration.Names[QueueName.CreateDebit], config.GroupId, e =>
-                {
-                    e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                    e.ConfigureConsumer<CreateDebitConsumer>(context);
-                });
-
-                //k.TopicEndpoint<string, ISendSelfie>(queueConfiguration.Names[QueueName.SendSelfie], config.GroupId, e =>
-                //{
-                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                //    e.ConfigureConsumer<SendSelfieConsumer>(context);
-                //});
-
-                //k.TopicEndpoint<string, ICargoApproval>(queueConfiguration.Names[QueueName.CargoApproval], config.GroupId, e =>
-                //{
-                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                //    e.ConfigureConsumer<CargoApprovalConsumer>(context);
-                //});
-
-                //k.TopicEndpoint<string, ICargoRejected>(queueConfiguration.Names[QueueName.CargoRejected], config.GroupId, e =>
-                //{
-                //    e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                //    e.ConfigureConsumer<CargoRejectedConsumer>(context);
-                //});
-
-            });
-        });
-    }
-
 }
