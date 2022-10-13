@@ -15,6 +15,7 @@
 
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Core\Core.Application.Common\Core.Application.Common.csproj" />
 	  <ProjectReference Include="..\..\..\Core\Core.Domain\Core.Domain.csproj" />
 	  <ProjectReference Include="..\Saga.Domain\Saga.Domain.csproj" />
 	</ItemGroup>
