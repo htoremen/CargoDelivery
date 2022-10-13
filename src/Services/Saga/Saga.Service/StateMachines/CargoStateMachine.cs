@@ -18,7 +18,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     #region States
 
     public State CreateDebit { get; set; }
-    public State CreateDebitFault { get; set; }
+   // public State CreateDebitFault { get; set; }
     public State SendSelfie { get; set; }
     public State CargoApproval { get; set; }
     public State CargoRejected { get; set; }
@@ -47,7 +47,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     #region Events
 
     public Event<ICreateDebit> CreateDebitEvent { get; private set; }
-    public Event<Fault<ICreateDebit>> CreateDebitFaultEvent { get; private set; }
+    //public Event<Fault<ICreateDebit>> CreateDebitFaultEvent { get; private set; }
     public Event<ISendSelfie> SendSelfieEvent { get; private set; }
     public Event<ICargoApproval> CargoApprovalEvent { get; private set; }
     public Event<ICargoRejected> CargoRejectedEvent { get; private set; }
@@ -107,19 +107,19 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         SetCompletedWhenFinalized();
     }
 
-    private EventActivities<CargoStateInstance> CreateDebitFaultActivity(IQueueConfiguration queueConfiguration)
-    {
-        return When(CreateDebitFaultEvent)
-                 .TransitionTo(CreateDebitFault)
-                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateDebitFault]}"), context => new CreateDebitFaultCommand(context.Instance.CorrelationId)
-                 {
-                     DebitId = context.Data.Message.DebitId,
-                     CourierId = context.Data.Message.CourierId,
-                     Cargos = context.Data.Message.Cargos,
-                     CurrentState = context.Instance.CurrentState,
-                     Exceptions = context.Data.Exceptions
-                 });
-    }
+    //private EventActivities<CargoStateInstance> CreateDebitFaultActivity(IQueueConfiguration queueConfiguration)
+    //{
+    //    return When(CreateDebitFaultEvent)
+    //             .TransitionTo(CreateDebitFault)
+    //             .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CreateDebitFault]}"), context => new CreateDebitFaultCommand(context.Instance.CorrelationId)
+    //             {
+    //                 DebitId = context.Data.Message.DebitId,
+    //                 CourierId = context.Data.Message.CourierId,
+    //                 Cargos = context.Data.Message.Cargos,
+    //                 CurrentState = context.Instance.CurrentState,
+    //                 Exceptions = context.Data.Exceptions
+    //             });
+    //}
 
     private EventActivities<CargoStateInstance> ShiftCompletionActivity(IQueueConfiguration queueConfiguration)
     {
@@ -342,8 +342,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         #region Event
 
         Event(() => CreateDebitEvent, instance => instance.CorrelateBy<Guid>(state => state.CourierId, context => context.Message.DebitId).SelectId(s => s.Message.DebitId));
-        Event(() => CreateDebitFaultEvent, instance => instance.CorrelateById(selector => selector.Message.Message.CorrelationId)
-                                                               .SelectId(selector => selector.Message.Message.DebitId));
+        //Event(() => CreateDebitFaultEvent, instance => instance.CorrelateById(selector => selector.Message.Message.CorrelationId)
+        //                                                       .SelectId(selector => selector.Message.Message.DebitId));
 
         Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CargoApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));

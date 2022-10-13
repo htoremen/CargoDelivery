@@ -1,6 +1,8 @@
 ﻿
+using Cargo.Application.Telemetry;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Cargo.Application.Common.Behaviours;
 
@@ -22,8 +24,14 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
         catch (Exception ex)
         {
             var requestName = typeof(TRequest).Name;
+            string requestJson = JsonSerializer.Serialize(request);
 
-            _logger.LogError(ex, "CleanArchitecture Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+            using var activity = ConsumerActivitySource.Source.StartActivity($"{requestName}");
+            activity!.SetStatus(System.Diagnostics.ActivityStatusCode.Error);
+            activity!.SetTag("request.json", requestJson);
+            activity!.SetTag("error.message", ex.Message);
+
+            _logger.LogError(ex, "CleanArchitecture Request: Unhandled Exception for Request {Name} {@requestJson}", requestName, requestJson);
 
             throw;
         }

@@ -20,10 +20,17 @@ public class CreateDebitConsumer : IConsumer<ICreateDebit>
     {
         using var activity = ConsumerActivitySource.Source.StartActivity($"{nameof(CreateDebitConsumer)}");
         activity!.SetTag("CorrelationId", context.Message.CorrelationId);
+        //try
+        //{
 
-        var command = context.Message;
-        var model = _mapper.Map<CreateDebitCommand>(command);
-        var response = await _mediator.Send(model);
+            var command = context.Message;
+            var model = _mapper.Map<CreateDebitCommand>(command);
+            var response = await _mediator.Send(model);
+        //}
+        //catch (Exception ex)
+        //{
+        //    activity!.SetTag("error.message", ex.Message);
+        //}
     }
 }
 
