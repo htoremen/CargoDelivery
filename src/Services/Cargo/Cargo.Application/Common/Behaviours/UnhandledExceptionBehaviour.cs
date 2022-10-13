@@ -31,7 +31,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
             activity!.SetTag("request.json", requestJson);
             activity!.SetTag("error.message", ex.Message);
 
-            _logger.LogError(ex, "CleanArchitecture Request: Unhandled Exception for Request {Name} {@requestJson}", requestName, requestJson);
+            _logger.LogError(ex, "Request: Unhandled Exception for Request {Name} {@requestJson}", requestName, requestJson);
 
             throw;
         }
