@@ -4,13 +4,11 @@ using Core.Domain.Enums;
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
 using Core.Infrastructure.MessageBrokers;
-using Deliveries;
 using MassTransit;
 using MediatR;
 using Payment.Application.Consumer;
 using Payment.Infrastructure.Healths;
 using Payment.Service.Services;
-using Payments;
 
 namespace Payment.Service;
 
@@ -19,46 +17,24 @@ public static class ConfigureServices
     public static IServiceCollection AddWebUIServices(this IServiceCollection services)
     {
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
-
         services.AddHttpContextAccessor();
-
         return services;
     }
 
     public static IServiceCollection AddHealthChecksServices(this IServiceCollection services, AppSettings appSettings)
     {
-        var messageBroker = appSettings.MessageBroker;
-        if (messageBroker.UsedRabbitMQ())
-        {
             services.AddHealthChecks()
-                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings));
-        }
-
-        services.AddHealthChecks()
-            .AddCheck<DeliveryHealthCheck>("delivery-grpc-server");
+                .AddRabbitMQ(GeneralExtensions.GetRabbitMqConnection(appSettings))
+                .AddCheck<DeliveryHealthCheck>("delivery-grpc-server");   
         return services;
     }
-
 
     public static IServiceCollection AddEventBus(this IServiceCollection services, AppSettings appSettings)
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
         var messageBroker = appSettings.MessageBroker;
 
-        services.AddMassTransit<IEventBus>(x =>
-        {
-            x.AddConsumer<CardPaymentConsumer>();
-            x.AddConsumer<FreeDeliveryConsumer>();
-            x.AddConsumer<PayAtDoorConsumer>();
-
-            x.SetKebabCaseEndpointNameFormatter();
-            if (messageBroker.UsedRabbitMQ())
-                UsingRabbitMq(x, messageBroker, queueConfiguration);
-            else if (messageBroker.UsedKafka())            
-                UsingKafka(x, messageBroker, queueConfiguration);
-            
-        });
-
+        services.AddMassTransit<IEventBus>(x => { UsingRabbitMq(x, messageBroker, queueConfiguration); });
 
         services.Configure<MassTransitHostOptions>(options =>
         {
@@ -69,59 +45,31 @@ public static class ConfigureServices
 
         services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
-
-        if (messageBroker.UsedRabbitMQ())
+        var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
         {
-            var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
+            cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
             {
-                cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
-                {
-                    h.Username(messageBroker.RabbitMQ.UserName);
-                    h.Password(messageBroker.RabbitMQ.Password);
-                });
-            });
-
-            services.AddSingleton<IPublishEndpoint>(bus);
-            services.AddSingleton<ISendEndpointProvider>(bus);
-            services.AddSingleton<IBus>(bus);
-            services.AddSingleton<IBusControl>(bus);
-        }
-
-        return services;
-
-    }
-
-    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
-    {
-        var config = messageBroker.Kafka;
-        x.AddRider(rider =>
-        {
-            rider.UsingKafka((context, k) =>
-            {
-                var mediator = context.GetRequiredService<IMediator>();
-                k.Host(config.BootstrapServers);
-
-                k.TopicEndpoint<ICardPayment>(queueConfiguration.Names[QueueName.CardPayment], config.GroupId, e =>
-                {
-                    e.ConfigureConsumer<CardPaymentConsumer>(context);
-                });
-
-                k.TopicEndpoint<IFreeDelivery>(queueConfiguration.Names[QueueName.FreeDelivery], config.GroupId, e =>
-                {
-                    e.ConfigureConsumer<FreeDeliveryConsumer>(context);
-                });
-
-                k.TopicEndpoint<IPayAtDoor>(queueConfiguration.Names[QueueName.PayAtDoor], config.GroupId, e =>
-                {
-                    e.ConfigureConsumer<PayAtDoorConsumer>(context);
-                });
-
+                h.Username(messageBroker.RabbitMQ.UserName);
+                h.Password(messageBroker.RabbitMQ.Password);
             });
         });
+
+        services.AddSingleton<IPublishEndpoint>(bus);
+        services.AddSingleton<ISendEndpointProvider>(bus);
+        services.AddSingleton<IBus>(bus);
+        services.AddSingleton<IBusControl>(bus);
+
+        return services;
     }
 
-    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
+        x.SetKebabCaseEndpointNameFormatter();
+
+        x.AddConsumer<CardPaymentConsumer, CardPaymentConsumerDefinition>();
+        x.AddConsumer<FreeDeliveryConsumer, FreeDeliveryConsumerDefinition>();
+        x.AddConsumer<PayAtDoorConsumer, PayAtDoorConsumerDefinition>();
+
         var config = messageBroker.RabbitMQ;
         x.UsingRabbitMq((context, cfg) =>
         {
@@ -133,50 +81,11 @@ public static class ConfigureServices
             });
 
             cfg.UseJsonSerializer();
-            cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
             cfg.ConfigureEndpoints(context);
 
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CardPayment], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<CardPaymentConsumer>(context);
-            });
-
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.FreeDelivery], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<FreeDeliveryConsumer>(context);
-            });
-
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.PayAtDoor], e =>
-            {
-                e.PrefetchCount = 1;
-                e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<PayAtDoorConsumer>(context);
-            });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CardPayment], e => { e.ConfigureConsumer<CardPaymentConsumer>(context); });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.FreeDelivery], e => { e.ConfigureConsumer<FreeDeliveryConsumer>(context); });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.PayAtDoor], e => { e.ConfigureConsumer<PayAtDoorConsumer>(context); });
         });
     }
 }

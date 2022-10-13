@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using MassTransit;
 using Payment.Application.Payments.PayAtDoors;
 
 namespace Payment.Application.Consumer;
@@ -37,5 +38,18 @@ public class PayAtDoorConsumer : IConsumer<IPayAtDoor>
             CorrelationId = command.CorrelationId,
             CargoId = command.CargoId
         }, null);
+    }
+}
+
+public class PayAtDoorConsumerDefinition : ConsumerDefinition<PayAtDoorConsumer>
+{
+    public PayAtDoorConsumerDefinition()
+    {
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<PayAtDoorConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

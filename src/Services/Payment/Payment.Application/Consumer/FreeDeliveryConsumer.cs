@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using MassTransit;
 using Payment.Application.Payments.FreeDeliveries;
 
 namespace Payment.Application.Consumer;
@@ -37,5 +38,19 @@ public class FreeDeliveryConsumer : IConsumer<IFreeDelivery>
             CorrelationId = command.CorrelationId,
             CargoId = command.CargoId
         }, null);
+    }
+}
+
+
+public class FreeDeliveryConsumerDefinition : ConsumerDefinition<FreeDeliveryConsumer>
+{
+    public FreeDeliveryConsumerDefinition()
+    {
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<FreeDeliveryConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

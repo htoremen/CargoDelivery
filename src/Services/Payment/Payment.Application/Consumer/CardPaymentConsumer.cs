@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using MassTransit;
 using Payment.Application.Deliveries.Commands.UpdatePaymentTypes;
 using Payment.Application.Payments.CardPayments;
 
@@ -38,5 +39,18 @@ public class CardPaymentConsumer : IConsumer<ICardPayment>
             CorrelationId = command.CorrelationId,
             CargoId = command.CargoId
         }, null);
+    }
+}
+
+public class CardPaymentConsumerDefinition : ConsumerDefinition<CardPaymentConsumer>
+{
+    public CardPaymentConsumerDefinition()
+    {
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CardPaymentConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }
