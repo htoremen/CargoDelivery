@@ -24,12 +24,26 @@ public static class ConfigureServices
         services.AddHttpContextAccessor();
         return services;
     }
+
     public static WebApplication MapGrpcServices(this WebApplication app)
     {
         app.MapGrpcService<DebitService>();
         app.MapGrpcService<CargoService>();
         app.MapGrpcService<CargoHealthService>();
         return app;
+    }
+
+    public static IServiceCollection AddStaticValues(this IServiceCollection services, AppSettings appSettings)
+    {
+        var rabbitMQ = appSettings.MessageBroker.RabbitMQ;
+        RabbitMQStaticValues.ResetInterval = rabbitMQ.ResetInterval;
+        RabbitMQStaticValues.RetryTimeInterval = rabbitMQ.RetryTimeInterval;
+        RabbitMQStaticValues.RetryCount = rabbitMQ.RetryCount;
+        RabbitMQStaticValues.PrefetchCount = rabbitMQ.PrefetchCount;
+        RabbitMQStaticValues.TrackingPeriod = rabbitMQ.TrackingPeriod;
+        RabbitMQStaticValues.ActiveThreshold = rabbitMQ.ActiveThreshold;
+
+        return services;
     }
 
     public static IServiceCollection AddHealthChecksServices(this IServiceCollection services, AppSettings appSettings)
@@ -53,7 +67,7 @@ public static class ConfigureServices
             x.SetKebabCaseEndpointNameFormatter();
             x.SetSnakeCaseEndpointNameFormatter();
 
-            x.AddConsumer<CreateDebitConsumer>(typeof(CreateDebitConsumerDefinition)).Endpoint(e => { e.ConcurrentMessageLimit = 8; } );
+            x.AddConsumer<CreateDebitConsumer>(typeof(CreateDebitConsumerDefinition));
             // x.AddConsumer<CreateCargoConsumer>();
             x.AddConsumer<SendSelfieConsumer>();
             x.AddConsumer<CargoApprovalConsumer>();
@@ -108,75 +122,10 @@ public static class ConfigureServices
             });
 
             cfg.UseJsonSerializer();
-            cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
-//cfg.UseDelayedRedelivery(r => r.Intervals(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(5)));
 
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebit], e =>
-            {
-                e.PrefetchCount = 1; 
-                e.DiscardFaultedMessages();
-                e.UseMessageRetry(x =>
-                {
-                    x.Interval(config.RetryCount, config.ResetInterval);
-                   // x.Immediate(3);
-                   // x.Handle<DataException>(x => x.Message.Contains("SQL"));
-                });
-                e.UseCircuitBreaker(cb =>
-                {
-                    cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-                    cb.TripThreshold = config.TripThreshold;
-                    cb.ActiveThreshold = config.ActiveThreshold;
-                    cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-                });
-                e.ConfigureConsumer<CreateDebitConsumer>(context);
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebit], e => { e.ConfigureConsumer<CreateDebitConsumer>(context); });
 
-            });
-
-
-            //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebitFault], e =>
-            //{
-            //    e.PrefetchCount = 1;
-            //    e.UseMessageRetry(x =>
-            //    {
-            //        x.Interval(config.RetryCount, config.ResetInterval);
-            //    });
-            //    e.UseCircuitBreaker(cb =>
-            //    {
-            //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-            //        cb.TripThreshold = config.TripThreshold;
-            //        cb.ActiveThreshold = config.ActiveThreshold;
-            //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-            //    });
-            //    e.ConfigureConsumer<CreateDebitFaultConsumer>(context);
-            //});
-
-            //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateCargo], e =>
-            //{
-            //    e.PrefetchCount = 1;
-            //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-            //    e.UseCircuitBreaker(cb =>
-            //    {
-            //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-            //        cb.TripThreshold = config.TripThreshold;
-            //        cb.ActiveThreshold = config.ActiveThreshold;
-            //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-            //    });
-            //    e.ConfigureConsumer<CreateCargoConsumer>(context);
-            //});
-
-            //cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebitHistory], e =>
-            //{
-            //    e.PrefetchCount = 1;
-            //    e.UseMessageRetry(x => x.Interval(config.RetryCount, config.ResetInterval));
-            //    e.UseCircuitBreaker(cb =>
-            //    {
-            //        cb.TrackingPeriod = TimeSpan.FromMinutes(config.TrackingPeriod);
-            //        cb.TripThreshold = config.TripThreshold;
-            //        cb.ActiveThreshold = config.ActiveThreshold;
-            //        cb.ResetInterval = TimeSpan.FromMinutes(config.ResetInterval);
-            //    });
-            //    e.ConfigureConsumer<CreateDebitHistoryConsumer>(context);
-            //});
+            
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.SendSelfie], e =>
             {

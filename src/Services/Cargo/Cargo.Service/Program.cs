@@ -10,6 +10,8 @@ builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("Mo
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddStaticValues(appSettings);
+
 builder.Services.AddApplicationServices(appSettings, builder.Configuration);
 builder.Services.AddGrpcServices(appSettings, builder.Configuration);
 builder.Services.AddInfrastructureServices(appSettings);
