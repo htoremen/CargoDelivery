@@ -1,10 +1,10 @@
 ﻿
+using Notification.Application.Telemetry;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Sage.Application.Telemetry;
 using System.Text.Json;
 
-namespace Saga.Application.Common.Behaviours;
+namespace Notification.Application.Common.Behaviours;
 
 public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {

@@ -1,10 +1,9 @@
-﻿
+﻿using Shipment.Application.Telemetry;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Sage.Application.Telemetry;
 using System.Text.Json;
 
-namespace Saga.Application.Common.Behaviours;
+namespace Shipment.Application.Common.Behaviours;
 
 public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {

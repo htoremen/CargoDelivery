@@ -1,6 +1,9 @@
-﻿using Core.Infrastructure;
+﻿using Core.Application.Common.Behaviours;
+using Core.Infrastructure;
 using FluentValidation;
 using MediatR;
+using MediatR.Pipeline;
+using Shipment.Application.Common.Behaviours;
 using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -14,10 +17,14 @@ public static class ConfigureServices
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
 
-        services.AddApplicationCommon();
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+        services.AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>));
 
-     //   services
-      //      .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker);
+        //   services
+        //      .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker);
 
         return services;
     }

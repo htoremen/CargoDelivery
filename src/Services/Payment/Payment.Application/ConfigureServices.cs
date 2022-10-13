@@ -4,6 +4,7 @@ using FluentValidation;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Deliveries;
+using MediatR.Pipeline;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,7 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+        services.AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>));
 
         services
             .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker);

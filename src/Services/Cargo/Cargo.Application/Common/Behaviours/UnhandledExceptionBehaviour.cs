@@ -1,5 +1,4 @@
-﻿
-using Cargo.Application.Telemetry;
+﻿using Cargo.Application.Telemetry;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;

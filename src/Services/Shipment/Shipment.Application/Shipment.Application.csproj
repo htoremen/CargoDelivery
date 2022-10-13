@@ -10,8 +10,4 @@
     <ProjectReference Include="..\..\Saga\Saga.Domain\Saga.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Common\Interfaces\" />
-  </ItemGroup>
-
 </Project>
