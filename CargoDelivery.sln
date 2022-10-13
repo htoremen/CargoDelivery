@@ -145,13 +145,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Domain", "src\Iden
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Application", "src\Identity\Infrastructure.Application\Identity.Application\Identity.Application.csproj", "{E308B56D-3887-48A5-8272-23BBD3E0CAEA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telemetry.Service", "src\Observability\Telemetry\Telemetry.Service\Telemetry.Service.csproj", "{E9D5600E-BD8F-42B5-956D-621754DCA4F9}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Observability", "Observability", "{796472AA-24F4-489A-A0A2-0D880F5A424D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telemetry", "Telemetry", "{BC3C5280-7E40-445A-95B7-16ACE818ACE8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Infrastructure.Telemetry", "src\Core\Core.Infrastructure.Telemetry\Core.Infrastructure.Telemetry.csproj", "{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Infrastructure.Telemetry", "src\Core\Core.Infrastructure.Telemetry\Core.Infrastructure.Telemetry.csproj", "{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -367,10 +363,6 @@ Global
 		{E308B56D-3887-48A5-8272-23BBD3E0CAEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E308B56D-3887-48A5-8272-23BBD3E0CAEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E308B56D-3887-48A5-8272-23BBD3E0CAEA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E9D5600E-BD8F-42B5-956D-621754DCA4F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9D5600E-BD8F-42B5-956D-621754DCA4F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9D5600E-BD8F-42B5-956D-621754DCA4F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9D5600E-BD8F-42B5-956D-621754DCA4F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -445,9 +437,7 @@ Global
 		{94309D73-72C7-4C8D-85E3-1549A575D115} = {B09DCD95-4D82-4906-A542-A6D744D09FB9}
 		{19F5FC48-2DC9-4C88-9B02-7F85916806A6} = {B09DCD95-4D82-4906-A542-A6D744D09FB9}
 		{E308B56D-3887-48A5-8272-23BBD3E0CAEA} = {B09DCD95-4D82-4906-A542-A6D744D09FB9}
-		{E9D5600E-BD8F-42B5-956D-621754DCA4F9} = {BC3C5280-7E40-445A-95B7-16ACE818ACE8}
 		{796472AA-24F4-489A-A0A2-0D880F5A424D} = {8E2EA79A-4CE2-4E5F-8A38-5497905AAAB5}
-		{BC3C5280-7E40-445A-95B7-16ACE818ACE8} = {796472AA-24F4-489A-A0A2-0D880F5A424D}
 		{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F} = {20536872-46F0-4B29-9D33-50C675978FEA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
