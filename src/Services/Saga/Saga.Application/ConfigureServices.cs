@@ -2,6 +2,7 @@
 using Saga.Application.Common.Behaviours;
 using FluentValidation;
 using MediatR.Pipeline;
+using Core.Application.Common.Behaviours;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

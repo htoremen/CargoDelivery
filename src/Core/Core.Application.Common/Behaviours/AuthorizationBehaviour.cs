@@ -1,8 +1,6 @@
-﻿using System.Reflection;
-using Core.Application.Common.Exceptions;
+﻿using Core.Application.Common.Exceptions;
 using Core.Application.Common.Interfaces;
 using Core.Application.Common.Security;
-using MediatR;
 
 namespace Core.Application.Common.Behaviours;
 
