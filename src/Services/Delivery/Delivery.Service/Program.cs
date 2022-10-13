@@ -8,6 +8,8 @@ builder.Configuration.Bind(appSettings);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddStaticValues(appSettings);
+
 builder.Services.AddApplicationServices(appSettings); 
 builder.Services.AddInfrastructureServices(appSettings);
 builder.Services.AddWebUIServices();

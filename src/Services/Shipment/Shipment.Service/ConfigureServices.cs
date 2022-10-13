@@ -24,6 +24,18 @@ public static class ConfigureServices
         services.AddHealthChecks();
         return services;
     }
+    public static IServiceCollection AddStaticValues(this IServiceCollection services, AppSettings appSettings)
+    {
+        var rabbitMQ = appSettings.MessageBroker.RabbitMQ;
+        RabbitMQStaticValues.ResetInterval = rabbitMQ.ResetInterval;
+        RabbitMQStaticValues.RetryTimeInterval = rabbitMQ.RetryTimeInterval;
+        RabbitMQStaticValues.RetryCount = rabbitMQ.RetryCount;
+        RabbitMQStaticValues.PrefetchCount = rabbitMQ.PrefetchCount;
+        RabbitMQStaticValues.TrackingPeriod = rabbitMQ.TrackingPeriod;
+        RabbitMQStaticValues.ActiveThreshold = rabbitMQ.ActiveThreshold;
+
+        return services;
+    }
 
 
     public static IServiceCollection AddEventBus(this IServiceCollection services, AppSettings appSettings)
@@ -33,12 +45,8 @@ public static class ConfigureServices
 
         services.AddMassTransit<IEventBus>(x =>
         {
-          //  x.AddConsumer<CardPaymentConsumer>();
-
             x.SetKebabCaseEndpointNameFormatter();
-            if (messageBroker.UsedRabbitMQ())
-                UsingRabbitMq(x, messageBroker, queueConfiguration);
-            
+            UsingRabbitMq(x, messageBroker, queueConfiguration);            
         });
 
 

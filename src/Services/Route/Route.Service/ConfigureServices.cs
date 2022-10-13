@@ -28,6 +28,18 @@ public static class ConfigureServices
         app.MapGrpcService<RouteHealthService>();
         return app;
     }
+    public static IServiceCollection AddStaticValues(this IServiceCollection services, AppSettings appSettings)
+    {
+        var rabbitMQ = appSettings.MessageBroker.RabbitMQ;
+        RabbitMQStaticValues.ResetInterval = rabbitMQ.ResetInterval;
+        RabbitMQStaticValues.RetryTimeInterval = rabbitMQ.RetryTimeInterval;
+        RabbitMQStaticValues.RetryCount = rabbitMQ.RetryCount;
+        RabbitMQStaticValues.PrefetchCount = rabbitMQ.PrefetchCount;
+        RabbitMQStaticValues.TrackingPeriod = rabbitMQ.TrackingPeriod;
+        RabbitMQStaticValues.ActiveThreshold = rabbitMQ.ActiveThreshold;
+
+        return services;
+    }
 
     public static IServiceCollection AddHealthChecksServices(this IServiceCollection services, AppSettings appSettings)
     {

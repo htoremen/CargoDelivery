@@ -11,6 +11,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddStaticValues(appSettings);
+
 builder.Services.AddApplicationServices(appSettings);
 builder.Services.AddInfrastructureServices(); 
 builder.Services.AddWebUIServices();
