@@ -1,5 +1,4 @@
 ﻿using Core.Domain;
-using Core.Domain.Bus;
 using Core.Domain.Enums;
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
@@ -46,7 +45,7 @@ public static class ConfigureServices
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
         var messageBroker = appSettings.MessageBroker;
 
-        services.AddMassTransit<IEventBus>(x => { UsingRabbitMq(x, messageBroker, queueConfiguration); });
+        services.AddMassTransit(x => { UsingRabbitMq(x, messageBroker, queueConfiguration); });
 
         services.Configure<MassTransitHostOptions>(options =>
         {
@@ -74,7 +73,7 @@ public static class ConfigureServices
         return services;
     }
 
-    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    private static void UsingRabbitMq(IBusRegistrationConfigurator x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
         x.SetKebabCaseEndpointNameFormatter();
 

@@ -1,18 +1,13 @@
 ﻿using Core.Domain;
-using Core.Domain.Bus;
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
 using Core.Infrastructure.MessageBrokers;
 using Core.Infrastructure.Telemetry.Options;
 using MassTransit;
 using MediatR;
-using OpenTelemetry.Logs;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Order.API.Services;
 using Order.API.Telemetry;
 using Order.Infrastructure.Healths;
-using StackExchange.Redis;
 
 namespace Order.API;
 
@@ -128,71 +123,37 @@ public static class ConfigureServices
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
         var messageBroker = appSettings.MessageBroker;
-        services.AddMassTransit<IEventBus>(x =>
+        services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
-
-            if (messageBroker.UsedRabbitMQ())
-                UsingRabbitMq(x, messageBroker, queueConfiguration);
-            else if (messageBroker.UsedKafka())
-                UsingKafka(x, messageBroker, queueConfiguration);
-            
+            UsingRabbitMq(x, messageBroker, queueConfiguration);
         });
 
-        if (messageBroker.UsedRabbitMQ())
+        services.Configure<MassTransitHostOptions>(options =>
         {
-            services.Configure<MassTransitHostOptions>(options =>
-            {
-                options.WaitUntilStarted = true;
-                options.StartTimeout = TimeSpan.FromSeconds(30);
-                options.StopTimeout = TimeSpan.FromMinutes(1);
-            });
+            options.WaitUntilStarted = true;
+            options.StartTimeout = TimeSpan.FromSeconds(30);
+            options.StopTimeout = TimeSpan.FromMinutes(1);
+        });
 
-            var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
-            {
-                cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
-                {
-                    h.Username(messageBroker.RabbitMQ.UserName);
-                    h.Password(messageBroker.RabbitMQ.Password);
-                });
-            });
-
-            services.AddSingleton<IPublishEndpoint>(bus);
-            services.AddSingleton<ISendEndpointProvider>(bus);
-            services.AddSingleton<IBus>(bus);
-            services.AddSingleton<IBusControl>(bus);
-        }
-        else if (messageBroker.UsedKafka())
+        var bus = Bus.Factory.CreateUsingRabbitMq(cfg =>
         {
+            cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
+            {
+                h.Username(messageBroker.RabbitMQ.UserName);
+                h.Password(messageBroker.RabbitMQ.Password);
+            });
+        });
 
-            //using var provider = services.BuildServiceProvider(true);
-            //var busControl = provider.GetRequiredService<IBusControl>();
-            //var startTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
-            //busControl.StartAsync(startTokenSource);
-        }
+        services.AddSingleton<IPublishEndpoint>(bus);
+        services.AddSingleton<ISendEndpointProvider>(bus);
+        services.AddSingleton<IBus>(bus);
+        services.AddSingleton<IBusControl>(bus);
+
         return services;
     }
 
-    private static void UsingKafka(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
-    {
-        var config = messageBroker.Kafka;
-        x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context, SnakeCaseEndpointNameFormatter.Instance));
-        x.AddRider(rider =>
-        {
-            rider.UsingKafka((context, k) =>
-            {
-                var mediator = context.GetRequiredService<IMediator>();
-                k.Host(config.BootstrapServers);
-            });
-        }); 
-        
-        x.AddOptions<MassTransitHostOptions>().Configure(options =>
-        {
-            options.WaitUntilStarted = true;
-        });
-    }
-
-    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    private static void UsingRabbitMq(IBusRegistrationConfigurator x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
         var config = messageBroker.RabbitMQ;
         x.UsingRabbitMq((context, cfg) =>

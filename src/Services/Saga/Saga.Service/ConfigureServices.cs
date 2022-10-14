@@ -1,18 +1,13 @@
 ﻿using Core.Domain;
-using Core.Domain.Bus;
 using Core.Domain.Enums;
 using Core.Infrastructure;
 using Core.Infrastructure.Common.Extensions;
-using Core.Infrastructure.MessageBrokers;
 using Microsoft.EntityFrameworkCore;
 using Saga.Domain.Instances;
 using Saga.Infrastructure.Persistence;
 using Saga.Service.StateMachines;
 using MassTransit;
 using Saga.Service.Components;
-using Confluent.Kafka;
-using Confluent.SchemaRegistry;
-using Core.Infrastructure.Common.AvroSerializers;
 using System.Reflection;
 
 namespace Saga.Service;
@@ -46,11 +41,7 @@ public static class ConfigureServices
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
 
         var messageBroker = appSettings.MessageBroker;
-        services.AddMassTransit<IEventBus>(x =>
-        {
-            x.SetKebabCaseEndpointNameFormatter();
-            UsingRabbitMq(x, appSettings, queueConfiguration, configuration);
-        });
+        services.AddMassTransit(x => { UsingRabbitMq(x, appSettings, queueConfiguration, configuration); });
 
         services.Configure<MassTransitHostOptions>(options =>
         {
@@ -62,8 +53,9 @@ public static class ConfigureServices
         return services;
     }
 
-    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, AppSettings appSettings, IQueueConfiguration queueConfiguration, IConfigurationRoot configuration)
+    private static void UsingRabbitMq(IBusRegistrationConfigurator x, AppSettings appSettings, IQueueConfiguration queueConfiguration, IConfigurationRoot configuration)
     {
+        x.SetKebabCaseEndpointNameFormatter();
         var config = appSettings.MessageBroker.RabbitMQ;
 
         x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance, SagaStateDefinition>()

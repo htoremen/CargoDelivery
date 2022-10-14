@@ -1,12 +1,8 @@
-﻿global using Core.Domain;
-global using Bus;
-global using Events;
-global using MediatR;
+﻿global using MediatR;
 global using MassTransit;
 global using Core.Domain.Models;
 global using Routes;
 global using Cargos;
-global using Core.Domain.Enums;
 global using Core.Domain.MessageBrokers;
 global using Route.Application.Common.Interfaces;
 global using Core.Domain.SagaInstances;

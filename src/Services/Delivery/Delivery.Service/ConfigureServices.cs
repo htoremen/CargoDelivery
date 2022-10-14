@@ -1,19 +1,14 @@
 ﻿using Core.Domain;
-using Core.Domain.Bus;
 using MassTransit;
 using MediatR;
 using Core.Domain.Enums;
 using Route.Service.Services;
 using Delivery.Application.Consumer;
 using Core.Infrastructure;
-using Delivery.GRPC.Client.Services;
 using Delivery.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Delivery.Infrastructure.Healths;
 using Core.Infrastructure.MessageBrokers;
-using Deliveries;
-using Confluent.Kafka;
 
 namespace Delivery.Service;
 

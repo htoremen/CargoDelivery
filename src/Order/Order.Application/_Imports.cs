@@ -1,12 +1,6 @@
-﻿global using Core.Domain;
-global using Bus;
-global using Events;
-global using MediatR;
+﻿global using MediatR;
 global using Cargos;
 global using Routes;
 global using Deliveries;
-global using Payments;
-global using Core.Domain.Enums;
 global using Core.Domain.Models;
 global using Core.Domain.MessageBrokers;
-global using Order.Domain;

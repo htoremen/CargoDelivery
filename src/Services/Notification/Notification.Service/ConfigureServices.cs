@@ -1,6 +1,5 @@
 ﻿using Core.Application.Common.Interfaces;
 using Core.Domain;
-using Core.Domain.Bus;
 using Core.Infrastructure;
 using MassTransit;
 using MediatR;
@@ -42,14 +41,11 @@ public static class ConfigureServices
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
         var messageBroker = appSettings.MessageBroker;
 
-        services.AddMassTransit<IEventBus>(x =>
+        services.AddMassTransit(x =>
         {
           //  x.AddConsumer<CardPaymentConsumer>();
-
             x.SetKebabCaseEndpointNameFormatter();
-            if (messageBroker.UsedRabbitMQ())
-                UsingRabbitMq(x, messageBroker, queueConfiguration);
-            
+            UsingRabbitMq(x, messageBroker, queueConfiguration);            
         });
 
 
@@ -84,7 +80,7 @@ public static class ConfigureServices
 
     }
 
-    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    private static void UsingRabbitMq(IBusRegistrationConfigurator x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
         var config = messageBroker.RabbitMQ;
         x.UsingRabbitMq((context, cfg) =>
