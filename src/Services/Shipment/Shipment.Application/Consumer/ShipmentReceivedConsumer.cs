@@ -17,9 +17,10 @@ public class ShipmentReceivedConsumer : IConsumer<IShipmentReceived>
 
         await _mediator.Send(new ShipmentReceivedCommand
         {
-            CorrelationId = command.CorrelationId,
-            DebitId = command.DebitId,
-            CargoId = command.CargoId,
+            CorrelationId = command.CorrelationId.ToString(),
+            DebitId = command.DebitId.ToString(),
+            CargoId = command.CargoId.ToString(),
+            ShipmentTypeId = command.ShipmentTypeId,
             CurrentState = command.CurrentState
         });
     }
