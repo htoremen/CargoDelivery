@@ -1,4 +1,5 @@
-﻿using Shipment.Application.Shipments.Commands.ShipmentReceiveds;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using Shipment.Application.Shipments.Commands.ShipmentReceiveds;
 
 namespace Shipment.Application.Consumer;
 
@@ -23,5 +24,17 @@ public class ShipmentReceivedConsumer : IConsumer<IShipmentReceived>
             ShipmentTypeId = command.ShipmentTypeId,
             CurrentState = command.CurrentState
         });
+    }
+}
+public class ShipmentReceivedConsumerDefinition : ConsumerDefinition<ShipmentReceivedConsumer>
+{
+    public ShipmentReceivedConsumerDefinition()
+    {
+        ConcurrentMessageLimit = 3;
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<ShipmentReceivedConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

@@ -57,19 +57,7 @@ public static class ConfigureServices
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
         var messageBroker = appSettings.MessageBroker;
 
-        services.AddMassTransit<IEventBus>(x =>
-        {
-            x.SetKebabCaseEndpointNameFormatter();
-            x.SetSnakeCaseEndpointNameFormatter();
-
-            x.AddConsumer<CreateDebitConsumer, CreateDebitConsumerDefinition>();
-            x.AddConsumer<SendSelfieConsumer, SendSelfieConsumerDefinition>();
-            x.AddConsumer<CargoApprovalConsumer, CargoApprovalConsumerDefinition>();
-            x.AddConsumer<CargoRejectedConsumer, CargoRejectedConsumerDefinition>();
-
-            UsingRabbitMq(x, messageBroker, queueConfiguration);
-
-        });
+        services.AddMassTransit<IEventBus>(x => { UsingRabbitMq(x, messageBroker, queueConfiguration); });
 
         services.Configure<MassTransitHostOptions>(options =>
         {
@@ -77,32 +65,32 @@ public static class ConfigureServices
             options.StartTimeout = TimeSpan.FromSeconds(30);
             options.StopTimeout = TimeSpan.FromMinutes(1);
         });
-
-        if (messageBroker.UsedRabbitMQ())
+        var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
         {
-            var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
+            cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
             {
-                cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
-                {
-                    h.Username(messageBroker.RabbitMQ.UserName);
-                    h.Password(messageBroker.RabbitMQ.Password);
-                });
+                h.Username(messageBroker.RabbitMQ.UserName);
+                h.Password(messageBroker.RabbitMQ.Password);
             });
+        });
 
-            services.AddSingleton<IPublishEndpoint>(bus);
-            services.AddSingleton<ISendEndpointProvider>(bus);
-            services.AddSingleton<IBus>(bus);
-            services.AddSingleton<IBusControl>(bus);
-        }
-        else if (messageBroker.UsedRabbitMQ())
-        {
-
-        }
+        services.AddSingleton<IPublishEndpoint>(bus);
+        services.AddSingleton<ISendEndpointProvider>(bus);
+        services.AddSingleton<IBus>(bus);
+        services.AddSingleton<IBusControl>(bus);
 
         return services;
     }
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
+        x.SetKebabCaseEndpointNameFormatter();
+        x.SetSnakeCaseEndpointNameFormatter();
+
+        x.AddConsumer<CreateDebitConsumer, CreateDebitConsumerDefinition>();
+        x.AddConsumer<SendSelfieConsumer, SendSelfieConsumerDefinition>();
+        x.AddConsumer<CargoApprovalConsumer, CargoApprovalConsumerDefinition>();
+        x.AddConsumer<CargoRejectedConsumer, CargoRejectedConsumerDefinition>();
+
         var config = messageBroker.RabbitMQ;
         x.UsingRabbitMq((context, cfg) =>
         {
