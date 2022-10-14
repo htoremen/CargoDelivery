@@ -15,6 +15,8 @@ public enum QueueName
 
     CreateDebitFault = 121,
 
+    ShipmentReceived = 131, // Gönderi Alındı
+
 
     // Güzergah Oluştur
     StartRoute = 200,
