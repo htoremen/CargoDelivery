@@ -10,6 +10,8 @@ using Deliveries;
 using Saga.Application.Deliveries;
 using Saga.Application.Payments;
 using Payments;
+using Shipments;
+using Saga.Application.Shipments;
 
 namespace Saga.Service.StateMachines;
 
@@ -39,6 +41,9 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public State FreeDelivery { get; set; }
     public State PayAtDoor { get; set; }
 
+    // Shipment
+    public State ShipmentReceived { get; set; }
+
     public State DeliveryCompleted { get; set; }
     public State ShiftCompletion { get; set; }
 
@@ -66,6 +71,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public Event<INotDelivered> NotDeliveredEvent { get; private set; }
     public Event<ICreateRefund> CreateRefundEvent { get; private set; }
 
+    public Event<IShipmentReceived> ShipmentReceivedEvent { get; private set; }
+
     public Event<IDeliveryCompleted> DeliveryCompletedEvent { get; private set; }
     public Event<IShiftCompletion> ShiftCompletionEvent { get; private set; }
 
@@ -84,7 +91,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         During(CreateDebit, SendSelfieActivity(queueConfiguration));
 
         During(SendSelfie, SendSelfieActivity(queueConfiguration), CargoApprovalActivity(queueConfiguration));
-        During(CargoApproval, StartRouteActivity(queueConfiguration), CargoRejectedActivity(queueConfiguration));
+        During(CargoApproval, ShipmentReceivedActivity(queueConfiguration), CargoRejectedActivity(queueConfiguration));
+        During(ShipmentReceived, StartRouteActivity(queueConfiguration));
 
         During(StartRoute, AutoRouteActivity(queueConfiguration), ManuelRouteActivity(queueConfiguration));
         During(AutoRoute, StartDeliveryActivity(queueConfiguration));
@@ -286,6 +294,21 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
     #region Cargo During
 
+    [Obsolete]
+    private EventActivities<CargoStateInstance> ShipmentReceivedActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(ShipmentReceivedEvent)
+               .TransitionTo(ShipmentReceived)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ShipmentReceived]}"), context => new ShipmentReceivedCommand(context.Data.CorrelationId)
+               {
+                   CurrentState = context.Instance.CurrentState,
+                   CorrelationId = context.Instance.CorrelationId,
+                   CargoId = context.Data.CargoId,
+                   DebitId = context.Data.DebitId,
+                   ShipmentTypeId = context.Data.ShipmentTypeId 
+               });
+    }
+
     private EventActivities<CargoStateInstance> CargoRejectedActivity(IQueueConfiguration queueConfiguration)
     {
         return When(CargoRejectedEvent)
@@ -297,6 +320,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                 });
     }
 
+    [Obsolete]
     private EventActivities<CargoStateInstance> StartRouteActivity(IQueueConfiguration queueConfiguration)
     {
         return When(StartRouteEvent)
