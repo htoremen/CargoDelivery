@@ -1,7 +1,5 @@
-﻿using Core.Infrastructure;
-using Identity.Application.Common.Interfaces;
+﻿using Identity.Application.Common.Interfaces;
 using Identity.Domain.Entities;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,13 +9,6 @@ using System.Text;
 namespace Identity.Application.Extensions;
 public class JwtUtils : IJwtUtils
 {
-    private readonly IApplicationDbContext _context;
-
-    public JwtUtils(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public string GenerateJwtToken(User user)
     {
         // generate token that is valid for 15 minutes

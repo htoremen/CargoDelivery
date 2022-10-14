@@ -3,7 +3,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Order.API;
 
-internal class Program
+public class Program
 {
     private static void Main(string[] args)
     {

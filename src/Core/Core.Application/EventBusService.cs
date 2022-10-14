@@ -1,5 +1,4 @@
-﻿
-using Bus;
+﻿using Bus;
 
 namespace Core.Application;
 
@@ -15,14 +14,7 @@ public class EventBusService<TBus> : IEventBusService<TBus> where TBus : IBus
     {
         try
         {
-            if (string.IsNullOrEmpty(queueName))
-                throw new DomainException("queueName can not be empty");
-
-            if (command == null)
-                throw new DomainException("command can not be null");
-
             await _eventBusManager.Send(command, queueName, cancellationToken);
-
             return true;
         }
         catch
@@ -35,14 +27,7 @@ public class EventBusService<TBus> : IEventBusService<TBus> where TBus : IBus
     {
         try
         {
-            if (string.IsNullOrEmpty(queueName))
-                throw new DomainException("queueName can not be empty");
-
-            if (command == null)
-                throw new DomainException("command can not be null");
-
             await _eventBusManager.Send(command, queueName, routingKey, cancellationToken);
-
             return true;
         }
         catch
@@ -50,5 +35,4 @@ public class EventBusService<TBus> : IEventBusService<TBus> where TBus : IBus
             return false;
         }
     }
-
 }
