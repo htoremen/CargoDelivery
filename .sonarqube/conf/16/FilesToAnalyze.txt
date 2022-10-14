@@ -1,0 +1,4 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.GRPC.Client\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.GRPC.Client\Services\DeliveryService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.GRPC.Client\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.GRPC.Client\Properties\launchSettings.json

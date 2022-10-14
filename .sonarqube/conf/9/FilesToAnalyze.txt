@@ -1,0 +1,2 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Core\Core.Infrastructure.Telemetry\Options\OpenTelemetryOptions.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Core\Core.Infrastructure.Telemetry\_Imports.cs

@@ -1,0 +1,10 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Service\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Service\Program.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Service\Services\CurrentUserService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Service\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Service\obj\Debug\net6.0\Shipment.Service.GlobalUsings.g.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Service\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Service\obj\Debug\net6.0\Shipment.Service.AssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Service\appsettings.Development.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Service\appsettings.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Service\Properties\launchSettings.json

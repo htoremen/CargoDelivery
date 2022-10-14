@@ -1,0 +1,6 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Notification\Notification.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Notification\Notification.Application\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Notification\Notification.Application\Telemetry\ConsumerActivitySource.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Notification\Notification.Application\Telemetry\OpenTelemetryExtensions.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Notification\Notification.Application\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Notification\Notification.Application\Properties\launchSettings.json

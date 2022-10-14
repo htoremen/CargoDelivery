@@ -1,0 +1,10 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.Service\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.Service\Program.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.Service\Services\CurrentUserService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.Service\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.Service\obj\Debug\net6.0\Route.Service.GlobalUsings.g.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.Service\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.Service\obj\Debug\net6.0\Route.Service.AssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.Service\appsettings.Development.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.Service\appsettings.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.Service\Properties\launchSettings.json

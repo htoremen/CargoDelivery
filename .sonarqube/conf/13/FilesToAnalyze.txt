@@ -1,0 +1,5 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Core\Core.Application\Common\Interfaces\ICacheService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Core\Core.Application\EventBusManager.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Core\Core.Application\EventBusService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Core\Core.Application\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Core\Core.Application\Properties\launchSettings.json

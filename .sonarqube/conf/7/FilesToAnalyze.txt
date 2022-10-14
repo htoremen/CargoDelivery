@@ -1,0 +1,2 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Core\Core.Protos\Properties\launchSettings.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Core\Core.Protos\RouteProtos\getroute.proto

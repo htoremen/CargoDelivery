@@ -1,0 +1,11 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\Program.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\Services\CurrentUserService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\obj\Debug\net6.0\Payment.Service.GlobalUsings.g.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\obj\Debug\net6.0\Payment.Service.AssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\obj\Debug\net6.0\Payment.Service.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\appsettings.Development.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\appsettings.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Service\Properties\launchSettings.json

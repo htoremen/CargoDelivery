@@ -1,0 +1,5 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.GRPC.Client\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.GRPC.Client\Services\CargoService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.GRPC.Client\Services\DebitService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.GRPC.Client\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.GRPC.Client\Properties\launchSettings.json

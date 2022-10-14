@@ -1,0 +1,7 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Domain\Attributes\BsonCollectionAttribute.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Domain\Entities\Cargo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Domain\Entities\CargoItem.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Domain\Entities\Debit.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Domain\Entities\Document.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Domain\Interfaces\IDocument.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Domain\Properties\launchSettings.json

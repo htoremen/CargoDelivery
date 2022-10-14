@@ -1,0 +1,5 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Domain\Entities\Cargo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Domain\Entities\CargoItem.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Domain\Entities\Delivery.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Domain\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Domain\Properties\launchSettings.json

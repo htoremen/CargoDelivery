@@ -1,0 +1,4 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Infrastructure\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Infrastructure\Repositories\MongoRepository.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Infrastructure\Settings\MongoDbSettings.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\NoSQLs\NoSQLMongo\NoSQLMongo.Infrastructure\Properties\launchSettings.json

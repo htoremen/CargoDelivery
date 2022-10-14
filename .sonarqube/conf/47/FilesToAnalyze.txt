@@ -1,0 +1,6 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Order\Order.Infrastructure\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Order\Order.Infrastructure\Healths\RedisHealtCheck.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Order\Order.Infrastructure\Identity\IdentityService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Order\Order.Infrastructure\Services\DateTimeService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Order\Order.Infrastructure\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Order\Order.Infrastructure\Properties\launchSettings.json

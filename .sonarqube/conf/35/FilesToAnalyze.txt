@@ -1,0 +1,5 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.GRPC.Server\AutoMapProfile.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.GRPC.Server\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.GRPC.Server\Services\RouteHealthService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.GRPC.Server\Services\RouteService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Route\Route.GRPC.Server\Properties\launchSettings.json

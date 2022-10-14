@@ -1,0 +1,5 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.API\Cargo.GRPC\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.API\Cargo.GRPC\Services\CargoHealthService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.API\Cargo.GRPC\Services\CargoService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.API\Cargo.GRPC\Services\DebitService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.API\Cargo.GRPC\Properties\launchSettings.json

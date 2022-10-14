@@ -1,0 +1,6 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Infrastructure\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Infrastructure\Healths\DeliveryHealthCheck.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Infrastructure\Identity\IdentityService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Infrastructure\Services\DateTimeService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Infrastructure\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Payment\Payment.Infrastructure\Properties\launchSettings.json

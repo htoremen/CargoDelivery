@@ -1,0 +1,3 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Order\Order.Domain\StaticKeyValues.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Order\Order.Domain\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Order\Order.Domain\Properties\launchSettings.json

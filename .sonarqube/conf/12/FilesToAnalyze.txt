@@ -1,0 +1,3 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Domain\Entities\Cargo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Domain\Entities\ShipmentType.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Domain\Properties\launchSettings.json

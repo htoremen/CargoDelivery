@@ -1,0 +1,5 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Server\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Server\Services\DeliveryHealthService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Server\Services\DeliveryService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Server\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Server\Properties\launchSettings.json

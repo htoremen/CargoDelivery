@@ -1,0 +1,6 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Client\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Client\Services\CargoService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Client\Services\DebitService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Client\Services\RouteService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Client\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.GRPC.Client\Properties\launchSettings.json

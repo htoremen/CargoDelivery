@@ -1,0 +1,6 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Infrastructure\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Infrastructure\Identity\IdentityService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Infrastructure\Persistence\ApplicationDbContext.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Infrastructure\Services\DateTimeService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Infrastructure\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Infrastructure\Properties\launchSettings.json

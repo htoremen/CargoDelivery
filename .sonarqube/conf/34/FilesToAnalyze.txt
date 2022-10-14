@@ -1,0 +1,10 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Application\Common\Interfaces\IApplicationDbContext.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Application\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Application\Consumer\ShipmentReceivedConsumer.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Application\Shipments\Commands\ShipmentReceiveds\ShipmentReceivedCommand.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Application\Shipments\Commands\ShipmentReceiveds\ShipmentReceivedResponse.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Application\Telemetry\ConsumerActivitySource.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Application\Telemetry\OpenTelemetryExtensions.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Application\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Shipment\Shipment.Application\Properties\launchSettings.json

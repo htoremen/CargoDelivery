@@ -1,0 +1,12 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\Components\SagaStateDefinition.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\Program.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\StateMachines\CargoStateMachine.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\obj\Debug\net6.0\Saga.Service.GlobalUsings.g.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\obj\Debug\net6.0\Saga.Service.AssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\appsettings.Development.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\appsettings.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\Dockerfile
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Service\Properties\launchSettings.json

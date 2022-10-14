@@ -1,0 +1,8 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Infrastructure\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Infrastructure\Healths\CargoHealthCheck.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Infrastructure\Healths\RouteHealthCheck.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Infrastructure\Identity\IdentityService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Infrastructure\Persistence\ApplicationDbContext.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Infrastructure\Services\DateTimeService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Infrastructure\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Infrastructure\Properties\launchSettings.json

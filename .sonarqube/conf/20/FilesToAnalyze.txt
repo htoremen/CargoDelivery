@@ -1,0 +1,10 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Infrastructure\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Infrastructure\Identity\IdentityService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Infrastructure\Migrations\20220929084108_i.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Infrastructure\Migrations\20220929084108_i.Designer.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Infrastructure\Migrations\CargoStateDbContextModelSnapshot.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Infrastructure\Persistence\CargoStateDbContext.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Infrastructure\Persistence\Configurations\CargoStateMap.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Infrastructure\Services\DateTimeService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Infrastructure\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Saga\Saga.Infrastructure\Properties\launchSettings.json

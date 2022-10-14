@@ -1,0 +1,10 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Service\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Service\Program.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Service\Services\CurrentUserService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Service\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Service\obj\Debug\net6.0\Cargo.Service.GlobalUsings.g.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Service\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Service\obj\Debug\net6.0\Cargo.Service.AssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Service\appsettings.Development.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Service\appsettings.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Service\Properties\launchSettings.json

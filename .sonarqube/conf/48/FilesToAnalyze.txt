@@ -1,0 +1,13 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\Controllers\ApiControllerBase.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\Controllers\UsersController.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\Program.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\Services\CurrentUserService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\obj\Debug\net6.0\Identity.API.GlobalUsings.g.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\obj\Debug\net6.0\Identity.API.AssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\obj\Debug\net6.0\Identity.API.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\appsettings.Development.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\appsettings.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Identity\Identity.API\Properties\launchSettings.json

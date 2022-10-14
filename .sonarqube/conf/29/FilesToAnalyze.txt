@@ -1,0 +1,5 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Infrastructure\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Infrastructure\Healths\CargoHealthCheck.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Infrastructure\Healths\Services\CargoHealthService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Infrastructure\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Infrastructure\Properties\launchSettings.json

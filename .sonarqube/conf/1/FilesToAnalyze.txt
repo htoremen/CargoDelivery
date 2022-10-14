@@ -1,0 +1,6 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Domain\Entities\Cargo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Domain\Entities\CargoItem.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Domain\Entities\Debit.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Domain\Entities\DebitHistory.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Domain\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Cargo\Cargo.Domain\Properties\launchSettings.json

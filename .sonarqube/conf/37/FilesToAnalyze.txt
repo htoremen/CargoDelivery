@@ -1,0 +1,8 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Service\Program.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Service\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Service\obj\Debug\net6.0\Monitoring.Service.GlobalUsings.g.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Service\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Service\obj\Debug\net6.0\Monitoring.Service.AssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Service\appsettings.Development.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Service\appsettings.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Monitoring\Monitoring.Service\Properties\launchSettings.json

@@ -1,0 +1,11 @@
+﻿C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\ConfigureServices.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\Program.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\Services\CurrentUserService.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\_Imports.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\obj\Debug\net6.0\Delivery.Service.GlobalUsings.g.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\obj\Debug\net6.0\Delivery.Service.AssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\obj\Debug\net6.0\Delivery.Service.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\appsettings.Development.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\appsettings.json
+C:\Users\pc\Documents\GitHub\Cargo\src\Services\Delivery\Delivery.Service\Properties\launchSettings.json
