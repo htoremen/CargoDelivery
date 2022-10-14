@@ -33,7 +33,7 @@ public static class ConfigureServices
             .AddMessageBusSender<ISendSelfie>(appSettings.MessageBroker)
             .AddMessageBusSender<ICargoApproval>(appSettings.MessageBroker)
             .AddMessageBusSender<ICargoRejected>(appSettings.MessageBroker)
-            .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker)
+           // .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker)
            //.AddMessageBusSender<ICreateDebitHistory>(appSettings.MessageBroker)
             ;
 

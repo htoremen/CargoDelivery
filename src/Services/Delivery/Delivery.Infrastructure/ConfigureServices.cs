@@ -21,7 +21,7 @@ public static class ConfigureServices
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
-                appSettings.ConnectionStrings.DeliveryConnectionString,
+                appSettings.ConnectionStrings.ConnectionString,
                 configure =>
                 {
                     configure.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);

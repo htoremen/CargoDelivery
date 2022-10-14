@@ -23,7 +23,7 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueName.CreateDebitHistory, "Cargo." + QueueName.CreateDebitHistory.ToString());
        
         // Shipment
-        queueConfiguration.Names.Add(QueueName.CreateDebitHistory, "Shipment." + QueueName.ShipmentReceived.ToString());
+        queueConfiguration.Names.Add(QueueName.ShipmentReceived, "Shipment." + QueueName.ShipmentReceived.ToString());
 
         // Route
         queueConfiguration.Names.Add(QueueName.StartRoute, "Route." + QueueName.StartRoute.ToString());

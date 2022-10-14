@@ -26,11 +26,7 @@ public class Authenticate
 }
 public class ConnectionStrings
 {
-    public string SagaConnectionString { get; set; }
-    public string CargoConnectionString { get; set; }
-    public string RouteConnectionString { get; set; }
-    public string DeliveryConnectionString { get; set; }
-    public string IdentityConnectionString { get; set; }
+    public string ConnectionString { get; set; }
     public string Monitoring { get; set; }
 }
 

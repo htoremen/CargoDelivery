@@ -1,5 +1,7 @@
-﻿using Core.Application.Common.Behaviours;
+﻿using Cargos;
+using Core.Application.Common.Behaviours;
 using Core.Infrastructure;
+using Core.Infrastructure.MessageBrokers;
 using FluentValidation;
 using MediatR;
 using MediatR.Pipeline;
@@ -23,8 +25,9 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
         services.AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>));
 
-        //   services
-        //      .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker);
+        services
+            .AddMessageBusSender<IShipmentReceived>(appSettings.MessageBroker)
+            .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker);
 
         return services;
     }
