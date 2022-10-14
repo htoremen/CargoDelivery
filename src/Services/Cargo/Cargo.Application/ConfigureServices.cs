@@ -8,6 +8,7 @@ using FluentValidation;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Configuration;
 using NoSQLMongo.Infrastructure;
+using Shipments;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -33,7 +34,7 @@ public static class ConfigureServices
             .AddMessageBusSender<ISendSelfie>(appSettings.MessageBroker)
             .AddMessageBusSender<ICargoApproval>(appSettings.MessageBroker)
             .AddMessageBusSender<ICargoRejected>(appSettings.MessageBroker)
-           // .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker)
+            .AddMessageBusSender<IShipmentReceived>(appSettings.MessageBroker)
            //.AddMessageBusSender<ICreateDebitHistory>(appSettings.MessageBroker)
             ;
 

@@ -5,9 +5,9 @@ namespace Shipment.Application.Consumer;
 
 public class ShipmentReceivedConsumer : IConsumer<IShipmentReceived>
 {
-    private readonly Mediator _mediator;
+    private readonly IMediator _mediator;
 
-    public ShipmentReceivedConsumer(Mediator mediator)
+    public ShipmentReceivedConsumer(IMediator mediator)
     {
         _mediator = mediator;
     }
