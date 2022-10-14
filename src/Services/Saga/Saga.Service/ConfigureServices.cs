@@ -49,7 +49,7 @@ public static class ConfigureServices
         services.AddMassTransit<IEventBus>(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
-            UsingRabbitMq(x, messageBroker, queueConfiguration, configuration);
+            UsingRabbitMq(x, appSettings, queueConfiguration, configuration);
         });
 
         services.Configure<MassTransitHostOptions>(options =>
@@ -62,16 +62,16 @@ public static class ConfigureServices
         return services;
     }
 
-    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration, IConfigurationRoot configuration)
+    private static void UsingRabbitMq(IBusRegistrationConfigurator<IEventBus> x, AppSettings appSettings, IQueueConfiguration queueConfiguration, IConfigurationRoot configuration)
     {
-        var config = messageBroker.RabbitMQ;
+        var config = appSettings.MessageBroker.RabbitMQ;
 
         x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance, SagaStateDefinition>()
             .EntityFrameworkRepository(config =>
             {
                 config.AddDbContext<DbContext, CargoStateDbContext>((p, b) =>
                 {
-                    b.UseSqlServer(configuration.GetConnectionString("CargoStateDb"));
+                    b.UseSqlServer(appSettings.ConnectionStrings.ConnectionString);
                 });
             });
         x.AddSagas(Assembly.GetExecutingAssembly());
