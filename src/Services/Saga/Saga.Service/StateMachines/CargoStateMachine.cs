@@ -302,13 +302,11 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ShipmentReceived]}"), context => new ShipmentReceivedCommand(context.Data.CorrelationId)
                {
                    CurrentState = context.Instance.CurrentState,
-                   CorrelationId = context.Instance.CorrelationId,
-                   CargoId = context.Data.CargoId,
-                   DebitId = context.Data.DebitId,
-                   ShipmentTypeId = context.Data.ShipmentTypeId 
+                   CorrelationId = context.Instance.CorrelationId
                });
     }
 
+    [Obsolete]
     private EventActivities<CargoStateInstance> CargoRejectedActivity(IQueueConfiguration queueConfiguration)
     {
         return When(CargoRejectedEvent)
