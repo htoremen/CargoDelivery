@@ -1,14 +1,14 @@
-﻿namespace Deliveries;
+﻿namespace Notifications;
 
-public interface IStartDistribution
+public interface ISendSms
 {
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
     public string CurrentState { get; set; }
 }
-public class StartDistribution : IStartDistribution
+public class SendSms : ISendSms
 {
-    public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
+    public Guid CorrelationId { get; set; }
     public string CurrentState { get; set; }
 }
