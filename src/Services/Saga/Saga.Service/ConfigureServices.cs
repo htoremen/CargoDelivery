@@ -40,17 +40,10 @@ public static class ConfigureServices
     public static IServiceCollection AddEventBus(this IServiceCollection services, IConfigurationRoot configuration, AppSettings appSettings)
     {
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
-
         var messageBroker = appSettings.MessageBroker;
-        services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
-        services.AddMassTransit(x => { UsingRabbitMq(x, appSettings, queueConfiguration); });
 
-        services.Configure<MassTransitHostOptions>(options =>
-        {
-            options.WaitUntilStarted = true;
-            options.StartTimeout = TimeSpan.FromMinutes(1);
-            options.StopTimeout = TimeSpan.FromMinutes(2);
-        });
+        services.AddMassTransit(x => { UsingRabbitMq(x, appSettings, queueConfiguration); });
+        services.ConfigureMassTransitHostOptions(messageBroker);
 
         return services;
     }

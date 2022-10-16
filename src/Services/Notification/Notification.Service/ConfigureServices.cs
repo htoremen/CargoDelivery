@@ -41,47 +41,15 @@ public static class ConfigureServices
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
         var messageBroker = appSettings.MessageBroker;
 
-        services.AddMassTransit(x =>
-        {
-          //  x.AddConsumer<CardPaymentConsumer>();
-            x.SetKebabCaseEndpointNameFormatter();
-            UsingRabbitMq(x, messageBroker, queueConfiguration);            
-        });
-
-
-        services.Configure<MassTransitHostOptions>(options =>
-        {
-            options.WaitUntilStarted = true;
-            options.StartTimeout = TimeSpan.FromSeconds(30);
-            options.StopTimeout = TimeSpan.FromMinutes(1);
-        });
-
-        services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
-
-
-        if (messageBroker.UsedRabbitMQ())
-        {
-            var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
-            {
-                cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
-                {
-                    h.Username(messageBroker.RabbitMQ.UserName);
-                    h.Password(messageBroker.RabbitMQ.Password);
-                });
-            });
-
-            services.AddSingleton<IPublishEndpoint>(bus);
-            services.AddSingleton<ISendEndpointProvider>(bus);
-            services.AddSingleton<IBus>(bus);
-            services.AddSingleton<IBusControl>(bus);
-        }
+        services.AddMassTransit(x => { UsingRabbitMq(x, messageBroker, queueConfiguration); });
+        services.ConfigureMassTransitHostOptions(messageBroker);
 
         return services;
-
     }
 
     private static void UsingRabbitMq(IBusRegistrationConfigurator x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
+        x.SetKebabCaseEndpointNameFormatter();
         var config = messageBroker.RabbitMQ;
         x.UsingRabbitMq((context, cfg) =>
         {

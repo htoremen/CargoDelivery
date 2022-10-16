@@ -68,27 +68,7 @@ public static class ConfigureServices
         var messageBroker = appSettings.MessageBroker;
 
         services.AddMassTransit<IBus>(x => { UsingRabbitMq(x, messageBroker, queueConfiguration); });
-
-        services.Configure<MassTransitHostOptions>(options =>
-        {
-            options.WaitUntilStarted = true;
-            options.StartTimeout = TimeSpan.FromSeconds(30);
-            options.StopTimeout = TimeSpan.FromMinutes(1);
-        });
-
-        var bus = MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
-        {
-            cfg.Host(messageBroker.RabbitMQ.HostName, messageBroker.RabbitMQ.VirtualHost, h =>
-            {
-                h.Username(messageBroker.RabbitMQ.UserName);
-                h.Password(messageBroker.RabbitMQ.Password);
-            });
-        });
-
-        services.AddSingleton<IPublishEndpoint>(bus);
-        services.AddSingleton<ISendEndpointProvider>(bus);
-        services.AddSingleton<IBus>(bus);
-        services.AddSingleton<IBusControl>(bus);
+        services.ConfigureMassTransitHostOptions(messageBroker);
 
         return services;
     }
