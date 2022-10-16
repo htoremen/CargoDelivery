@@ -73,7 +73,7 @@ public static class ConfigureServices
         return services;
     }
 
-    private static void UsingRabbitMq(IBusRegistrationConfigurator<IBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
+    private static void UsingRabbitMq(IBusRegistrationConfigurator<IBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queue)
     {
         x.SetKebabCaseEndpointNameFormatter();
 
@@ -98,12 +98,12 @@ public static class ConfigureServices
             cfg.UseJsonSerializer();
             cfg.ConfigureEndpoints(context);
 
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.StartDelivery], e => { e.ConfigureConsumer<StartDeliveryConsumer>(context); });
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.NewDelivery], e => { e.ConfigureConsumer<NewDeliveryConsumer>(context); });
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDelivery], e => { e.ConfigureConsumer<CreateDeliveryConsumer>(context); });
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.NotDelivered], e => { e.ConfigureConsumer<NotDeliveredConsumer>(context); });
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateRefund], e => { e.ConfigureConsumer<CreateRefundConsumer>(context); });
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.DeliveryCompleted], e => { e.ConfigureConsumer<DeliveryCompletedConsumer>(context); });
+            cfg.ReceiveEndpoint(queue.Names[QueueName.StartDelivery], e => { e.ConfigureConsumer<StartDeliveryConsumer>(context); });
+            cfg.ReceiveEndpoint(queue.Names[QueueName.NewDelivery], e => { e.ConfigureConsumer<NewDeliveryConsumer>(context); });
+            cfg.ReceiveEndpoint(queue.Names[QueueName.CreateDelivery], e => { e.ConfigureConsumer<CreateDeliveryConsumer>(context); });
+            cfg.ReceiveEndpoint(queue.Names[QueueName.NotDelivered], e => { e.ConfigureConsumer<NotDeliveredConsumer>(context); });
+            cfg.ReceiveEndpoint(queue.Names[QueueName.CreateRefund], e => { e.ConfigureConsumer<CreateRefundConsumer>(context); });
+            cfg.ReceiveEndpoint(queue.Names[QueueName.DeliveryCompleted], e => { e.ConfigureConsumer<DeliveryCompletedConsumer>(context); });
         });
     }
 }

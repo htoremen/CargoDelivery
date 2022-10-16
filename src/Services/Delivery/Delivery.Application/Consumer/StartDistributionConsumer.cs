@@ -1,4 +1,6 @@
-﻿namespace Delivery.Application.Consumer;
+﻿using Delivery.Application.Deliveries.Commands.StartDistributions;
+
+namespace Delivery.Application.Consumer;
 
 public class StartDistributionConsumer : IConsumer<IStartDistribution>
 {
@@ -9,9 +11,9 @@ public class StartDistributionConsumer : IConsumer<IStartDistribution>
         _mediator = mediator;
     }
 
-    public Task Consume(ConsumeContext<IStartDistribution> context)
+    public async Task Consume(ConsumeContext<IStartDistribution> context)
     {
         var command = context.Message;
-        throw new NotImplementedException();
+        await _mediator.Send(new StartDistributionCommand { CorrelationId = command.CorrelationId.ToString(), CurrentState = command.CurrentState });
     }
 }
