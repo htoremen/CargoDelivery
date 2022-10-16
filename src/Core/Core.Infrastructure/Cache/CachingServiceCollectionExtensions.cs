@@ -36,9 +36,13 @@ public static class CachingServiceCollectionExtensions
             //    opt.InstanceName = options.Distributed.Redis.InstanceName;
 
             //});
+            ConfigurationOptions option = new ConfigurationOptions
+            {
+                AbortOnConnectFail = false,
+                EndPoints = { options.Distributed.Redis.Configuration }
+            };
 
-            
-            var multiplexer = ConnectionMultiplexer.Connect(options.Distributed.Redis.Configuration);
+            var multiplexer = ConnectionMultiplexer.Connect(option);
             services.AddSingleton<IConnectionMultiplexer>(multiplexer);
         }
         else if (distributedProvider == "SqlServer")

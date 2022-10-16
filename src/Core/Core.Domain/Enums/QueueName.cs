@@ -31,10 +31,11 @@ public enum QueueName
     CreateRefund = 320,
 
     // Teslimat Oluştur
-    CreateDelivery = 330,
-    CardPayment = 331,
-    PayAtDoor = 332,
-    FreeDelivery = 333,
+    StartDistribution = 330,
+    CreateDelivery = 331,
+    CardPayment = 332,
+    PayAtDoor = 333,
+    FreeDelivery = 334,
 
     // Kargo İşlemleri Ortak
     DeliveryCompleted = 361,

@@ -30,6 +30,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public State ManuelRoute { get; set; }
 
     // Delivery
+    public State StartDistribution { get; set; }
     public State StartDelivery { get; set; }
     public State NewDelivery { get; set; }
     public State NotDelivered { get; set; }
@@ -61,6 +62,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public Event<IAutoRoute> AutoRouteEvent { get; private set; }
     public Event<IManuelRoute> ManuelRouteEvent { get; private set; }
 
+    public Event<IStartDistribution> StartDistributionEvent { get; private set; }
     public Event<IStartDelivery> StartDeliveryEvent { get; private set; }
     public Event<INewDelivery> NewDeliveryEvent { get; private set; }
     public Event<ICreateDelivery> CreateDeliveryEvent { get; private set; }
@@ -99,7 +101,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         During(ManuelRoute, StartDeliveryActivity(queueConfiguration));
 
         During(StartDelivery, NewDeliveryActivity(queueConfiguration));
-        During(NewDelivery, CreateDeliveryActivity(queueConfiguration), NotDeliveredActivity(queueConfiguration), CreateRefundActivity(queueConfiguration));
+        During(NewDelivery, StartDistributionActivity(queueConfiguration));
+        During(StartDistribution, CreateDeliveryActivity(queueConfiguration), NotDeliveredActivity(queueConfiguration), CreateRefundActivity(queueConfiguration));
         During(CreateDelivery, CardPaymentActivity(queueConfiguration), FreeDeliveryActivity(queueConfiguration), PayAtDoorActivity(queueConfiguration));  
         
         During(CardPayment, DeliveryCompletedActivity(queueConfiguration));
@@ -241,6 +244,19 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     }
 
     [Obsolete]
+    private EventActivities<CargoStateInstance> StartDistributionActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(StartDistributionEvent)
+               .TransitionTo(StartDistribution)
+               .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.StartDistribution]}"), context => new StartDistributionCommand(context.Data.CorrelationId)
+               {
+                   CorrelationId = context.Instance.CorrelationId,
+                   CurrentState = context.Instance.CurrentState,
+                   CargoId = context.Data.CargoId
+               });
+    }
+
+    [Obsolete]
     private EventActivities<CargoStateInstance> NewDeliveryActivity(IQueueConfiguration queueConfiguration)
     {
         return When(NewDeliveryEvent)
@@ -377,13 +393,15 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         Event(() => StartDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => NewDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => CardPaymentEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => FreeDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => PayAtDoorEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => StartDistributionEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
         Event(() => CreateDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => NotDeliveredEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => CreateRefundEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+
+        Event(() => CardPaymentEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => FreeDeliveryEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => PayAtDoorEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
         Event(() => DeliveryCompletedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => ShiftCompletionEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));

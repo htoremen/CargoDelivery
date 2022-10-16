@@ -7,11 +7,35 @@ using Enums;
 using Order.Application.NoSqls.RedisDataAdds;
 using Order.Domain;
 using System.Text.Json;
+using Order.Application.Deliveries.StartDistributions;
 
 namespace Order.API.Controllers
 {
     public class DeliveryController : ApiControllerBase
     {
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [Route("start-Distribution")]
+        public async Task<IActionResult> StartDistribution(Guid correlationId, Guid cargoId)
+        {
+            var command = new StartDistributionCommand
+            {
+                CargoId = cargoId,
+                CorrelationId = correlationId
+            };
+
+            await Mediator.Send(new RedisDataAddCommand
+            {
+                CacheKey = StaticKeyValues.StartDistribution,
+                CacheValue = command.CorrelationId.ToString(),
+                Value = JsonSerializer.Serialize(command)
+            });
+
+            var response = await Mediator.Send(command);
+            return Ok(response);
+        }
+
         [HttpPost()]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]

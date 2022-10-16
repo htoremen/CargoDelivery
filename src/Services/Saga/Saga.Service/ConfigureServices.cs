@@ -9,6 +9,7 @@ using Saga.Service.StateMachines;
 using MassTransit;
 using Saga.Service.Components;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Saga.Service;
 public static class ConfigureServices
@@ -41,22 +42,27 @@ public static class ConfigureServices
         services.AddQueueConfiguration(out IQueueConfiguration queueConfiguration);
 
         var messageBroker = appSettings.MessageBroker;
-        services.AddMassTransit(x => { UsingRabbitMq(x, appSettings, queueConfiguration, configuration); });
+        services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
+        services.AddMassTransit(x => { UsingRabbitMq(x, appSettings, queueConfiguration); });
 
         services.Configure<MassTransitHostOptions>(options =>
         {
             options.WaitUntilStarted = true;
-            options.StartTimeout = TimeSpan.FromSeconds(30);
-            options.StopTimeout = TimeSpan.FromMinutes(1);
+            options.StartTimeout = TimeSpan.FromMinutes(1);
+            options.StopTimeout = TimeSpan.FromMinutes(2);
         });
 
         return services;
     }
 
-    private static void UsingRabbitMq(IBusRegistrationConfigurator x, AppSettings appSettings, IQueueConfiguration queueConfiguration, IConfigurationRoot configuration)
+    private static void UsingRabbitMq(IBusRegistrationConfigurator x, AppSettings appSettings, IQueueConfiguration queueConfiguration)
     {
-        x.SetKebabCaseEndpointNameFormatter();
         var config = appSettings.MessageBroker.RabbitMQ;
+
+        x.SetKebabCaseEndpointNameFormatter();
+        x.AddSagas(Assembly.GetExecutingAssembly());
+        x.AddSagasFromNamespaceContaining<CargoStateInstance>();
+        x.AddSagasFromNamespaceContaining(typeof(CargoStateInstance)); 
 
         x.AddSagaStateMachine<CargoStateMachine, CargoStateInstance, SagaStateDefinition>()
             .EntityFrameworkRepository(config =>
@@ -66,21 +72,17 @@ public static class ConfigureServices
                     b.UseSqlServer(appSettings.ConnectionStrings.ConnectionString);
                 });
             });
-        x.AddSagas(Assembly.GetExecutingAssembly());
-        x.AddSagasFromNamespaceContaining<CargoStateInstance>();
-        x.AddSagasFromNamespaceContaining(typeof(CargoStateInstance));
 
-        x.AddBus(factory => MassTransit.Bus.Factory.CreateUsingRabbitMq(cfg =>
+        x.AddBus(factory => Bus.Factory.CreateUsingRabbitMq(cfg =>
         {
+            cfg.UseJsonSerializer();
+            cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
+
             cfg.Host(config.HostName, config.VirtualHost, h =>
             {
                 h.Username(config.UserName);
                 h.Password(config.Password);
             });
-
-            cfg.UseJsonSerializer();
-            cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
-
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSaga], e =>
             {
                 e.ConfigureSaga<CargoStateInstance>(factory);

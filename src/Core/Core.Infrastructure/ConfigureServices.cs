@@ -20,7 +20,12 @@ public static class ConfigureServices
     /// <returns></returns>
     public static IServiceCollection AddOpenTelemetryTracingServices(this IServiceCollection services, OpenTelemetryOptions options)
     {
-        var multiplexer = ConnectionMultiplexer.Connect(options.RedisConfiguration);
+        ConfigurationOptions option = new ConfigurationOptions
+        {
+            AbortOnConnectFail = false,
+            EndPoints = { options.RedisConfiguration }
+        };
+        var multiplexer = ConnectionMultiplexer.Connect(option);
 
         //Action<ResourceBuilder> configureResource = r => r.AddService(OpenTelemetryExtensions.ServiceName, OpenTelemetryExtensions.ServiceVersion);
 

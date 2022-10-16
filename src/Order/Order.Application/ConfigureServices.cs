@@ -35,6 +35,7 @@ public static class ConfigureServices
             .AddMessageBusSender<IAutoRoute>(appSettings.MessageBroker)
 
             .AddMessageBusSender<IStartDelivery>(appSettings.MessageBroker)
+            .AddMessageBusSender<IStartDistribution>(appSettings.MessageBroker)
             .AddMessageBusSender<ICreateDelivery>(appSettings.MessageBroker)
             .AddMessageBusSender<ICreateRefund>(appSettings.MessageBroker)
             .AddMessageBusSender<INotDelivered>(appSettings.MessageBroker)
