@@ -4,8 +4,6 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using StackExchange.Redis;
-using Core.Infrastructure.Telemetry;
-using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

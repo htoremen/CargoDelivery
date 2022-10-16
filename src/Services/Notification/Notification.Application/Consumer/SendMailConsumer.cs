@@ -1,6 +1,5 @@
 ﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
 using MassTransit;
-using MediatR;
 using Notification.Application.Sends.SendMails;
 using Notifications;
 
@@ -33,7 +32,7 @@ public class SendMailConsumerDefinition : ConsumerDefinition<SendMailConsumer>
         ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
     }
 
-    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CreateRefundConsumer> consumerConfigurator)
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<SendMailConsumer> consumerConfigurator)
     {
         endpointConfigurator.SetConfigure();
     }

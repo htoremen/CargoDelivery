@@ -25,10 +25,10 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
         services.AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>));
 
-        services
-            .AddMessageBusSender<ISendMail>(appSettings.MessageBroker)
-            .AddMessageBusSender<ISendSms>(appSettings.MessageBroker)
-            .AddMessageBusSender<IPushNotification>(appSettings.MessageBroker);
+        //services
+        //    .AddMessageBusSender<ISendMail>(appSettings.MessageBroker)
+        //    .AddMessageBusSender<ISendSms>(appSettings.MessageBroker)
+        //    .AddMessageBusSender<IPushNotification>(appSettings.MessageBroker);
 
         return services;
     }

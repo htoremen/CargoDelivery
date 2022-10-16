@@ -28,8 +28,8 @@ public enum QueueName
     NewDelivery = 301,
 
     SendMail = 302,
-    SendSms = 302,
-    PushNotification = 303,
+    SendSms = 303,
+    PushNotification = 304,
 
     NotDelivered = 310,
     CreateRefund = 320,

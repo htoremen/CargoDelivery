@@ -8,7 +8,7 @@ public class SendMailCommand : IRequest
     public Guid CargoId { get; set; }
 }
 
-public class SendMailCommandHandler : IRequestHandler<SendMailCommand>
+public class SendMailCommandHandler : IRequestHandler<SendMailCommand, Unit>
 {
     public async Task<Unit> Handle(SendMailCommand request, CancellationToken cancellationToken)
     {
