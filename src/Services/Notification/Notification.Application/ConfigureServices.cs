@@ -1,9 +1,11 @@
 ﻿using Core.Application.Common.Behaviours;
 using Core.Infrastructure;
+using Core.Infrastructure.MessageBrokers;
 using FluentValidation;
 using MediatR;
 using MediatR.Pipeline;
 using Notification.Application.Common.Behaviours;
+using Notifications;
 using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -23,8 +25,10 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
         services.AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>));
 
-     //   services
-      //      .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker);
+        services
+            .AddMessageBusSender<ISendMail>(appSettings.MessageBroker)
+            .AddMessageBusSender<ISendSms>(appSettings.MessageBroker)
+            .AddMessageBusSender<IPushNotification>(appSettings.MessageBroker);
 
         return services;
     }
