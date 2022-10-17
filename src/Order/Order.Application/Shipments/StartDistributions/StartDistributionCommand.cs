@@ -1,4 +1,5 @@
-﻿using Shipments;
+﻿using Enums;
+using Shipments;
 
 namespace Order.Application.Shipments.StartDistributions;
 
@@ -6,6 +7,7 @@ public class StartDistributionCommand : IRequest<Unit>
 {
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
+    public NotificationType NotificationType { get; set; }
 }
 
 public class StartDistributionCommandHandler : IRequestHandler<StartDistributionCommand>
@@ -22,7 +24,8 @@ public class StartDistributionCommandHandler : IRequestHandler<StartDistribution
         await _startDistribution.SendAsync(new StartDistribution
         {
             CargoId = request.CargoId,
-            CorrelationId = request.CorrelationId
+            CorrelationId = request.CorrelationId,
+            NotificationType = request.NotificationType
         });
         return Unit.Value;
     }
