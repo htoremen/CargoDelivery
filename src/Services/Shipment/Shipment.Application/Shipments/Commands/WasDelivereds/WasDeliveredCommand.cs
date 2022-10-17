@@ -11,9 +11,15 @@ public class WasDeliveredCommand : IRequest
 
 public class WasDeliveredCommandHandler : IRequestHandler<WasDeliveredCommand>
 {
+    private readonly IDebitService _debitService;
+
+    public WasDeliveredCommandHandler(IDebitService debitService)
+    {
+        _debitService = debitService;
+    }
     public async Task<Unit> Handle(WasDeliveredCommand request, CancellationToken cancellationToken)
     {
-
+        await _debitService.UpdateStateAsync(request.CorrelationId, request.CurrentState);
         return Unit.Value;
     }
 }

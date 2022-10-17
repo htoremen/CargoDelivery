@@ -6,24 +6,27 @@ using Shipment.Application.Common.Interfaces;
 
 namespace Shipment.Application.Shipments.Commands.ShipmentReceiveds;
 
-public class ShipmentReceivedCommand : IRequest<GenericResponse<ShipmentReceivedResponse>>
+public class ShipmentReceivedCommand : IRequest
 {
     public Guid CorrelationId { get; set; }
     public string CurrentState { get; set; }
 }
 
-public class ShipmentReceivedCommandHandler : IRequestHandler<ShipmentReceivedCommand, GenericResponse<ShipmentReceivedResponse>>
+public class ShipmentReceivedCommandHandler : IRequestHandler<ShipmentReceivedCommand>
 {
     private readonly IApplicationDbContext _context; 
-    private readonly IMessageSender<IStartRoute> _startRoute;
+    private readonly IMessageSender<IStartRoute> _startRoute; 
+    private readonly IDebitService _debitService;
 
-    public ShipmentReceivedCommandHandler(IApplicationDbContext context, IMessageSender<IStartRoute> startRoute)
+
+    public ShipmentReceivedCommandHandler(IApplicationDbContext context, IMessageSender<IStartRoute> startRoute, IDebitService debitService)
     {
         _context = context;
         _startRoute = startRoute;
+        _debitService = debitService;
     }
 
-    public async Task<GenericResponse<ShipmentReceivedResponse>> Handle(ShipmentReceivedCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(ShipmentReceivedCommand request, CancellationToken cancellationToken)
     {
         var cargos = new List<Domain.Entities.Cargo>();
         foreach (var item in cargos)
@@ -48,6 +51,8 @@ public class ShipmentReceivedCommandHandler : IRequestHandler<ShipmentReceivedCo
             CorrelationId = request.CorrelationId
         }, null, cancellationToken);
 
-        return GenericResponse<ShipmentReceivedResponse>.Success(200);
+        await _debitService.UpdateStateAsync(request.CorrelationId.ToString(), request.CurrentState);
+
+        return Unit.Value;
     }
 }

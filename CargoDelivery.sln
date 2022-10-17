@@ -150,6 +150,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Observability", "Observabil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Infrastructure.Telemetry", "src\Core\Core.Infrastructure.Telemetry\Core.Infrastructure.Telemetry.csproj", "{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipment.GRPC.Client", "src\Services\Shipment\Shipment.GRPC.Client\Shipment.GRPC.Client.csproj", "{943B3DA6-D112-4E67-8ED9-D507AB928F3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -368,6 +370,10 @@ Global
 		{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{943B3DA6-D112-4E67-8ED9-D507AB928F3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{943B3DA6-D112-4E67-8ED9-D507AB928F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{943B3DA6-D112-4E67-8ED9-D507AB928F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{943B3DA6-D112-4E67-8ED9-D507AB928F3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -440,6 +446,7 @@ Global
 		{E308B56D-3887-48A5-8272-23BBD3E0CAEA} = {B09DCD95-4D82-4906-A542-A6D744D09FB9}
 		{796472AA-24F4-489A-A0A2-0D880F5A424D} = {8E2EA79A-4CE2-4E5F-8A38-5497905AAAB5}
 		{B5FB8E56-C3C3-43D6-9BBF-2D870346E62F} = {20536872-46F0-4B29-9D33-50C675978FEA}
+		{943B3DA6-D112-4E67-8ED9-D507AB928F3C} = {EB9A3BD8-02A2-423C-BA40-346AE7BEC539}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7A97444-E857-443B-AF2E-1BC3AAE4D6BA}

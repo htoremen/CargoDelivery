@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Core.Infrastructure\Core.Infrastructure.csproj" />
     <ProjectReference Include="..\Shipment.Domain\Shipment.Domain.csproj" />
+    <ProjectReference Include="..\Shipment.GRPC.Client\Shipment.GRPC.Client.csproj" />
   </ItemGroup>
 
 </Project>

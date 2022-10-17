@@ -4,7 +4,6 @@ using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Deliveries;
 using FluentValidation;
-using MediatR;
 using MediatR.Pipeline;
 using Shipment.Application.Common.Behaviours;
 using System.Reflection;
@@ -33,6 +32,7 @@ public static class ConfigureServices
             .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker)
             .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker);
 
+        services.AddGrpcServices();
         return services;
     }
 }
