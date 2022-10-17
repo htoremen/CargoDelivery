@@ -19,7 +19,7 @@ public class WasDeliveredCommandHandler : IRequestHandler<WasDeliveredCommand>
     }
     public async Task<Unit> Handle(WasDeliveredCommand request, CancellationToken cancellationToken)
     {
-        await _debitService.UpdateStateAsync(request.CorrelationId, request.CurrentState);
+        await _debitService.UpdateStateAsync(request.CorrelationId.ToString(), request.CurrentState);
         return Unit.Value;
     }
 }
