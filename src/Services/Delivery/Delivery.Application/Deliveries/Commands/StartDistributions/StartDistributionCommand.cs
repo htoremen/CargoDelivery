@@ -22,4 +22,3 @@ public class StartDistributionCommandHandler : IRequestHandler<StartDistribution
         return Unit.Value;
     }
 }
-
