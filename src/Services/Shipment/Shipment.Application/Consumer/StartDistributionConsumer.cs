@@ -1,7 +1,7 @@
-﻿using Delivery.Application.Deliveries.Commands.StartDistributions;
-using Notifications;
+﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
+using Shipment.Application.Shipments.Commands.ShipmentReceiveds;
 
-namespace Delivery.Application.Consumer;
+namespace Shipment.Application.Consumer;
 
 public class StartDistributionConsumer : IConsumer<IStartDistribution>
 {
@@ -51,5 +51,19 @@ public class StartDistributionConsumer : IConsumer<IStartDistribution>
                 CurrentState = command.CurrentState
             });
         }
+    }
+}
+
+
+public class StartDistributionConsumerDefinition : ConsumerDefinition<StartDistributionConsumer>
+{
+    public StartDistributionConsumerDefinition()
+    {
+        ConcurrentMessageLimit = 3;
+    }
+
+    protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<StartDistributionConsumer> consumerConfigurator)
+    {
+        endpointConfigurator.SetConfigure();
     }
 }

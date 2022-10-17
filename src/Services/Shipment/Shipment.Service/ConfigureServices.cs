@@ -14,9 +14,7 @@ public static class ConfigureServices
     public static IServiceCollection AddWebUIServices(this IServiceCollection services)
     {
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
-
         services.AddHttpContextAccessor();
-
         return services;
     }
 
@@ -55,22 +53,23 @@ public static class ConfigureServices
         x.SetSnakeCaseEndpointNameFormatter();
 
         x.AddConsumer<ShipmentReceivedConsumer, ShipmentReceivedConsumerDefinition>();
+        x.AddConsumer<StartDistributionConsumer, StartDistributionConsumerDefinition>();
+
         var config = messageBroker.RabbitMQ;
         x.UsingRabbitMq((context, cfg) =>
         {
             var mediator = context.GetRequiredService<IMediator>();
+            cfg.UseJsonSerializer();
             cfg.Host(config.HostName, config.VirtualHost, h =>
             {
                 h.Username(config.UserName);
                 h.Password(config.Password);
             });
 
-            cfg.UseJsonSerializer();
-            cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
-            cfg.ConfigureEndpoints(context);
-
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.ShipmentReceived], e => { e.ConfigureConsumer<ShipmentReceivedConsumer>(context); });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.StartDistribution], e => { e.ConfigureConsumer<StartDistributionConsumer>(context); });
 
+            cfg.ConfigureEndpoints(context);
         });
     }
 }

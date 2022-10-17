@@ -3,9 +3,8 @@ using Order.Application.Common.Behaviours;
 using FluentValidation;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
-using Microsoft.Extensions.Configuration;
 using Core.Infrastructure.Cache;
-using Core.Application.Common.Interfaces;
+using Shipments;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -36,11 +35,13 @@ public static class ConfigureServices
 
             .AddMessageBusSender<IStartDelivery>(appSettings.MessageBroker)
             .AddMessageBusSender<IStartDistribution>(appSettings.MessageBroker)
+            .AddMessageBusSender<IVerificationCode>(appSettings.MessageBroker)
+
             .AddMessageBusSender<ICreateDelivery>(appSettings.MessageBroker)
             .AddMessageBusSender<ICreateRefund>(appSettings.MessageBroker)
             .AddMessageBusSender<INotDelivered>(appSettings.MessageBroker)
-            .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker)
 
+            .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker)
             .AddMessageBusSender<IShiftCompletion>(appSettings.MessageBroker);
         return services;
     }

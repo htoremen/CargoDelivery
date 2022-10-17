@@ -1,4 +1,6 @@
-﻿namespace Order.Application.Deliveries.StartDistributions;
+﻿using Shipments;
+
+namespace Order.Application.Shipments.StartDistributions;
 
 public class StartDistributionCommand : IRequest<Unit>
 {

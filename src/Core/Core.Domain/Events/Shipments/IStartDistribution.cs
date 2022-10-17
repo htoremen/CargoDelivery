@@ -1,6 +1,6 @@
 ﻿using Enums;
 
-namespace Deliveries;
+namespace Shipments;
 
 public interface IStartDistribution
 {
@@ -9,6 +9,7 @@ public interface IStartDistribution
     public string CurrentState { get; set; }
     public NotificationType NotificationType { get; set; }
 }
+
 public class StartDistribution : IStartDistribution
 {
     public Guid CorrelationId { get; set; }

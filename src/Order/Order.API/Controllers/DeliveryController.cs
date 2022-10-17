@@ -2,7 +2,6 @@
 using Order.Application.Deliveries.CreateDeliveries;
 using Order.Application.Deliveries.CreateRefunds;
 using Order.Application.Deliveries.NotDelivereds;
-using Order.Application.Deliveries.StartDistributions;
 using Order.Domain;
 using Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -10,150 +9,126 @@ using Order.Application.NoSqls.RedisDataAdds;
 using System.Text.Json;
 using Order.Application.Deliveries.VerificationCodes;
 
-namespace Order.API.Controllers
+namespace Order.API.Controllers;
+
+public class DeliveryController : ApiControllerBase
 {
-    public class DeliveryController : ApiControllerBase
+    [HttpPost()]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [Route("verification-code")]
+    public async Task<IActionResult> VerificationCode(Guid correlationId, Guid cargoId, int code)
     {
-        [HttpPost()]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [Route("start-distribution")]
-        public async Task<IActionResult> StartDistribution(Guid correlationId, Guid cargoId)
+        var command = new VerificationCodeCommand
         {
-            var command = new StartDistributionCommand
-            {
-                CargoId = cargoId,
-                CorrelationId = correlationId
-            };
+            CargoId = cargoId,
+            CorrelationId = correlationId,
+            Code = code
+        };
 
-            await Mediator.Send(new RedisDataAddCommand
-            {
-                CacheKey = StaticKeyValues.StartDistribution,
-                CacheValue = command.CorrelationId.ToString(),
-                Value = JsonSerializer.Serialize(command)
-            });
-
-            var response = await Mediator.Send(command);
-            return Ok(response);
-        }
-
-        [HttpPost()]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [Route("verification-code")]
-        public async Task<IActionResult> VerificationCode(Guid correlationId, Guid cargoId, int code)
+        await Mediator.Send(new RedisDataAddCommand
         {
-            var command = new VerificationCodeCommand
-            {
-                CargoId = cargoId,
-                CorrelationId = correlationId,
-                Code = code
-            };
+            CacheKey = StaticKeyValues.VerificationCode,
+            CacheValue = command.CorrelationId.ToString(),
+            Value = JsonSerializer.Serialize(command)
+        });
 
-            await Mediator.Send(new RedisDataAddCommand
-            {
-                CacheKey = StaticKeyValues.VerificationCode,
-                CacheValue = command.CorrelationId.ToString(),
-                Value = JsonSerializer.Serialize(command)
-            });
+        var response = await Mediator.Send(command);
+        return Ok(response);
+    }
 
-            var response = await Mediator.Send(command);
-            return Ok(response);
-        }
-
-        [HttpPost()]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [Route("create-delivery")]
-        public async Task<IActionResult> CreateDelivery(Guid correlationId, Guid cargoId, PaymentType paymentType)
+    [HttpPost()]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [Route("create-delivery")]
+    public async Task<IActionResult> CreateDelivery(Guid correlationId, Guid cargoId, PaymentType paymentType)
+    {
+        var command = new CreateDeliveryCommand
         {
-            var command = new CreateDeliveryCommand
-            {
-                CargoId = cargoId,
-                CorrelationId = correlationId,
-                PaymentType = paymentType
-            };
+            CargoId = cargoId,
+            CorrelationId = correlationId,
+            PaymentType = paymentType
+        };
 
-            await Mediator.Send(new RedisDataAddCommand
-            {
-                CacheKey = StaticKeyValues.CreateDelivery,
-                CacheValue = command.CorrelationId.ToString(),
-                Value = JsonSerializer.Serialize(command)
-            });
-
-            var response = await Mediator.Send(command);
-            return Ok(response);
-        }
-
-        [HttpPost()]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [Route("not-delivered")]
-        public async Task<IActionResult> NotDelivered(Guid correlationId, Guid cargoId)
+        await Mediator.Send(new RedisDataAddCommand
         {
-            var command = new NotDeliveredCommand
-            {
-                CargoId = cargoId,
-                CorrelationId = correlationId
-            };
+            CacheKey = StaticKeyValues.CreateDelivery,
+            CacheValue = command.CorrelationId.ToString(),
+            Value = JsonSerializer.Serialize(command)
+        });
 
-            await Mediator.Send(new RedisDataAddCommand
-            {
-                CacheKey = StaticKeyValues.NotDelivered,
-                CacheValue = command.CorrelationId.ToString(),
-                Value = JsonSerializer.Serialize(command)
-            });
+        var response = await Mediator.Send(command);
+        return Ok(response);
+    }
 
-            var response = await Mediator.Send(command);
-            return Ok(response);
-        }
-
-
-        [HttpPost()]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [Route("create-refund")]
-        public async Task<IActionResult> CreateRefund(Guid correlationId, Guid cargoId)
+    [HttpPost()]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [Route("not-delivered")]
+    public async Task<IActionResult> NotDelivered(Guid correlationId, Guid cargoId)
+    {
+        var command = new NotDeliveredCommand
         {
-            var command = new CreateRefundCommand
-            {
-                CargoId = cargoId,
-                CorrelationId = correlationId
-            };
+            CargoId = cargoId,
+            CorrelationId = correlationId
+        };
 
-            await Mediator.Send(new RedisDataAddCommand
-            {
-                CacheKey = StaticKeyValues.CreateRefund,
-                CacheValue = command.CorrelationId.ToString(),
-                Value = JsonSerializer.Serialize(command)
-            });
-
-            var response = await Mediator.Send(command);
-
-            return Ok(response);
-        }
-
-
-        [HttpPost()]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [Route("shift-completion")]
-        public async Task<IActionResult> ShiftCompletion([FromBody] Guid correlationId)
+        await Mediator.Send(new RedisDataAddCommand
         {
-            var command = new ShiftCompletionCommand
-            {
-                CorrelationId = correlationId
-            };
+            CacheKey = StaticKeyValues.NotDelivered,
+            CacheValue = command.CorrelationId.ToString(),
+            Value = JsonSerializer.Serialize(command)
+        });
 
-            await Mediator.Send(new RedisDataAddCommand
-            {
-                CacheKey = StaticKeyValues.ShiftCompletion,
-                CacheValue = command.CorrelationId.ToString(),
-                Value = JsonSerializer.Serialize(command)
-            });
+        var response = await Mediator.Send(command);
+        return Ok(response);
+    }
 
-            var response = await Mediator.Send(command);
-            return Ok(response);
-        }
+
+    [HttpPost()]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [Route("create-refund")]
+    public async Task<IActionResult> CreateRefund(Guid correlationId, Guid cargoId)
+    {
+        var command = new CreateRefundCommand
+        {
+            CargoId = cargoId,
+            CorrelationId = correlationId
+        };
+
+        await Mediator.Send(new RedisDataAddCommand
+        {
+            CacheKey = StaticKeyValues.CreateRefund,
+            CacheValue = command.CorrelationId.ToString(),
+            Value = JsonSerializer.Serialize(command)
+        });
+
+        var response = await Mediator.Send(command);
+
+        return Ok(response);
+    }
+
+
+    [HttpPost()]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [Route("shift-completion")]
+    public async Task<IActionResult> ShiftCompletion([FromBody] Guid correlationId)
+    {
+        var command = new ShiftCompletionCommand
+        {
+            CorrelationId = correlationId
+        };
+
+        await Mediator.Send(new RedisDataAddCommand
+        {
+            CacheKey = StaticKeyValues.ShiftCompletion,
+            CacheValue = command.CorrelationId.ToString(),
+            Value = JsonSerializer.Serialize(command)
+        });
+
+        var response = await Mediator.Send(command);
+        return Ok(response);
     }
 }

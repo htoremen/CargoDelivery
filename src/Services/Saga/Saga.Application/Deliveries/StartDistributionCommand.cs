@@ -1,4 +1,7 @@
-﻿namespace Saga.Application.Deliveries;
+﻿using Enums;
+using Shipments;
+
+namespace Saga.Application.Deliveries;
 
 public class StartDistributionCommand : IStartDistribution
 {
@@ -6,8 +9,8 @@ public class StartDistributionCommand : IStartDistribution
     {
         CorrelationId = correlationId;
     }
-    public Guid CargoId { get; set; }
-
     public Guid CorrelationId { get; set; }
+    public Guid CargoId { get; set; }
     public string CurrentState { get; set; }
+    public NotificationType NotificationType { get; set; }
 }

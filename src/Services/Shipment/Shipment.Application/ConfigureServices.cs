@@ -26,7 +26,9 @@ public static class ConfigureServices
         services.AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>));
 
         services
-            .AddMessageBusSender<IShipmentReceived>(appSettings.MessageBroker)
+            .AddMessageBusSender<ISendMail>(appSettings.MessageBroker)
+            .AddMessageBusSender<ISendSms>(appSettings.MessageBroker)
+            .AddMessageBusSender<IPushNotification>(appSettings.MessageBroker)
             .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker);
 
         return services;
