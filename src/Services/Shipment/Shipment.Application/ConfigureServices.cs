@@ -2,6 +2,7 @@
 using Core.Application.Common.Behaviours;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
+using Deliveries;
 using FluentValidation;
 using MediatR;
 using MediatR.Pipeline;
@@ -29,7 +30,8 @@ public static class ConfigureServices
             .AddMessageBusSender<ISendMail>(appSettings.MessageBroker)
             .AddMessageBusSender<ISendSms>(appSettings.MessageBroker)
             .AddMessageBusSender<IPushNotification>(appSettings.MessageBroker)
-            .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker);
+            .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker)
+            .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker);
 
         return services;
     }

@@ -1,18 +1,19 @@
 ﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
 using Delivery.Application.Deliveries.Commands.InsertDeliveries;
 using Delivery.Application.Deliveries.NotDelivereds;
+using Shipments;
 
 namespace Delivery.Application.Consumer;
 
 public class NotDeliveredConsumer : IConsumer<INotDelivered>
 {
     private readonly IMediator _mediator;
-    private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
+    private readonly IMessageSender<IWasDelivered> _wasDelivered;
 
-    public NotDeliveredConsumer(IMediator mediator, IMessageSender<IDeliveryCompleted> deliveryCompleted)
+    public NotDeliveredConsumer(IMediator mediator, IMessageSender<IWasDelivered> wasDelivered)
     {
         _mediator = mediator;
-        _deliveryCompleted = deliveryCompleted;
+        _wasDelivered = wasDelivered;
     }
     public async Task Consume(ConsumeContext<INotDelivered> context)
     {
@@ -34,7 +35,7 @@ public class NotDeliveredConsumer : IConsumer<INotDelivered>
             DeliveryType = DeliveryType.NotDelivered
         });
 
-        await _deliveryCompleted.SendAsync(new DeliveryCompleted
+        await _wasDelivered.SendAsync(new WasDelivered
         {
             CorrelationId = command.CorrelationId,
             CurrentState = command.CurrentState,

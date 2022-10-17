@@ -54,6 +54,7 @@ public static class ConfigureServices
 
         x.AddConsumer<ShipmentReceivedConsumer, ShipmentReceivedConsumerDefinition>();
         x.AddConsumer<StartDistributionConsumer, StartDistributionConsumerDefinition>();
+        x.AddConsumer<WasDeliveredConsumer, WasDeliveredConsumerDefinition>();
 
         var config = messageBroker.RabbitMQ;
         x.UsingRabbitMq((context, cfg) =>
@@ -68,6 +69,7 @@ public static class ConfigureServices
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.ShipmentReceived], e => { e.ConfigureConsumer<ShipmentReceivedConsumer>(context); });
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.StartDistribution], e => { e.ConfigureConsumer<StartDistributionConsumer>(context); });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.WasDelivered], e => { e.ConfigureConsumer<WasDeliveredConsumer>(context); });
 
             cfg.ConfigureEndpoints(context);
         });

@@ -2,18 +2,19 @@
 using MassTransit;
 using Payment.Application.Deliveries.Commands.UpdatePaymentTypes;
 using Payment.Application.Payments.CardPayments;
+using Shipments;
 
 namespace Payment.Application.Consumer;
 
 public class CardPaymentConsumer : IConsumer<ICardPayment>
 {
     private readonly IMediator _mediator;
-    private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
+    private readonly IMessageSender<IWasDelivered> _wasDelivered;
 
-    public CardPaymentConsumer(IMediator mediator, IMessageSender<IDeliveryCompleted> deliveryCompleted)
+    public CardPaymentConsumer(IMediator mediator, IMessageSender<IWasDelivered> wasDelivered)
     {
         _mediator = mediator;
-        _deliveryCompleted = deliveryCompleted;
+        _wasDelivered = wasDelivered;
     }
 
     public async Task Consume(ConsumeContext<ICardPayment> context)
@@ -33,7 +34,7 @@ public class CardPaymentConsumer : IConsumer<ICardPayment>
             PaymentType = (int)command.PaymentType
         });
 
-        await _deliveryCompleted.SendAsync(new DeliveryCompleted
+        await _wasDelivered.SendAsync(new WasDelivered
         {
             CurrentState = command.CurrentState,
             CorrelationId = command.CorrelationId,

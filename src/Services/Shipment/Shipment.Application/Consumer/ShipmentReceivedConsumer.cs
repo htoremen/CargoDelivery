@@ -27,7 +27,7 @@ public class ShipmentReceivedConsumerDefinition : ConsumerDefinition<ShipmentRec
 {
     public ShipmentReceivedConsumerDefinition()
     {
-        ConcurrentMessageLimit = 3;
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
     }
 
     protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<ShipmentReceivedConsumer> consumerConfigurator)

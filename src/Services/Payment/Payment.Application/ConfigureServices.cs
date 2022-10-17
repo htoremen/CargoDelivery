@@ -5,6 +5,7 @@ using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Deliveries;
 using MediatR.Pipeline;
+using Shipments;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -24,7 +25,7 @@ public static class ConfigureServices
         services.AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>));
 
         services
-            .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker);
+            .AddMessageBusSender<IWasDelivered>(appSettings.MessageBroker);
 
         services.AddGrpcServices();
         return services;

@@ -1,20 +1,20 @@
 ﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
 using MassTransit;
 using Payment.Application.Payments.PayAtDoors;
+using Shipments;
 
 namespace Payment.Application.Consumer;
 
 public class PayAtDoorConsumer : IConsumer<IPayAtDoor>
 {
     private readonly IMediator _mediator;
-    private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
+    private readonly IMessageSender<IWasDelivered> _wasDelivered;
 
-    public PayAtDoorConsumer(IMediator mediator, IMessageSender<IDeliveryCompleted> deliveryCompleted)
+    public PayAtDoorConsumer(IMediator mediator, IMessageSender<IWasDelivered> wasDelivered)
     {
         _mediator = mediator;
-        _deliveryCompleted = deliveryCompleted;
+        _wasDelivered = wasDelivered;
     }
-
     public async Task Consume(ConsumeContext<IPayAtDoor> context)
     {
         var command = context.Message;
@@ -32,7 +32,7 @@ public class PayAtDoorConsumer : IConsumer<IPayAtDoor>
             PaymentType = (int)command.PaymentType
         });
 
-        await _deliveryCompleted.SendAsync(new DeliveryCompleted
+        await _wasDelivered.SendAsync(new WasDelivered
         {
             CurrentState = command.CurrentState,
             CorrelationId = command.CorrelationId,

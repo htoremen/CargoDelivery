@@ -15,7 +15,9 @@ public enum QueueName
 
     CreateDebitFault = 121,
 
-    ShipmentReceived = 131, // Gönderi Alındı
+    ShipmentReceived = 130, // Gönderi Alındı
+    StartDistribution = 131,
+    WasDelivered = 132,
 
 
     // Güzergah Oluştur
@@ -36,7 +38,6 @@ public enum QueueName
     CreateRefund = 320,
 
     // Teslimat Oluştur
-    StartDistribution = 330,
     CreateDelivery = 331,
     CardPayment = 332,
     PayAtDoor = 333,

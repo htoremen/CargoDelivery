@@ -1,18 +1,19 @@
 ﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
 using MassTransit;
 using Payment.Application.Payments.FreeDeliveries;
+using Shipments;
 
 namespace Payment.Application.Consumer;
 
 public class FreeDeliveryConsumer : IConsumer<IFreeDelivery>
 {
     private readonly IMediator _mediator;
-    private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
+    private readonly IMessageSender<IWasDelivered> _wasDelivered;
 
-    public FreeDeliveryConsumer(IMediator mediator, IMessageSender<IDeliveryCompleted> deliveryCompleted)
+    public FreeDeliveryConsumer(IMediator mediator, IMessageSender<IWasDelivered> wasDelivered)
     {
         _mediator = mediator;
-        _deliveryCompleted = deliveryCompleted;
+        _wasDelivered = wasDelivered;
     }
 
     public async Task Consume(ConsumeContext<IFreeDelivery> context)
@@ -32,7 +33,7 @@ public class FreeDeliveryConsumer : IConsumer<IFreeDelivery>
             PaymentType = (int)command.PaymentType
         });
 
-        await _deliveryCompleted.SendAsync(new DeliveryCompleted
+        await _wasDelivered.SendAsync(new WasDelivered
         {
             CurrentState = command.CurrentState,
             CorrelationId = command.CorrelationId,

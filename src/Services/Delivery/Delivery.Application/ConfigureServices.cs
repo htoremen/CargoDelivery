@@ -5,6 +5,7 @@ using Delivery.Application.Common.Behaviours;
 using FluentValidation;
 using Notifications;
 using Payments;
+using Shipments;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -29,6 +30,7 @@ public static class ConfigureServices
             .AddMessageBusSender<ICardPayment>(appSettings.MessageBroker)
             .AddMessageBusSender<IPayAtDoor>(appSettings.MessageBroker)
             .AddMessageBusSender<IFreeDelivery>(appSettings.MessageBroker)
+            .AddMessageBusSender<IWasDelivered>(appSettings.MessageBroker)
             .AddMessageBusSender<IDeliveryCompleted>(appSettings.MessageBroker)
             .AddMessageBusSender<IShiftCompletion>(appSettings.MessageBroker);
 

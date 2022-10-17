@@ -59,7 +59,7 @@ public class StartDistributionConsumerDefinition : ConsumerDefinition<StartDistr
 {
     public StartDistributionConsumerDefinition()
     {
-        ConcurrentMessageLimit = 3;
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
     }
 
     protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<StartDistributionConsumer> consumerConfigurator)

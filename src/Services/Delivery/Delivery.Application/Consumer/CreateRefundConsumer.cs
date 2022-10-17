@@ -1,18 +1,19 @@
 ﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
 using Delivery.Application.Deliveries.Commands.InsertDeliveries;
 using Delivery.Application.Deliveries.CreateRefunds;
+using Shipments;
 
 namespace Delivery.Application.Consumer;
 
 public class CreateRefundConsumer : IConsumer<ICreateRefund>
 {
-    private readonly IMediator _mediator; 
-    private readonly IMessageSender<IDeliveryCompleted> _deliveryCompleted;
+    private readonly IMediator _mediator;
+    private readonly IMessageSender<IWasDelivered> _wasDelivered;
 
-    public CreateRefundConsumer(IMediator mediator, IMessageSender<IDeliveryCompleted> deliveryCompleted)
+    public CreateRefundConsumer(IMediator mediator, IMessageSender<IWasDelivered> wasDelivered)
     {
         _mediator = mediator;
-        _deliveryCompleted = deliveryCompleted;
+        _wasDelivered = wasDelivered;
     }
 
     public async Task Consume(ConsumeContext<ICreateRefund> context)
@@ -32,7 +33,7 @@ public class CreateRefundConsumer : IConsumer<ICreateRefund>
             CorrelationId = command.CorrelationId,
         });
 
-        await _deliveryCompleted.SendAsync(new DeliveryCompleted
+        await _wasDelivered.SendAsync(new WasDelivered
         {
             CorrelationId = command.CorrelationId,
             CurrentState = command.CurrentState,
