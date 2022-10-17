@@ -3,6 +3,7 @@ using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Delivery.Application.Common.Behaviours;
 using FluentValidation;
+using MediatR.Pipeline;
 using Notifications;
 using Payments;
 using Shipments;
@@ -22,11 +23,11 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+        services.AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehaviour<>));
 
         services
             .AddMessageBusSender<IStartDelivery>(appSettings.MessageBroker)
             .AddMessageBusSender<INewDelivery>(appSettings.MessageBroker)
-
             .AddMessageBusSender<ICardPayment>(appSettings.MessageBroker)
             .AddMessageBusSender<IPayAtDoor>(appSettings.MessageBroker)
             .AddMessageBusSender<IFreeDelivery>(appSettings.MessageBroker)
