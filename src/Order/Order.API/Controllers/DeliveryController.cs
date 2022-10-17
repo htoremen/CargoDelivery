@@ -8,6 +8,7 @@ using Enums;
 using Microsoft.AspNetCore.Mvc;
 using Order.Application.NoSqls.RedisDataAdds;
 using System.Text.Json;
+using Order.Application.Deliveries.VerificationCodes;
 
 namespace Order.API.Controllers
 {
@@ -16,7 +17,7 @@ namespace Order.API.Controllers
         [HttpPost()]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        [Route("start-Distribution")]
+        [Route("start-distribution")]
         public async Task<IActionResult> StartDistribution(Guid correlationId, Guid cargoId)
         {
             var command = new StartDistributionCommand
@@ -28,6 +29,30 @@ namespace Order.API.Controllers
             await Mediator.Send(new RedisDataAddCommand
             {
                 CacheKey = StaticKeyValues.StartDistribution,
+                CacheValue = command.CorrelationId.ToString(),
+                Value = JsonSerializer.Serialize(command)
+            });
+
+            var response = await Mediator.Send(command);
+            return Ok(response);
+        }
+
+        [HttpPost()]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [Route("verification-code")]
+        public async Task<IActionResult> VerificationCode(Guid correlationId, Guid cargoId, int code)
+        {
+            var command = new VerificationCodeCommand
+            {
+                CargoId = cargoId,
+                CorrelationId = correlationId,
+                Code = code
+            };
+
+            await Mediator.Send(new RedisDataAddCommand
+            {
+                CacheKey = StaticKeyValues.VerificationCode,
                 CacheValue = command.CorrelationId.ToString(),
                 Value = JsonSerializer.Serialize(command)
             });
