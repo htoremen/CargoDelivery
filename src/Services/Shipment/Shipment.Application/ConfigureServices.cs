@@ -1,6 +1,7 @@
 ﻿using Cargos;
 using Core.Application.Common.Behaviours;
 using Core.Infrastructure;
+using Core.Infrastructure.Cache;
 using Core.Infrastructure.MessageBrokers;
 using Deliveries;
 using FluentValidation;
@@ -18,6 +19,8 @@ public static class ConfigureServices
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
+
+        services.AddCaches(appSettings.Caching);
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));

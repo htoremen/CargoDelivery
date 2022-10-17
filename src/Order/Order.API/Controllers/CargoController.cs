@@ -5,7 +5,7 @@ using Cargos;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Order.Application.NoSqls.RedisDataAdds;
-using Order.Domain;
+using Core.Domain;
 
 namespace Order.API.Controllers
 {

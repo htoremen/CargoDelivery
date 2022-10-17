@@ -1,4 +1,4 @@
-﻿namespace Order.Domain;
+﻿namespace Core.Domain;
 
 public static class StaticKeyValues
 {
