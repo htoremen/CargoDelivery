@@ -38,6 +38,7 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueName.SendMail, "Notification." + QueueName.SendMail.ToString());
         queueConfiguration.Names.Add(QueueName.SendSms, "Notification." + QueueName.SendSms.ToString());
         queueConfiguration.Names.Add(QueueName.PushNotification, "Notification." + QueueName.PushNotification.ToString());
+        queueConfiguration.Names.Add(QueueName.VerificationCode, "Delivery." + QueueName.VerificationCode.ToString());
 
         queueConfiguration.Names.Add(QueueName.NotDelivered, "Delivery." + QueueName.NotDelivered.ToString());
         queueConfiguration.Names.Add(QueueName.CreateRefund, "Delivery." + QueueName.CreateRefund.ToString());

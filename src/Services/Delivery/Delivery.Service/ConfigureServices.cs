@@ -79,11 +79,14 @@ public static class ConfigureServices
 
         x.AddConsumer<StartDeliveryConsumer, StartDeliveryConsumerDefinition>();
         x.AddConsumer<NewDeliveryConsumer, NewDeliveryConsumerDefinition>();
+        x.AddConsumer<VerificationCodeConsumer, VerificationCodeConsumerefinition>();
+
         x.AddConsumer<CreateDeliveryConsumer, CreateDeliveryConsumerDefinition>();
         x.AddConsumer<NotDeliveredConsumer, NotDeliveredConsumerDefinition>();
         x.AddConsumer<CreateRefundConsumer, CreateRefundConsumerDefinition>();
+
         x.AddConsumer<DeliveryCompletedConsumer, DeliveryCompletedConsumerDefinition>();
-        //  x.AddConsumer<ShiftCompletionConsumer, ShiftCompletionConsumerDefinition>();
+        x.AddConsumer<ShiftCompletionConsumer, ShiftCompletionConsumerDefinition>();
 
         var config = messageBroker.RabbitMQ;
         x.UsingRabbitMq((context, cfg) =>
@@ -100,6 +103,8 @@ public static class ConfigureServices
 
             cfg.ReceiveEndpoint(queue.Names[QueueName.StartDelivery], e => { e.ConfigureConsumer<StartDeliveryConsumer>(context); });
             cfg.ReceiveEndpoint(queue.Names[QueueName.NewDelivery], e => { e.ConfigureConsumer<NewDeliveryConsumer>(context); });
+            cfg.ReceiveEndpoint(queue.Names[QueueName.VerificationCode], e => { e.ConfigureConsumer<VerificationCodeConsumer>(context); });
+
             cfg.ReceiveEndpoint(queue.Names[QueueName.CreateDelivery], e => { e.ConfigureConsumer<CreateDeliveryConsumer>(context); });
             cfg.ReceiveEndpoint(queue.Names[QueueName.NotDelivered], e => { e.ConfigureConsumer<NotDeliveredConsumer>(context); });
             cfg.ReceiveEndpoint(queue.Names[QueueName.CreateRefund], e => { e.ConfigureConsumer<CreateRefundConsumer>(context); });

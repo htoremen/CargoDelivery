@@ -29,6 +29,7 @@ public static class ConfigureServices
             .AddMessageBusSender<ISendMail>(appSettings.MessageBroker)
             .AddMessageBusSender<ISendSms>(appSettings.MessageBroker)
             .AddMessageBusSender<IPushNotification>(appSettings.MessageBroker)
+            .AddMessageBusSender<IVerificationCode>(appSettings.MessageBroker)
 
             .AddMessageBusSender<ICardPayment>(appSettings.MessageBroker)
             .AddMessageBusSender<IPayAtDoor>(appSettings.MessageBroker)

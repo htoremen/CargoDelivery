@@ -12,6 +12,7 @@ using Saga.Application.Payments;
 using Payments;
 using Shipments;
 using Saga.Application.Shipments;
+using Notifications;
 
 namespace Saga.Service.StateMachines;
 
@@ -30,9 +31,16 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public State ManuelRoute { get; set; }
 
     // Delivery
-    public State StartDistribution { get; set; }
+
     public State StartDelivery { get; set; }
     public State NewDelivery { get; set; }
+    public State StartDistribution { get; set; }
+
+    public State SendMail { get; set; }
+    public State SendSms { get; set; }
+    public State PushNotification { get; set; }
+    public State VerificationCode { get; set; }
+
     public State NotDelivered { get; set; }
     public State CreateRefund { get; set; }
     public State CreateDelivery { get; set; }
@@ -65,6 +73,12 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     public Event<IStartDistribution> StartDistributionEvent { get; private set; }
     public Event<IStartDelivery> StartDeliveryEvent { get; private set; }
     public Event<INewDelivery> NewDeliveryEvent { get; private set; }
+
+    public Event<ISendSms> SendSmsEvent { get; private set; }
+    public Event<ISendMail> SendMailEvent { get; private set; }
+    public Event<IPushNotification> PushNotificationEvent { get; private set; }
+    public Event<IVerificationCode> VerificationCodeEvent { get; private set; }
+
     public Event<ICreateDelivery> CreateDeliveryEvent { get; private set; }
     public Event<ICardPayment> CardPaymentEvent { get; private set; }
     public Event<IFreeDelivery> FreeDeliveryEvent { get; private set; }
@@ -102,7 +116,13 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         During(StartDelivery, NewDeliveryActivity(queueConfiguration));
         During(NewDelivery, StartDistributionActivity(queueConfiguration));
-        During(StartDistribution, CreateDeliveryActivity(queueConfiguration), NotDeliveredActivity(queueConfiguration), CreateRefundActivity(queueConfiguration));
+        During(StartDistribution, SendMailActivity(queueConfiguration), SendSmsActivity(queueConfiguration), PushNotificationActivity(queueConfiguration));
+
+        During(SendMail, VerificationCodeActivity(queueConfiguration));
+        During(SendSms, VerificationCodeActivity(queueConfiguration));
+        During(PushNotification, VerificationCodeActivity(queueConfiguration));
+
+        During(VerificationCode, CreateDeliveryActivity(queueConfiguration), NotDeliveredActivity(queueConfiguration), CreateRefundActivity(queueConfiguration));
         During(CreateDelivery, CardPaymentActivity(queueConfiguration), FreeDeliveryActivity(queueConfiguration), PayAtDoorActivity(queueConfiguration));  
         
         During(CardPayment, DeliveryCompletedActivity(queueConfiguration));
@@ -116,6 +136,59 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         During(DeliveryCompleted, ShiftCompletionActivity(queueConfiguration));
 
         SetCompletedWhenFinalized();
+    }
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> VerificationCodeActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(VerificationCodeEvent)
+             .TransitionTo(VerificationCode)
+              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.VerificationCode]}"), context => new VerificationCodeCommand(context.Data.CorrelationId)
+              {
+                  CorrelationId = context.Instance.CorrelationId,
+                  CurrentState = context.Instance.CurrentState,
+                  CargoId = context.Data.CargoId,
+                  Code = context.Data.Code
+              });
+    }
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> PushNotificationActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(PushNotificationEvent)
+             .TransitionTo(PushNotification)
+              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.PushNotification]}"), context => new PushNotificationCommand(context.Data.CorrelationId)
+              {
+                  CorrelationId = context.Instance.CorrelationId,
+                  CurrentState = context.Instance.CurrentState,
+                  CargoId = context.Data.CargoId
+              });
+    }
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> SendSmsActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(SendSmsEvent)
+             .TransitionTo(SendSms)
+              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.SendSms]}"), context => new SendSmsCommand(context.Data.CorrelationId)
+              {
+                  CorrelationId = context.Instance.CorrelationId,
+                  CurrentState = context.Instance.CurrentState,
+                  CargoId = context.Data.CargoId
+              });
+    }
+
+    [Obsolete]
+    private EventActivities<CargoStateInstance> SendMailActivity(IQueueConfiguration queueConfiguration)
+    {
+        return When(SendMailEvent)
+             .TransitionTo(SendMail)
+              .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.SendMail]}"), context => new SendMailCommand(context.Data.CorrelationId)
+              {
+                  CorrelationId = context.Instance.CorrelationId,
+                  CurrentState = context.Instance.CurrentState,
+                  CargoId = context.Data.CargoId
+              });
     }
 
     //private EventActivities<CargoStateInstance> CreateDebitFaultActivity(IQueueConfiguration queueConfiguration)
