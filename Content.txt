@@ -3,6 +3,7 @@ Scaffold-DbContext "Server=DESKTOP-CHB8USB;Database=CargoRoute;Trusted_Connectio
 Scaffold-DbContext "Server=DESKTOP-CHB8USB;Database=CargoDelivery;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Persistence -Context  "ApplicationDbContext"
 Scaffold-DbContext "Server=DESKTOP-CHB8USB;Database=CargoIdentity;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Persistence -Context  "ApplicationDbContext"
 Scaffold-DbContext "Server=DESKTOP-CHB8USB;Database=CargoShipment;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Persistence -Context  "ApplicationDbContext"
+Scaffold-DbContext "Server=DESKTOP-CHB8USB;Database=HealthChecker;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Persistence -Context  "ApplicationDbContext"
 
 
 Scaffold-DbContext "Server=DESKTOP-CHB8USB;Database=CargoStateKafkaMachineDB;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Persistence -Context  "CargoStateKafkaDbContext"

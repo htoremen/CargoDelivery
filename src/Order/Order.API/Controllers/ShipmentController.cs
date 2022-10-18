@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Order.Application.NoSqls.RedisDataAdds;
 using Order.Application.Shipments.StartDistributions;
-using Order.Domain;
+using Core.Domain;
 using System.Text.Json;
 
 namespace Order.API.Controllers;

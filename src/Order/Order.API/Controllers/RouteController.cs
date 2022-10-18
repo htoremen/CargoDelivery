@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.Domain;
+using Microsoft.AspNetCore.Mvc;
 using Order.Application.NoSqls.RedisDataAdds;
 using Order.Application.Routes.AutoRoutes;
 using Order.Application.Routes.ManuelRoutes;
-using Order.Domain;
 using System.Text.Json;
 
 namespace Order.API.Controllers;

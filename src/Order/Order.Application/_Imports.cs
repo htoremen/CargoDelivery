@@ -4,6 +4,3 @@ global using Routes;
 global using Deliveries;
 global using Core.Domain.Models;
 global using Core.Domain.MessageBrokers;
-global using Order.Application.NoSqls.RedisDataAdds;
-global using Order.Application.Shipments.StartDistributions;
-global using Order.Domain;

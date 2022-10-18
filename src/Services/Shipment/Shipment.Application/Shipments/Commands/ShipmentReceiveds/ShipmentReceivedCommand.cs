@@ -38,7 +38,7 @@ public class ShipmentReceivedCommandHandler : IRequestHandler<ShipmentReceivedCo
         var response = JsonSerializer.Deserialize<CreateDebitModel>(data);
         foreach (var item in response.Cargos)
         {
-            var cargo = await _context.Cargos.FirstOrDefaultAsync(x => x.DebitId == request.CorrelationId.ToString() && x.CargoId == item.CargoId);
+            var cargo = await _context.Cargos.FirstOrDefaultAsync(x => x.DebitId == request.CorrelationId.ToString() && x.CargoId == item.CargoId.ToString());
             if (cargo == null)
             {
                 _context.Cargos.Add(new Domain.Entities.Cargo
