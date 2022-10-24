@@ -27,6 +27,29 @@ public class StartRouteCommandCommandHandler : IRequestHandler<StartRouteCommand
 
         foreach (var item in response.Cargos)
         {
+            var cargoRoute = await _context.Cargos.FirstOrDefaultAsync(x => x.CargoId == item.CargoId.ToString() && x.CorrelationId == request.CorrelationId.ToString());
+            if (cargoRoute == null)
+            {
+                _context.Cargos.Add(new Domain.Entities.Cargo
+                {
+                    CargoId = item.CargoId.ToString(),
+                    CorrelationId = request.CorrelationId.ToString(),
+                    CreatedOn = DateTime.Now
+                });
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+        }
+        return GenericResponse<StartRouteResponse>.Success(new StartRouteResponse { CorrelationId = request.CorrelationId }, 200);
+    }
+
+    public async Task<GenericResponse<StartRouteResponse>> Handle_(StartRouteCommand request, CancellationToken cancellationToken)
+    {
+        var cacheKey = StaticKeyValues.CreateDebit + request.CorrelationId.ToString();
+        var data = await _cache.GetValueAsync(cacheKey);
+        var response = JsonSerializer.Deserialize<CreateDebitModel>(data);
+
+        foreach (var item in response.Cargos)
+        {
             var cargoRoute = await _context.CargoRoutes.FirstOrDefaultAsync(x => x.CargoId == item.CargoId.ToString() && x.CorrelationId == request.CorrelationId.ToString());
             if (cargoRoute == null)
             {
