@@ -17,6 +17,8 @@ public partial class ApplicationDbContext : DbContext, IApplicationDbContext
     }
 
     public virtual DbSet<CargoRoute> CargoRoutes { get; set; } = null!;
+    public virtual DbSet<Domain.Entities.Cargo> Cargos { get; set; } = null!;
+    public virtual DbSet<Domain.Entities.Route> Routes { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
