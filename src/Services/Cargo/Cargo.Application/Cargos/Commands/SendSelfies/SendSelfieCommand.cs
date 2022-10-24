@@ -5,7 +5,6 @@ namespace Cargo.Application.Cargos.SendSelfie;
 public class SendSelfieCommand : IRequest<GenericResponse<SendSelfieResponse>>
 {
     public Guid CorrelationId { get; set; }
-    public Guid CargoId { get; set; }
     public string CurrentState { get; set; }
     public string Selfie { get; set; }
 }

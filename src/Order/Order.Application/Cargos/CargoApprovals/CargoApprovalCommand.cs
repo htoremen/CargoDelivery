@@ -5,6 +5,7 @@ namespace Cargo.Application.Cargos.CargoApprovals;
 public class CargoApprovalCommand : IRequest<GenericResponse<CargoApprovalResponse>>
 {
     public Guid CorrelationId { get; set; }
+    public bool IsApproved { get; set; }
 }
 
 public class CargoApprovalCommandHandler : IRequestHandler<CargoApprovalCommand, GenericResponse<CargoApprovalResponse>>
@@ -20,7 +21,8 @@ public class CargoApprovalCommandHandler : IRequestHandler<CargoApprovalCommand,
     {
         await _cargoApproval.SendAsync(new CargoApproval
         {
-            CorrelationId = request.CorrelationId
+            CorrelationId = request.CorrelationId,
+            IsApproved = request.IsApproved
         }, null, cancellationToken);
         var response = new CargoApprovalResponse { CorrelationId = request.CorrelationId };
 

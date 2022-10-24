@@ -8,6 +8,7 @@ public class CargoApprovalCommand : ICargoApproval
     }
 
     public Guid CorrelationId { get; set; }
+    public bool IsApproved { get; set; }
     public string CurrentState { get; set; }
 }
 

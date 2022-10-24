@@ -63,13 +63,8 @@ namespace Order.API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [Route("cargo-approval")]
-        public async Task<IActionResult> CargoApproval([FromBody] Guid correlationId)
+        public async Task<IActionResult> CargoApproval(CargoApprovalCommand command)
         {
-            var command = new CargoApprovalCommand
-            {
-                CorrelationId = correlationId
-            };
-
             await Mediator.Send(new RedisDataAddCommand
             {
                 CacheKey = StaticKeyValues.SendSelfie,
