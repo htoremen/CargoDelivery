@@ -9,4 +9,5 @@ public class SendSelfieCommand : ISendSelfie
 
     public Guid CorrelationId { get; set; }
     public string CurrentState { get; set; }
+    public string Selfie { get; set; }
 }

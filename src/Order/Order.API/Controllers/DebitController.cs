@@ -9,7 +9,7 @@ using Core.Domain;
 
 namespace Order.API.Controllers
 {
-    public class CargoController : ApiControllerBase
+    public class DebitController : ApiControllerBase
     {
 
         [HttpPost()]
@@ -43,13 +43,8 @@ namespace Order.API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [Route("send-selfie")]
-        public async Task<IActionResult> SendSelfie([FromBody] Guid correlationId)
+        public async Task<IActionResult> SendSelfie(SendSelfieCommand command)
         {
-            var command = new SendSelfieCommand
-            {
-                CorrelationId = correlationId
-            };
-
             await Mediator.Send(new RedisDataAddCommand
             {
                 CacheKey = StaticKeyValues.SendSelfie,
@@ -58,7 +53,8 @@ namespace Order.API.Controllers
             });
             var response = await Mediator.Send(new SendSelfieCommand
             {
-                CorrelationId = correlationId
+                CorrelationId = command.CorrelationId,
+                Selfie = command.Selfie
             });
             return Ok(response);
         }

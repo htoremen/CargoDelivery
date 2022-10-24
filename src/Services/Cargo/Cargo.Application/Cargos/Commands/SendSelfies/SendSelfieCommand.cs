@@ -7,6 +7,7 @@ public class SendSelfieCommand : IRequest<GenericResponse<SendSelfieResponse>>
     public Guid CorrelationId { get; set; }
     public Guid CargoId { get; set; }
     public string CurrentState { get; set; }
+    public string Selfie { get; set; }
 }
 
 public class SendSelfieCommandHandler : IRequestHandler<SendSelfieCommand, GenericResponse<SendSelfieResponse>>
@@ -22,7 +23,7 @@ public class SendSelfieCommandHandler : IRequestHandler<SendSelfieCommand, Gener
         var debit = await _context.Debits.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString());
         if(debit != null)
         {
-            debit.Selfie = "";
+            debit.Selfie = request.Selfie; // Base64
             debit.CurrentState = request.CurrentState;
             debit = _context.Debits.Update(debit).Entity;
             await _context.SaveChangesAsync(cancellationToken);
