@@ -20,21 +20,21 @@ public class ShipmentReceivedCommandHandler : IRequestHandler<ShipmentReceivedCo
     private readonly IApplicationDbContext _context; 
     private readonly IMessageSender<IStartRoute> _startRoute; 
     private readonly IDebitService _debitService;
-    private readonly ICacheService _cacheService;
+    private readonly ICacheService _cache;
 
 
-    public ShipmentReceivedCommandHandler(IApplicationDbContext context, IMessageSender<IStartRoute> startRoute, IDebitService debitService, ICacheService cacheService)
+    public ShipmentReceivedCommandHandler(IApplicationDbContext context, IMessageSender<IStartRoute> startRoute, IDebitService debitService, ICacheService cache)
     {
         _context = context;
         _startRoute = startRoute;
         _debitService = debitService;
-        _cacheService = cacheService;
+        _cache = cache;
     }
 
     public async Task<Unit> Handle(ShipmentReceivedCommand request, CancellationToken cancellationToken)
     {
         var cacheKey = StaticKeyValues.CreateDebit + request.CorrelationId.ToString();
-        var data = await _cacheService.GetValueAsync(cacheKey);
+        var data = await _cache.GetValueAsync(cacheKey);
         var response = JsonSerializer.Deserialize<CreateDebitModel>(data);
         foreach (var item in response.Cargos)
         {

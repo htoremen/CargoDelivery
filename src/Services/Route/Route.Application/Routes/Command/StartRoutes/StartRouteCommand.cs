@@ -1,6 +1,4 @@
-﻿using Cargo.GRPC.Server;
-using Microsoft.EntityFrameworkCore;
-using Route.Domain.Entities;
+﻿
 
 namespace Route.Application.Routes.StartRoutes;
 
@@ -8,21 +6,26 @@ public class StartRouteCommand : IRequest<GenericResponse<StartRouteResponse>>
 {
     public Guid CorrelationId { get; set; }
     public string CurrentState { get; set; }
-    public GetCargoListResponse CargoList { get; set; }
 }
 
 public class StartRouteCommandCommandHandler : IRequestHandler<StartRouteCommand, GenericResponse<StartRouteResponse>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ICacheService _cache;
 
-    public StartRouteCommandCommandHandler(IApplicationDbContext context)
+    public StartRouteCommandCommandHandler(IApplicationDbContext context, ICacheService cache)
     {
         _context = context;
+        _cache = cache;
     }
 
     public async Task<GenericResponse<StartRouteResponse>> Handle(StartRouteCommand request, CancellationToken cancellationToken)
     {
-        foreach (var item in request.CargoList.Cargos)
+        var cacheKey = StaticKeyValues.CreateDebit + request.CorrelationId.ToString();
+        var data = await _cache.GetValueAsync(cacheKey);
+        var response = JsonSerializer.Deserialize<CreateDebitModel>(data);
+
+        foreach (var item in response.Cargos)
         {
             var cargoRoute = await _context.CargoRoutes.FirstOrDefaultAsync(x => x.CargoId == item.CargoId.ToString() && x.CorrelationId == request.CorrelationId.ToString());
             if (cargoRoute == null)
