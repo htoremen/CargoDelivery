@@ -10,9 +10,9 @@ namespace Shipment.Domain.Entities
             Cargos = new HashSet<Cargo>();
         }
 
-        public string ShipmentTypeId { get; set; } = null!;
-        public string? Name { get; set; }
-        public string? Description { get; set; }
+        public int ShipmentTypeId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
         public int? RowNumber { get; set; }
 
         public virtual ICollection<Cargo> Cargos { get; set; }
