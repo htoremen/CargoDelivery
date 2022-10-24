@@ -1,4 +1,4 @@
-﻿using Cargo.Application.Cargos.CargoApprovals;
+﻿using Cargo.Application.Cargos.DebitApprovals;
 using Cargo.Application.Cargos.CreateDebits;
 using Cargo.Application.Cargos.SendSelfies;
 using Cargos;
@@ -63,7 +63,7 @@ namespace Order.API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [Route("cargo-approval")]
-        public async Task<IActionResult> CargoApproval(CargoApprovalCommand command)
+        public async Task<IActionResult> DebitApproval(DebitApprovalCommand command)
         {
             await Mediator.Send(new RedisDataAddCommand
             {

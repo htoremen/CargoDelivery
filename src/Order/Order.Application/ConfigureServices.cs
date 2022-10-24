@@ -26,7 +26,7 @@ public static class ConfigureServices
         services
             .AddMessageBusSender<ICreateDebit>(appSettings.MessageBroker)
             .AddMessageBusSender<ISendSelfie>(appSettings.MessageBroker)
-            .AddMessageBusSender<ICargoApproval>(appSettings.MessageBroker)
+            .AddMessageBusSender<IDebitApproval>(appSettings.MessageBroker)
             .AddMessageBusSender<ICargoRejected>(appSettings.MessageBroker)
 
             .AddMessageBusSender<IStartRoute>(appSettings.MessageBroker)

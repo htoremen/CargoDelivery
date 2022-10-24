@@ -65,7 +65,7 @@ public static class ConfigureServices
 
         x.AddConsumer<CreateDebitConsumer, CreateDebitConsumerDefinition>();
         x.AddConsumer<SendSelfieConsumer, SendSelfieConsumerDefinition>();
-        x.AddConsumer<CargoApprovalConsumer, CargoApprovalConsumerDefinition>();
+        x.AddConsumer<DebitApprovalConsumer, DebitApprovalConsumerDefinition>();
         x.AddConsumer<CargoRejectedConsumer, CargoRejectedConsumerDefinition>();
 
         var config = messageBroker.RabbitMQ;
@@ -81,7 +81,7 @@ public static class ConfigureServices
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CreateDebit], e => { e.ConfigureConsumer<CreateDebitConsumer>(context); });
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.SendSelfie], e => { e.ConfigureConsumer<SendSelfieConsumer>(context); });
-            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoApproval], e => { e.ConfigureConsumer<CargoApprovalConsumer>(context); });
+            cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.DebitApproval], e => { e.ConfigureConsumer<DebitApprovalConsumer>(context); });
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoRejected], e => { e.ConfigureConsumer<CargoRejectedConsumer>(context); });
 
             cfg.ConfigureEndpoints(context);

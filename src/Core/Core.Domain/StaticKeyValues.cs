@@ -4,7 +4,7 @@ public static class StaticKeyValues
 {
     public static string CreateDebit { get; set; } = "create-debit-";
     public static string SendSelfie { get; set; } = "send-selfie-";
-    public static string CargoApproval { get; set; } = "cargo-approval-";
+    public static string DebitApproval { get; set; } = "cargo-approval-";
 
     public static string AutoRoute { get; set; } = "auto-route-";
     public static string ManuelRoute { get; set; } = "manuel-route-";

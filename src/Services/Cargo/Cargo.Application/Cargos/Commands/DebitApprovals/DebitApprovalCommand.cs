@@ -4,29 +4,29 @@ using Core.Domain.MessageBrokers;
 using Shipments;
 using static Cargos.ICargoRejected;
 
-namespace Cargo.Application.Cargos.CargoApprovals;
+namespace Cargo.Application.Cargos.DebitApprovals;
 
-public class CargoApprovalCommand : IRequest<GenericResponse<CargoApprovalResponse>>
+public class DebitApprovalCommand : IRequest<GenericResponse<DebitApprovalResponse>>
 {
     public Guid CorrelationId { get; set; }
     public string CurrentState { get; set; }
     public bool IsApproved { get; set; }
 }
 
-public class CargoApprovalCommandHandler : IRequestHandler<CargoApprovalCommand, GenericResponse<CargoApprovalResponse>>
+public class DebitApprovalCommandHandler : IRequestHandler<DebitApprovalCommand, GenericResponse<DebitApprovalResponse>>
 {
     private readonly IMessageSender<IShipmentReceived> _shipmentReceived;
     private readonly IMessageSender<ICargoRejected> _cargoRejected;
     private readonly IMapper _mapper;
 
-    public CargoApprovalCommandHandler(IMessageSender<IShipmentReceived> shipmentReceived, IMessageSender<ICargoRejected> cargoRejected, IMapper mapper)
+    public DebitApprovalCommandHandler(IMessageSender<IShipmentReceived> shipmentReceived, IMessageSender<ICargoRejected> cargoRejected, IMapper mapper)
     {
         _shipmentReceived = shipmentReceived;
         _cargoRejected = cargoRejected;
         _mapper = mapper;
     }
 
-    public async Task<GenericResponse<CargoApprovalResponse>> Handle(CargoApprovalCommand request, CancellationToken cancellationToken)
+    public async Task<GenericResponse<DebitApprovalResponse>> Handle(DebitApprovalCommand request, CancellationToken cancellationToken)
     {
         if (request.IsApproved)
         {
@@ -44,6 +44,6 @@ public class CargoApprovalCommandHandler : IRequestHandler<CargoApprovalCommand,
                 CurrentState = request.CurrentState,
             }, null, cancellationToken);
         }
-        return GenericResponse<CargoApprovalResponse>.Success(new CargoApprovalResponse { }, 200);
+        return GenericResponse<DebitApprovalResponse>.Success(new DebitApprovalResponse { }, 200);
     }
 }

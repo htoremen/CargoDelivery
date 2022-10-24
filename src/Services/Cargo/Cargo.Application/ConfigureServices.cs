@@ -32,7 +32,7 @@ public static class ConfigureServices
            // .AddMessageBusSender<ICreateDebitFault>(appSettings.MessageBroker)
            // .AddMessageBusSender<ICreateCargo>(appSettings.MessageBroker)
             .AddMessageBusSender<ISendSelfie>(appSettings.MessageBroker)
-            .AddMessageBusSender<ICargoApproval>(appSettings.MessageBroker)
+            .AddMessageBusSender<IDebitApproval>(appSettings.MessageBroker)
             .AddMessageBusSender<ICargoRejected>(appSettings.MessageBroker)
             .AddMessageBusSender<IShipmentReceived>(appSettings.MessageBroker)
            //.AddMessageBusSender<ICreateDebitHistory>(appSettings.MessageBroker)
