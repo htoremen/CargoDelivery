@@ -35,7 +35,7 @@ public class StartRouteConsumerDefinition : ConsumerDefinition<StartRouteConsume
 {
     public StartRouteConsumerDefinition()
     {
-        ConcurrentMessageLimit = 3;
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
     }
 
     protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<StartRouteConsumer> consumerConfigurator)

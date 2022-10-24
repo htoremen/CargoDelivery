@@ -28,7 +28,7 @@ public class CargoRejectedConsumerDefinition : ConsumerDefinition<CargoRejectedC
 {
     public CargoRejectedConsumerDefinition()
     {
-        ConcurrentMessageLimit = 3;
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
     }
 
     protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<CargoRejectedConsumer> consumerConfigurator)

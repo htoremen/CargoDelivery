@@ -27,7 +27,7 @@ public class SendSelfieConsumerDefinition : ConsumerDefinition<SendSelfieConsume
 {
     public SendSelfieConsumerDefinition()
     {
-        ConcurrentMessageLimit = 3;
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
     }
 
     protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<SendSelfieConsumer> consumerConfigurator)

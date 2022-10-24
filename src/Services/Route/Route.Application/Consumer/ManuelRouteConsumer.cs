@@ -42,7 +42,7 @@ public class ManuelRouteConsumerDefinition : ConsumerDefinition<ManuelRouteConsu
 {
     public ManuelRouteConsumerDefinition()
     {
-        ConcurrentMessageLimit = 3;
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
     }
 
     protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<ManuelRouteConsumer> consumerConfigurator)

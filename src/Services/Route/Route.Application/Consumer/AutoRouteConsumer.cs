@@ -42,7 +42,7 @@ public class AutoRouteConsumerDefinition : ConsumerDefinition<AutoRouteConsumer>
 {
     public AutoRouteConsumerDefinition()
     {
-        ConcurrentMessageLimit = 3;
+        ConcurrentMessageLimit = SetConfigureConsumer.ConcurrentMessageLimit();
     }
 
     protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<AutoRouteConsumer> consumerConfigurator)
