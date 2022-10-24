@@ -1,4 +1,6 @@
-﻿namespace Saga.Application.Routes;
+﻿using Core.Domain.SerializerModels;
+
+namespace Saga.Application.Routes;
 
 public class ManuelRouteCommand : IManuelRoute
 {
@@ -9,4 +11,5 @@ public class ManuelRouteCommand : IManuelRoute
 
     public Guid CorrelationId { get; set; }
     public string CurrentState { get; set; }
+    public List<ManuelRouteModel> Routes { get; set; }
 }

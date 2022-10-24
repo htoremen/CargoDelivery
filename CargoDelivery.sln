@@ -154,13 +154,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipment.GRPC.Client", "src
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HangfireJob", "HangfireJob", "{ABC68D15-8D32-44DF-90AE-E91A743D1120}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HangfireJob.Domain", "src\Observability\HangfireJob\HangfireJob.Domain\HangfireJob.Domain.csproj", "{A4243D1A-FF28-41E8-A4E2-22CBE0E099CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HangfireJob.Domain", "src\Observability\HangfireJob\HangfireJob.Domain\HangfireJob.Domain.csproj", "{A4243D1A-FF28-41E8-A4E2-22CBE0E099CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HangfireJob.Application", "src\Observability\HangfireJob\HangfireJob.Application\HangfireJob.Application.csproj", "{CF1D65B7-8516-439F-B3B1-0584BABD4709}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HangfireJob.Application", "src\Observability\HangfireJob\HangfireJob.Application\HangfireJob.Application.csproj", "{CF1D65B7-8516-439F-B3B1-0584BABD4709}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HangfireJob.Infrastructure", "src\Observability\HangfireJob\HangfireJob.Infrastructure\HangfireJob.Infrastructure.csproj", "{7321C757-C7B3-47F0-AB09-0F05517FF25E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HangfireJob.Infrastructure", "src\Observability\HangfireJob\HangfireJob.Infrastructure\HangfireJob.Infrastructure.csproj", "{7321C757-C7B3-47F0-AB09-0F05517FF25E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HangfireJob.Service", "src\Observability\HangfireJob\HangfireJob.Service\HangfireJob.Service.csproj", "{CC2BC114-6FF6-48E6-AAC1-EA9B8C3436D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HangfireJob.Service", "src\Observability\HangfireJob\HangfireJob.Service\HangfireJob.Service.csproj", "{CC2BC114-6FF6-48E6-AAC1-EA9B8C3436D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

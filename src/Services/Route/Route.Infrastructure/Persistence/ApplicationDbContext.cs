@@ -36,11 +36,38 @@ public partial class ApplicationDbContext : DbContext, IApplicationDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Domain.Entities.Cargo>(entity =>
+        {
+            entity.ToTable("Cargo");
+
+            entity.Property(e => e.CargoId).HasMaxLength(50);
+
+            entity.Property(e => e.CorrelationId).HasMaxLength(50);
+
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+            entity.Property(e => e.EndRouteId).HasMaxLength(50);
+
+            entity.Property(e => e.StartRouteId).HasMaxLength(50);
+
+            //entity.HasOne(d => d.EndRoute)
+            //    .WithMany(p => p.CargoEndRoutes)
+            //    .HasForeignKey(d => d.EndRouteId)
+            //    .HasConstraintName("FK_Cargo_EndRoute");
+
+            //entity.HasOne(d => d.StartRoute)
+            //    .WithMany(p => p.CargoStartRoutes)
+            //    .HasForeignKey(d => d.StartRouteId)
+            //    .HasConstraintName("FK_Cargo_StartRoute");
+        });
+
         modelBuilder.Entity<CargoRoute>(entity =>
         {
             entity.ToTable("CargoRoute");
 
             entity.HasIndex(e => e.CorrelationId, "IX_Route");
+
+            entity.Property(e => e.CargoRouteId).HasMaxLength(50);
 
             entity.Property(e => e.Address).HasMaxLength(250);
 
@@ -51,8 +78,17 @@ public partial class ApplicationDbContext : DbContext, IApplicationDbContext
             entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
             entity.Property(e => e.Route).HasMaxLength(4000);
+        });
 
-            entity.Property(e => e.CargoRouteId).HasMaxLength(50);
+        modelBuilder.Entity<Domain.Entities.Route>(entity =>
+        {
+            entity.ToTable("Route");
+
+            entity.Property(e => e.RouteId).HasMaxLength(50);
+
+            entity.Property(e => e.CorrelationId).HasMaxLength(50);
+
+            entity.Property(e => e.RouteAddress).HasColumnType("ntext");
         });
 
         OnModelCreatingPartial(modelBuilder);

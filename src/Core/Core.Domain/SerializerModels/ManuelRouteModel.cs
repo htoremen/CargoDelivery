@@ -1,6 +1,6 @@
-﻿namespace Route.Application.Routes.ManuelRoutes;
+﻿namespace Core.Domain.SerializerModels;
 
-public class ManuelRouteRequest
+public class ManuelRouteModel
 {
     public int OrderNo { get; set; }
     public string CargoId { get; set; }

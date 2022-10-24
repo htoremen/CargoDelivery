@@ -7,7 +7,7 @@ public class ManuelRouteCommand : IRequest<GenericResponse<ManuelRouteResponse>>
     public Guid CorrelationId { get; set; }
 
     public string CurrentRouteAddress { get; set; }
-    public List<ManuelRouteRequest> CargoRoutes { get; set; }
+    public List<ManuelRouteModel> Routes { get; set; }
 }
 public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, GenericResponse<ManuelRouteResponse>>
 {
@@ -22,10 +22,10 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
 
     public async Task<GenericResponse<ManuelRouteResponse>> Handle(ManuelRouteCommand request, CancellationToken cancellationToken)
     {
-        var currentRoute = await _context.Routes.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString() && x.IsCurrentRoute);
-        if (currentRoute == null)
+        var startRoute = await _context.Routes.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString() && x.IsCurrentRoute == true);
+        if (startRoute == null)
         {
-            currentRoute = _context.Routes.Add(new Domain.Entities.Route
+            startRoute = _context.Routes.Add(new Domain.Entities.Route
             {
                 RouteId = Guid.NewGuid().ToString(),
                 CorrelationId = request.CorrelationId.ToString(),
@@ -36,26 +36,32 @@ public class ManuelRouteCommandHandler : IRequestHandler<ManuelRouteCommand, Gen
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        var cargoRoutes = request.CargoRoutes.OrderBy(x => x.OrderNo);
-        foreach (var cargoRoute in cargoRoutes)
+        foreach (var cargoRoute in request.Routes)
         {
-            var route = await _context.Routes.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString());
-            if (route == null)
+            var cargo = await _context.Cargos.FirstOrDefaultAsync(x => x.CorrelationId == request.CorrelationId.ToString() && x.CargoId == cargoRoute.CargoId);
+            if(cargo == null)
             {
-                route = _context.Routes.Add(new Domain.Entities.Route
+                cargo = _context.Cargos.Add(new Domain.Entities.Cargo
                 {
-                    RouteId = Guid.NewGuid().ToString(),
+                    CargoId = cargoRoute.CargoId,
                     CorrelationId = request.CorrelationId.ToString(),
-                    RouteAddress = cargoRoute.RouteAddress,
-                    IsCurrentRoute = false
+                    CreatedOn = DateTime.Now,
+                    RouteSequence = cargoRoute.OrderNo,
+                    StartRouteId = startRoute.RouteId,
+                    EndRoute = new Domain.Entities.Route
+                    {
+                        RouteId = Guid.NewGuid().ToString(),
+                        CorrelationId = request.CorrelationId.ToString(),
+                        IsCurrentRoute = false,
+                        RouteAddress = cargoRoute.RouteAddress
+                    }
                 }).Entity;
 
                 await _context.SaveChangesAsync(cancellationToken);
             }
+            startRoute = cargo.EndRoute;
         }
 
         return GenericResponse<ManuelRouteResponse>.Success(new ManuelRouteResponse { }, 200);
     }
 }
-
-

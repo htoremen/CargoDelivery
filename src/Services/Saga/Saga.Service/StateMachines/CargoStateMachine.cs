@@ -366,6 +366,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
     #region Start Route During
 
+    [Obsolete]
     private EventActivities<CargoStateInstance> StartDeliveryActivity(IQueueConfiguration queueConfiguration)
     {
         return When(StartDeliveryEvent)
@@ -377,6 +378,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
              });
     }
 
+    [Obsolete]
     private EventActivities<CargoStateInstance> ManuelRouteActivity(IQueueConfiguration queueConfiguration)
     {
         return When(ManuelRouteEvent)
@@ -384,7 +386,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                 .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.ManuelRoute]}"), context => new ManuelRouteCommand(context.Data.CorrelationId)
                 {
                     CorrelationId = context.Instance.CorrelationId,
-                    CurrentState = context.Instance.CurrentState
+                    CurrentState = context.Instance.CurrentState,
+                    Routes = context.Data.Routes
                 });
     }
 
