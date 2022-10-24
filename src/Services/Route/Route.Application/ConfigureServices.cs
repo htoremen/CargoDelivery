@@ -4,6 +4,7 @@ using FluentValidation;
 using Core.Infrastructure;
 using Deliveries;
 using Core.Infrastructure.MessageBrokers;
+using Core.Infrastructure.Cache;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,8 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+
+        services.AddCaches(appSettings.Caching);
 
         services
            .AddMessageBusSender<IStartDelivery>(appSettings.MessageBroker)

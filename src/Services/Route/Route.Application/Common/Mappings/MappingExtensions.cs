@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Route.Application.Common.Models;
-using Microsoft.EntityFrameworkCore;
+using Core.Application.Common.Models;
 
 namespace Route.Application.Common.Mappings;
 

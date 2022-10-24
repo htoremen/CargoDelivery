@@ -7,6 +7,7 @@ using Core.Infrastructure;
 using Route.GRPC.Server.Services;
 using Core.Infrastructure.Common.Extensions;
 using Route.Infrastructure.Healths;
+using Core.Application.Common.Interfaces;
 
 namespace Cargo.Service;
 
