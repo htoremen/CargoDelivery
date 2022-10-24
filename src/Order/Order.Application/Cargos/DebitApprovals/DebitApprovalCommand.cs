@@ -10,16 +10,16 @@ public class DebitApprovalCommand : IRequest<GenericResponse<DebitApprovalRespon
 
 public class DebitApprovalCommandHandler : IRequestHandler<DebitApprovalCommand, GenericResponse<DebitApprovalResponse>>
 {
-    private readonly IMessageSender<IDebitApproval> _DebitApproval;
+    private readonly IMessageSender<IDebitApproval> _debitApproval;
 
     public DebitApprovalCommandHandler(IMessageSender<IDebitApproval> DebitApproval)
     {
-        _DebitApproval = DebitApproval;
+        _debitApproval = DebitApproval;
     }
 
     public async Task<GenericResponse<DebitApprovalResponse>> Handle(DebitApprovalCommand request, CancellationToken cancellationToken)
     {
-        await _DebitApproval.SendAsync(new DebitApproval
+        await _debitApproval.SendAsync(new DebitApproval
         {
             CorrelationId = request.CorrelationId,
             IsApproved = request.IsApproved
