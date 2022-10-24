@@ -20,7 +20,9 @@ public class AutoRouteCommandHandler : IRequestHandler<AutoRouteCommand, Generic
     }
 
     public async Task<GenericResponse<AutoRouteResponse>> Handle(AutoRouteCommand request, CancellationToken cancellationToken)
-    {        
+    {
+        
+
         return GenericResponse<AutoRouteResponse>.Success(new AutoRouteResponse { }, 200);
     }
 }
