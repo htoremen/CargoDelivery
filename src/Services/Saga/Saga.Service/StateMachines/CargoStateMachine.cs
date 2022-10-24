@@ -448,7 +448,8 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoApproval]}"), context => new CargoApprovalCommand(context.Data.CorrelationId)
                {
                    CorrelationId = context.Instance.CorrelationId,
-                   CurrentState = context.Instance.CurrentState
+                   CurrentState = context.Instance.CurrentState,
+                   IsApproved = context.Data.IsApproved
                });
     }
 

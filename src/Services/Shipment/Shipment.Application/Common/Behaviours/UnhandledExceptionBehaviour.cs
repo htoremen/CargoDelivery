@@ -26,9 +26,12 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
             string requestJson = JsonSerializer.Serialize(request);
 
             using var activity = ConsumerActivitySource.Source.StartActivity($"{requestName}");
-            activity!.SetStatus(System.Diagnostics.ActivityStatusCode.Error);
-            activity!.SetTag("request.json", requestJson);
-            activity!.SetTag("error.message", ex.Message);
+            if(activity != null)
+            {
+                activity!.SetStatus(System.Diagnostics.ActivityStatusCode.Error);
+                activity!.SetTag("request.json", requestJson);
+                activity!.SetTag("error.message", ex.Message);
+            }
 
             _logger.LogError(ex, "Request: Unhandled Exception for Request {Name} {@requestJson}", requestName, requestJson);
 
