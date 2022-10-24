@@ -18,7 +18,7 @@ public class SagaStateDefinition : SagaDefinition<CargoStateInstance>
     {
         sagaConfigurator.Message<ICreateDebit>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));
         sagaConfigurator.Message<ISendSelfie>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));
-        sagaConfigurator.Message<ICargoRejected>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));
+        sagaConfigurator.Message<IDebitRejected>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));
         sagaConfigurator.Message<IDebitApproval>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));
 
         sagaConfigurator.Message<IShiftCompletion>(x => x.UsePartitioner(_partition, m => m.Message.CorrelationId));

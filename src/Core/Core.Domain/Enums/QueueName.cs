@@ -10,7 +10,7 @@ public enum QueueName
     CreateCargo = 102,
     SendSelfie = 103,
     DebitApproval = 104,
-    CargoRejected = 105,
+    DebitRejected = 105,
     CreateDebitHistory = 111,
 
     CreateDebitFault = 121,

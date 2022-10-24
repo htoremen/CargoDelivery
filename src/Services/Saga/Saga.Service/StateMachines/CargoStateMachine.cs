@@ -24,7 +24,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
    // public State CreateDebitFault { get; set; }
     public State SendSelfie { get; set; }
     public State DebitApproval { get; set; }
-    public State CargoRejected { get; set; }
+    public State DebitRejected { get; set; }
 
     public State StartRoute { get; set; }
     public State AutoRoute { get; set; }
@@ -69,7 +69,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     //public Event<Fault<ICreateDebit>> CreateDebitFaultEvent { get; private set; }
     public Event<ISendSelfie> SendSelfieEvent { get; private set; }
     public Event<IDebitApproval> DebitApprovalEvent { get; private set; }
-    public Event<ICargoRejected> CargoRejectedEvent { get; private set; }
+    public Event<IDebitRejected> DebitRejectedEvent { get; private set; }
 
     public Event<IStartRoute> StartRouteEvent { get; private set; }
     public Event<IAutoRoute> AutoRouteEvent { get; private set; }
@@ -113,7 +113,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
         During(CreateDebit, SendSelfieActivity(queueConfiguration));
 
         During(SendSelfie, SendSelfieActivity(queueConfiguration), DebitApprovalActivity(queueConfiguration));
-        During(DebitApproval, ShipmentReceivedActivity(queueConfiguration), CargoRejectedActivity(queueConfiguration));
+        During(DebitApproval, ShipmentReceivedActivity(queueConfiguration), DebitRejectedActivity(queueConfiguration));
         During(ShipmentReceived, StartRouteActivity(queueConfiguration));
 
         During(StartRoute, AutoRouteActivity(queueConfiguration), ManuelRouteActivity(queueConfiguration));
@@ -417,11 +417,11 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
     }
 
     [Obsolete]
-    private EventActivities<CargoStateInstance> CargoRejectedActivity(IQueueConfiguration queueConfiguration)
+    private EventActivities<CargoStateInstance> DebitRejectedActivity(IQueueConfiguration queueConfiguration)
     {
-        return When(CargoRejectedEvent)
-                .TransitionTo(CargoRejected)
-                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.CargoRejected]}"), context => new CargoRejectedCommand(context.Data.CorrelationId)
+        return When(DebitRejectedEvent)
+                .TransitionTo(DebitRejected)
+                .Send(new Uri($"queue:{queueConfiguration.Names[QueueName.DebitRejected]}"), context => new DebitRejectedCommand(context.Data.CorrelationId)
                 {
                     CorrelationId = context.Instance.CorrelationId,
                     CurrentState = context.Instance.CurrentState
@@ -480,7 +480,7 @@ public class CargoStateMachine : MassTransitStateMachine<CargoStateInstance>
 
         Event(() => SendSelfieEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => DebitApprovalEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
-        Event(() => CargoRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
+        Event(() => DebitRejectedEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
 
         Event(() => StartRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));
         Event(() => AutoRouteEvent, instance => instance.CorrelateById(selector => selector.Message.CorrelationId));

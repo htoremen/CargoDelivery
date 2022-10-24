@@ -18,7 +18,7 @@ public static class QueueConfigurationExtensions
         queueConfiguration.Names.Add(QueueName.CreateCargo, "Cargo." + QueueName.CreateCargo.ToString());
         queueConfiguration.Names.Add(QueueName.SendSelfie, "Cargo." + QueueName.SendSelfie.ToString());
         queueConfiguration.Names.Add(QueueName.DebitApproval, "Cargo." + QueueName.DebitApproval.ToString());
-        queueConfiguration.Names.Add(QueueName.CargoRejected, "Cargo." + QueueName.CargoRejected.ToString());
+        queueConfiguration.Names.Add(QueueName.DebitRejected, "Cargo." + QueueName.DebitRejected.ToString());
 
         queueConfiguration.Names.Add(QueueName.CreateDebitHistory, "Cargo." + QueueName.CreateDebitHistory.ToString());
 

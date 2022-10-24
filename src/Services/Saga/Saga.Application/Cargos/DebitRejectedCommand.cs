@@ -1,8 +1,8 @@
 ﻿namespace Saga.Application.Cargos;
 
-public class CargoRejectedCommand : ICargoRejected
+public class DebitRejectedCommand : IDebitRejected
 {
-    public CargoRejectedCommand(Guid correlationId)
+    public DebitRejectedCommand(Guid correlationId)
     {
         CorrelationId = correlationId;
     }

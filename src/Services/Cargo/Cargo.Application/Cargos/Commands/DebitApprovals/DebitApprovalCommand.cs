@@ -2,7 +2,7 @@
 using Cargos;
 using Core.Domain.MessageBrokers;
 using Shipments;
-using static Cargos.ICargoRejected;
+using static Cargos.IDebitRejected;
 
 namespace Cargo.Application.Cargos.DebitApprovals;
 
@@ -16,13 +16,13 @@ public class DebitApprovalCommand : IRequest<GenericResponse<DebitApprovalRespon
 public class DebitApprovalCommandHandler : IRequestHandler<DebitApprovalCommand, GenericResponse<DebitApprovalResponse>>
 {
     private readonly IMessageSender<IShipmentReceived> _shipmentReceived;
-    private readonly IMessageSender<ICargoRejected> _cargoRejected;
+    private readonly IMessageSender<IDebitRejected> _DebitRejected;
     private readonly IMapper _mapper;
 
-    public DebitApprovalCommandHandler(IMessageSender<IShipmentReceived> shipmentReceived, IMessageSender<ICargoRejected> cargoRejected, IMapper mapper)
+    public DebitApprovalCommandHandler(IMessageSender<IShipmentReceived> shipmentReceived, IMessageSender<IDebitRejected> DebitRejected, IMapper mapper)
     {
         _shipmentReceived = shipmentReceived;
-        _cargoRejected = cargoRejected;
+        _DebitRejected = DebitRejected;
         _mapper = mapper;
     }
 
@@ -38,7 +38,7 @@ public class DebitApprovalCommandHandler : IRequestHandler<DebitApprovalCommand,
         }
         else
         {
-            await _cargoRejected.SendAsync(new CargoRejected
+            await _DebitRejected.SendAsync(new DebitRejected
             {
                 CorrelationId = request.CorrelationId,
                 CurrentState = request.CurrentState,
