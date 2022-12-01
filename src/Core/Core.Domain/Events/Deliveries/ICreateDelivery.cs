@@ -1,6 +1,6 @@
 ﻿using Enums;
 
-namespace Deliveries;
+namespace Events;
 
 public interface ICreateDelivery
 {

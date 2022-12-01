@@ -1,6 +1,4 @@
-﻿using Enums;
-
-namespace Shipments;
+﻿namespace Events;
 
 public interface IWasDelivered
 {

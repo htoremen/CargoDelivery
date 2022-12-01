@@ -1,4 +1,4 @@
-﻿namespace Core.Domain.Events.Fault;
+﻿namespace Events;
 
 public interface ISendSelfieFault //: IEvent
 {

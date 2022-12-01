@@ -1,4 +1,4 @@
-﻿namespace Core.Domain.Events.Sagas;
+﻿namespace Events;
 
 public interface ICargoSagaError //: IEvent
 {

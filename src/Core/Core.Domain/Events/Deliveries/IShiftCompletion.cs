@@ -1,4 +1,4 @@
-﻿namespace Deliveries;
+﻿namespace Events;
 
 public interface IShiftCompletion
 {

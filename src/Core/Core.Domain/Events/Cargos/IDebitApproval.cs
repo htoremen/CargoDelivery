@@ -1,4 +1,4 @@
-﻿namespace Cargos;
+﻿namespace Events;
 public interface IDebitApproval //: IEvent
 {
     public Guid CorrelationId { get; set; }

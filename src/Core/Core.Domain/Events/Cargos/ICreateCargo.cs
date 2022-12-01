@@ -1,4 +1,4 @@
-﻿namespace Cargos;
+﻿namespace Events;
 public interface ICreateCargo
 {
     public Guid CorrelationId { get; set; }

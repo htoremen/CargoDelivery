@@ -1,6 +1,4 @@
-﻿using Core.Domain.Instances;
-
-namespace Cargos;
+﻿namespace Events;
 
 public interface IStartRoute //: IEvent
 {

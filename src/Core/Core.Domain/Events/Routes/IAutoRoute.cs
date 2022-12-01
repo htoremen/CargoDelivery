@@ -1,4 +1,4 @@
-﻿namespace Routes;
+﻿namespace Events;
 
 public interface IAutoRoute //: IEvent
 {

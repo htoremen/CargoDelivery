@@ -1,4 +1,4 @@
-﻿namespace Shipments;
+﻿namespace Events;
 public interface IShipmentReceived
 {
     public Guid CorrelationId { get; set; }

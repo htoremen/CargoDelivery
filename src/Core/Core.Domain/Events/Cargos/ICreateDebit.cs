@@ -1,4 +1,4 @@
-﻿namespace Cargos;
+﻿namespace Events;
 
 public interface ICreateDebit //: IEvent
 {

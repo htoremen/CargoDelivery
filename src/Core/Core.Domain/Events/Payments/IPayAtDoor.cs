@@ -1,6 +1,4 @@
-﻿using Enums;
-
-namespace Payments;
+﻿namespace Events;
 
 public interface IPayAtDoor
 {

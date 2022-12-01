@@ -1,6 +1,6 @@
 ﻿using Core.Domain.SerializerModels;
 
-namespace Routes;
+namespace Events;
 
 public interface IManuelRoute //: IEvent
 {

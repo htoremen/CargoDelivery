@@ -1,4 +1,4 @@
-﻿namespace Notifications;
+﻿namespace Events;
 
 public interface ISendSms
 {
