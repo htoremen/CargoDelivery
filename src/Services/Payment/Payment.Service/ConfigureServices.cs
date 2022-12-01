@@ -71,11 +71,12 @@ public static class ConfigureServices
             });
 
             cfg.UseJsonSerializer();
-            cfg.ConfigureEndpoints(context);
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CardPayment], e => { e.ConfigureConsumer<CardPaymentConsumer>(context); });
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.FreeDelivery], e => { e.ConfigureConsumer<FreeDeliveryConsumer>(context); });
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.PayAtDoor], e => { e.ConfigureConsumer<PayAtDoorConsumer>(context); });
+
+            cfg.ConfigureEndpoints(context);
         });
     }
 }
