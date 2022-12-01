@@ -1,5 +1,6 @@
 ﻿using Cargo.Infrastructure.Persistence;
 using Core.Infrastructure;
+using Core.Infrastructure.DapperContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ public static class ConfigureServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, AppSettings appSettings)
     {
         services.AddDbContext(appSettings);
+        services.AddSingleton<IDapperContext, DapperContext>();
 
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddScoped<IIdentityService, IdentityService>();

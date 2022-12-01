@@ -1,7 +1,5 @@
-﻿using Core.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
-using RabbitMQ.Client;
-using System.Diagnostics;
+﻿using Core.Infrastructure.DapperContext;
+using Dapper;
 
 namespace Cargo.Application.Cargos.CreateDebits;
 
@@ -70,6 +68,85 @@ public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, Gen
         return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { CorrelationId = request.CorrelationId }, 200);
 
     }
+}
+
+
+//    public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, GenericResponse<CreateDebitResponse>>
+//{
+//    private readonly IDapperContext _context;
+
+//    public CreateDebitCommandHandler(IDapperContext context)
+//    {
+//        _context = context;
+//    }
+
+//    public async Task<GenericResponse<CreateDebitResponse>> Handle(CreateDebitCommand request, CancellationToken cancellationToken)
+//    {
+//        var query = $@"INSERT INTO [dbo].[Debit]
+//                                   ([DebitId]
+//                                   ,[CourierId]
+//                                   ,[CorrelationId]
+//                                   ,[CurrentState]
+//                                   ,[DistributionDate]
+//                                   ,[StartingDate])
+//                     VALUES
+//                           ('{request.DebitId}'
+//                           ,'{request.CourierId}'
+//                           ,'{request.DebitId}'
+//                           ,'{request.CurrentState}'
+//                           ,'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}'
+//                           ,'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}')";
+
+//        using (var connection = _context.CreateConnection())
+//        {
+//            var debitId = await connection.ExecuteAsync(query);
+//            if (debitId > 0)
+//            {
+//                foreach (var cargo in request.Cargos)
+//                {
+//                    query = $@"INSERT INTO [dbo].[Cargo]
+//                                   ([CargoId]
+//                                   ,[DebitId]
+//                                   ,[Address])
+//                             VALUES
+//                                   ('{cargo.CargoId}'
+//                                   ,'{request.DebitId}'
+//                                   ,'{cargo.Address}')";
+//                    var cargoId = await connection.ExecuteAsync(query);
+//                    if (cargoId > 0)
+//                    {
+//                        foreach (var cargoItem in cargo.CargoItems)
+//                        {
+//                            query = $@"INSERT INTO [dbo].[CargoItem]
+//                                       ([CargoItemId]
+//                                       ,[CargoId]
+//                                       ,[Barcode]
+//                                       ,[WaybillNumber]
+//                                       ,[Kg]
+//                                       ,[Desi]
+//                                       ,[Description]
+//                                       ,[Address])
+//                                 VALUES
+//                                       ('{cargoItem.CargoItemId}'
+//                                       ,'{cargo.CargoId}'
+//                                       ,'{cargoItem.Barcode}'
+//                                       ,'{cargoItem.WaybillNumber}'
+//                                       ,'{cargoItem.Kg}'
+//                                       ,'{cargoItem.Description}'
+//                                       ,'{cargoItem.Description}'
+//                                       ,'{cargoItem.Address}')";
+//                            await connection.ExecuteAsync(query);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return GenericResponse<CreateDebitResponse>.Success(new CreateDebitResponse { CorrelationId = request.CorrelationId }, 200);
+//    }
+//}
+
+
+
 
     //public async Task<GenericResponse<CreateDebitResponse>> _Handle(CreateDebitCommand request, CancellationToken cancellationToken)
     //{
@@ -94,4 +171,4 @@ public class CreateDebitCommandHandler : IRequestHandler<CreateDebitCommand, Gen
     //}
 
 
-}
+

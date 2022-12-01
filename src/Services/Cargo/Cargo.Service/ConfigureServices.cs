@@ -37,6 +37,8 @@ public static class ConfigureServices
         RabbitMQStaticValues.TrackingPeriod = rabbitMQ.TrackingPeriod;
         RabbitMQStaticValues.ActiveThreshold = rabbitMQ.ActiveThreshold;
 
+        StaticValues.ConnectionString = appSettings.ConnectionStrings.ConnectionString;
+
         return services;
     }
 

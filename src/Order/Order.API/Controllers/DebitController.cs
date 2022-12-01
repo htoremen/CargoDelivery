@@ -18,23 +18,27 @@ namespace Order.API.Controllers
         [Route("create-debit")]
         public async Task<IActionResult> CreateDebit()
         {
-            var command = new CreateDebitCommand
+            var correlationId = "";
+            for (int i = 0; i < 40000; i++)
             {
-                CourierId = Guid.NewGuid(),
-                DebitId = Guid.NewGuid(),
-                Cargos = GetCargos()
-            };
+                var command = new CreateDebitCommand
+                {
+                    CourierId = Guid.NewGuid(),
+                    DebitId = Guid.NewGuid(),
+                    Cargos = GetCargos()
+                };
 
-            var correlationId = command.DebitId.ToString();
+                correlationId = command.DebitId.ToString();
 
-            await Mediator.Send(new RedisDataAddCommand
-            {
-                CacheKey = StaticKeyValues.CreateDebit,
-                CacheValue = command.DebitId.ToString(),
-                Value = JsonSerializer.Serialize(command)
-            });
+                await Mediator.Send(new RedisDataAddCommand
+                {
+                    CacheKey = StaticKeyValues.CreateDebit,
+                    CacheValue = command.DebitId.ToString(),
+                    Value = JsonSerializer.Serialize(command)
+                });
 
-            var response = await Mediator.Send(command);
+                await Mediator.Send(command);
+            }
 
             return Ok(correlationId);
         }

@@ -17,6 +17,7 @@
     <PackageReference Include="Apache.Avro" Version="1.11.1" />
     <PackageReference Include="AspNetCore.HealthChecks.Kafka" Version="6.0.3" />
     <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="6.0.2" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Grpc.Net.Client" Version="2.49.0" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.7" />
