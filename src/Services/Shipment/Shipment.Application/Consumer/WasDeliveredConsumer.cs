@@ -1,5 +1,5 @@
 ﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
-using Deliveries;
+
 using Shipment.Application.Shipments.Commands.WasDelivereds;
 using System;
 using System.Collections.Generic;

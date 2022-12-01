@@ -1,18 +1,13 @@
 ﻿using Core.Domain;
 using Core.Domain.Enums;
-using Cargos;
 using MassTransit;
 using Saga.Application.Cargos;
 using Saga.Domain.Instances;
-using Routes;
 using Saga.Application.Routes;
-using Deliveries;
 using Saga.Application.Deliveries;
 using Saga.Application.Payments;
-using Payments;
-using Shipments;
 using Saga.Application.Shipments;
-using Notifications;
+using Events;
 
 namespace Saga.Service.StateMachines;
 

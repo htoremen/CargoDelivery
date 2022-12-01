@@ -1,8 +1,4 @@
 ﻿using AutoMapper;
-using Cargos;
-using Core.Domain.MessageBrokers;
-using Shipments;
-using static Cargos.IDebitRejected;
 
 namespace Cargo.Application.Cargos.DebitApprovals;
 
@@ -16,13 +12,13 @@ public class DebitApprovalCommand : IRequest<GenericResponse<DebitApprovalRespon
 public class DebitApprovalCommandHandler : IRequestHandler<DebitApprovalCommand, GenericResponse<DebitApprovalResponse>>
 {
     private readonly IMessageSender<IShipmentReceived> _shipmentReceived;
-    private readonly IMessageSender<IDebitRejected> _DebitRejected;
+    private readonly IMessageSender<IDebitRejected> _debitRejected;
     private readonly IMapper _mapper;
 
     public DebitApprovalCommandHandler(IMessageSender<IShipmentReceived> shipmentReceived, IMessageSender<IDebitRejected> DebitRejected, IMapper mapper)
     {
         _shipmentReceived = shipmentReceived;
-        _DebitRejected = DebitRejected;
+        _debitRejected = DebitRejected;
         _mapper = mapper;
     }
 
@@ -38,7 +34,7 @@ public class DebitApprovalCommandHandler : IRequestHandler<DebitApprovalCommand,
         }
         else
         {
-            await _DebitRejected.SendAsync(new DebitRejected
+            await _debitRejected.SendAsync(new DebitRejected
             {
                 CorrelationId = request.CorrelationId,
                 CurrentState = request.CurrentState,

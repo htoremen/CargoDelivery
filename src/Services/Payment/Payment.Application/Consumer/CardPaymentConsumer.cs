@@ -2,7 +2,7 @@
 using MassTransit;
 using Payment.Application.Deliveries.Commands.UpdatePaymentTypes;
 using Payment.Application.Payments.CardPayments;
-using Shipments;
+
 
 namespace Payment.Application.Consumer;
 

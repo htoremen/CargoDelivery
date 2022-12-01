@@ -1,4 +1,4 @@
-﻿using Deliveries;
+﻿
 using MassTransit;
 
 namespace Payment.Application.Payments.FreeDeliveries;

@@ -76,6 +76,7 @@ public static class ConfigureServices
     private static void UsingRabbitMq(IBusRegistrationConfigurator<IBus> x, MessageBrokerOptions messageBroker, IQueueConfiguration queue)
     {
         x.SetKebabCaseEndpointNameFormatter();
+        x.SetSnakeCaseEndpointNameFormatter();
 
         x.AddConsumer<StartDeliveryConsumer, StartDeliveryConsumerDefinition>();
         x.AddConsumer<NewDeliveryConsumer, NewDeliveryConsumerDefinition>();
@@ -99,7 +100,6 @@ public static class ConfigureServices
             });
 
             cfg.UseJsonSerializer();
-            cfg.ConfigureEndpoints(context);
 
             cfg.ReceiveEndpoint(queue.Names[QueueName.StartDelivery], e => { e.ConfigureConsumer<StartDeliveryConsumer>(context); });
             cfg.ReceiveEndpoint(queue.Names[QueueName.NewDelivery], e => { e.ConfigureConsumer<NewDeliveryConsumer>(context); });
@@ -109,6 +109,10 @@ public static class ConfigureServices
             cfg.ReceiveEndpoint(queue.Names[QueueName.NotDelivered], e => { e.ConfigureConsumer<NotDeliveredConsumer>(context); });
             cfg.ReceiveEndpoint(queue.Names[QueueName.CreateRefund], e => { e.ConfigureConsumer<CreateRefundConsumer>(context); });
             cfg.ReceiveEndpoint(queue.Names[QueueName.DeliveryCompleted], e => { e.ConfigureConsumer<DeliveryCompletedConsumer>(context); });
+
+            cfg.ReceiveEndpoint(queue.Names[QueueName.ShiftCompletion], e => { e.ConfigureConsumer<ShiftCompletionConsumer>(context); });
+
+            cfg.ConfigureEndpoints(context);
         });
     }
 }

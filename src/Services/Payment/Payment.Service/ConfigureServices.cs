@@ -54,6 +54,7 @@ public static class ConfigureServices
     private static void UsingRabbitMq(IBusRegistrationConfigurator x, MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
         x.SetKebabCaseEndpointNameFormatter();
+        x.SetSnakeCaseEndpointNameFormatter();
 
         x.AddConsumer<CardPaymentConsumer, CardPaymentConsumerDefinition>();
         x.AddConsumer<FreeDeliveryConsumer, FreeDeliveryConsumerDefinition>();

@@ -10,6 +10,7 @@ using MassTransit;
 using Saga.Service.Components;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Events;
 
 namespace Saga.Service;
 public static class ConfigureServices
@@ -53,6 +54,8 @@ public static class ConfigureServices
         var config = appSettings.MessageBroker.RabbitMQ;
 
         x.SetKebabCaseEndpointNameFormatter();
+        x.SetSnakeCaseEndpointNameFormatter();
+
         x.AddSagas(Assembly.GetExecutingAssembly());
         x.AddSagasFromNamespaceContaining<CargoStateInstance>();
         x.AddSagasFromNamespaceContaining(typeof(CargoStateInstance)); 
@@ -78,7 +81,17 @@ public static class ConfigureServices
             });
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.CargoSaga], e =>
             {
-                e.ConfigureSaga<CargoStateInstance>(factory);
+                const int ConcurrencyLimit = 20;
+                e.ConfigureSaga<CargoStateInstance>(factory, s =>
+                {
+                    var partition = e.CreatePartitioner(ConcurrencyLimit);
+
+                    s.Message<ICreateDebit>(x => x.UsePartitioner(partition, m => m.Message.DebitId));
+                    s.Message<IDebitApproval>(x => x.UsePartitioner(partition, m => m.Message.CorrelationId));
+                    s.Message<IDebitRejected>(x => x.UsePartitioner(partition, m => m.Message.CorrelationId));
+                    s.Message<ISendSelfie>(x => x.UsePartitioner(partition, m => m.Message.CorrelationId));
+
+                });
             });
         }));
     }

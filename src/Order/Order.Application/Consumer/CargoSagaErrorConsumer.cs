@@ -1,5 +1,4 @@
-﻿using Core.Domain.Events.Sagas;
-using MassTransit;
+﻿using MassTransit;
 
 namespace Order.Application.Consumer;
 

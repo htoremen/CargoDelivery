@@ -1,7 +1,7 @@
 ﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
 using MassTransit;
 using Payment.Application.Payments.PayAtDoors;
-using Shipments;
+
 
 namespace Payment.Application.Consumer;
 

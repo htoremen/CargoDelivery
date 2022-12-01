@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Cargo.Application.Cargos.Commands.DebitHistories;
-using Cargos;
+
 using System.Text.Json;
 
 namespace Cargo.Application.Consumer;

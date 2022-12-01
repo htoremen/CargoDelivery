@@ -1,6 +1,4 @@
-﻿using Core.Domain.Events.Fault;
-
-namespace Saga.Application.Cargos.Fault;
+﻿namespace Saga.Application.Cargos.Fault;
 
 public class SendSelfieFaultCommand : ISendSelfieFault
 {

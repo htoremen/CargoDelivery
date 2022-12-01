@@ -8,7 +8,7 @@ using FluentValidation;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Configuration;
 using NoSQLMongo.Infrastructure;
-using Shipments;
+
 
 namespace Microsoft.Extensions.DependencyInjection;
 

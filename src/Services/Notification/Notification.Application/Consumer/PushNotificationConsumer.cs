@@ -1,7 +1,7 @@
 ﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
 using MassTransit;
 using Notification.Application.Sends.PushNotifications;
-using Notifications;
+using Events;
 
 namespace Notification.Application.Consumer;
 

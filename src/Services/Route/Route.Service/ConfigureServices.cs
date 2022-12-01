@@ -63,6 +63,7 @@ public static class ConfigureServices
     private static void UsingRabbitMq(IBusRegistrationConfigurator x, Core.Infrastructure.MessageBrokers.MessageBrokerOptions messageBroker, IQueueConfiguration queueConfiguration)
     {
         x.SetKebabCaseEndpointNameFormatter();
+        x.SetSnakeCaseEndpointNameFormatter();
 
         x.AddConsumer<ManuelRouteConsumer, ManuelRouteConsumerDefinition>();
         x.AddConsumer<AutoRouteConsumer, AutoRouteConsumerDefinition>();
@@ -79,12 +80,12 @@ public static class ConfigureServices
             });
 
             cfg.UseJsonSerializer();
-            cfg.UseRetry(c => c.Interval(config.RetryCount, config.ResetInterval));
-            cfg.ConfigureEndpoints(context);
 
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.ManuelRoute], e => { e.ConfigureConsumer<ManuelRouteConsumer>(context); });
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.AutoRoute], e => { e.ConfigureConsumer<AutoRouteConsumer>(context); });
             cfg.ReceiveEndpoint(queueConfiguration.Names[QueueName.StartRoute], e => { e.ConfigureConsumer<StartRouteConsumer>(context); });
+
+            cfg.ConfigureEndpoints(context);
         });
     }
 }

@@ -4,7 +4,7 @@ using Cargo.Application.Cargos.Commands.DebitHistories;
 using Cargo.Application.Cargos.CreateDebits;
 using Cargo.Application.Cargos.Queries.GetCargos;
 using Cargo.Application.Cargos.SendSelfie;
-using Cargos;
+
 using Core.Domain.Instances;
 
 namespace Cargo.Application;

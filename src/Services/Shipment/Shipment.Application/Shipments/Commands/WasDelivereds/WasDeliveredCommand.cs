@@ -1,4 +1,4 @@
-﻿using Deliveries;
+﻿
 
 namespace Shipment.Application.Shipments.Commands.WasDelivereds;
 

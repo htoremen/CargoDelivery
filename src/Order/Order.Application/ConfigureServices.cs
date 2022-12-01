@@ -4,7 +4,7 @@ using FluentValidation;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
 using Core.Infrastructure.Cache;
-using Shipments;
+
 
 namespace Microsoft.Extensions.DependencyInjection;
 

@@ -1,9 +1,9 @@
-﻿using Cargos;
+﻿
 using Core.Application.Common.Behaviours;
 using Core.Infrastructure;
 using Core.Infrastructure.Cache;
 using Core.Infrastructure.MessageBrokers;
-using Deliveries;
+
 using FluentValidation;
 using MediatR.Pipeline;
 using Shipment.Application.Common.Behaviours;

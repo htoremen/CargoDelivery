@@ -1,16 +1,14 @@
 ﻿global using MediatR;
 global using MassTransit;
 global using Core.Domain.Models;
-global using Routes;
-global using Cargos;
 global using Core.Domain.MessageBrokers;
 global using Route.Application.Common.Interfaces;
 global using Core.Domain.SagaInstances;
 global using Route.GRPC.Client.Services;
-global using Cargo.GRPC.Server;
 global using Core.Domain.SerializerModels;
 global using Core.Domain;
 global using System.Text.Json;
 global using Route.Domain.Entities;
 global using Microsoft.EntityFrameworkCore;
 global using Core.Application.Common.Interfaces;
+global using Events;

@@ -5,7 +5,7 @@ using FluentValidation;
 using MediatR;
 using MediatR.Pipeline;
 using Notification.Application.Common.Behaviours;
-using Notifications;
+
 using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;

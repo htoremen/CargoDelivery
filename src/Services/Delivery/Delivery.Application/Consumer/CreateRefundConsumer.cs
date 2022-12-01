@@ -1,7 +1,8 @@
 ﻿using Core.Infrastructure.MessageBrokers.RabbitMQ;
 using Delivery.Application.Deliveries.Commands.InsertDeliveries;
 using Delivery.Application.Deliveries.CreateRefunds;
-using Shipments;
+
+using Events;
 
 namespace Delivery.Application.Consumer;
 

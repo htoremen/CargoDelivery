@@ -1,4 +1,4 @@
-﻿using Cargos;
+﻿using Events;
 
 namespace Core.Domain.SerializerModels;
 

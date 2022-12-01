@@ -1,4 +1,5 @@
-﻿namespace Saga.Application.Shipments;
+﻿
+using Events;
 
 public class WasDeliveredCommand : IWasDelivered
 {

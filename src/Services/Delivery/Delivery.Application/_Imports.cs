@@ -1,7 +1,6 @@
 ﻿global using MediatR;
 global using MassTransit;
 global using Core.Domain.Models;
-global using Deliveries;
 global using Core.Domain.Enums;
 global using Core.Domain.MessageBrokers;
 global using Delivery.Application.Common.Interfaces;
@@ -10,4 +9,4 @@ global using Route.GRPC.Server;
 global using Cargo.GRPC.Server;
 global using Microsoft.EntityFrameworkCore;
 global using Enums;
-global using Payments;
+global using Events;

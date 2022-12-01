@@ -1,7 +1,7 @@
 ﻿using Cargo.Application.Cargos.DebitApprovals;
 using Cargo.Application.Cargos.CreateDebits;
 using Cargo.Application.Cargos.SendSelfies;
-using Cargos;
+
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Order.Application.NoSqls.RedisDataAdds;

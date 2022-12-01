@@ -3,9 +3,9 @@ using Payment.Application.Common.Behaviours;
 using FluentValidation;
 using Core.Infrastructure;
 using Core.Infrastructure.MessageBrokers;
-using Deliveries;
+
 using MediatR.Pipeline;
-using Shipments;
+
 
 namespace Microsoft.Extensions.DependencyInjection;
 
